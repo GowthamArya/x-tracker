@@ -32,22 +32,38 @@ jobs:
         working-directory: client
         run: npm run build -- --configuration production
 
-      # 5. Prepare deployment files
+      # 5. Find Angular build output
+      - name: Find Angular build output
+        run: |
+          echo "=== Client directory ==="
+          ls -la client
+
+          echo "=== Looking for index.html ==="
+          find client -type f -name "index.html" -print
+
+      # 6. Prepare deployment files
       - name: Prepare deployment
         run: |
           rm -rf deploy
           mkdir deploy
 
-          DIST_DIR=$(find client/dist -type f -name "index.html" -print -quit | xargs dirname)
+          DIST_DIR=$(find client -type f -name "index.html" -print -quit | xargs -r dirname)
+
+          if [ -z "$DIST_DIR" ]; then
+            echo "ERROR: Angular index.html was not found."
+            echo "Build output:"
+            find client -maxdepth 5 -type f | head -100
+            exit 1
+          fi
 
           echo "Angular build directory: $DIST_DIR"
 
           cp -R "$DIST_DIR"/. deploy/
 
-          echo "Files prepared for deployment:"
-          ls -la deploy
+          echo "=== Deployment files ==="
+          find deploy -maxdepth 2 -type f
 
-      # 6. Deploy to MonsterASP
+      # 7. Deploy to MonsterASP
       - name: Deploy to MonsterASP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
