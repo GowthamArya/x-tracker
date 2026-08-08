@@ -1,0 +1,54 @@
+.form-container {
+  padding: 20px 16px 40px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.page-heading {
+  margin-bottom: 28px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #777;
+  }
+}
+
+.form-section {
+  margin-bottom: 22px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+ion-input,
+ion-select,
+ion-textarea {
+  --background: #f7f7f7;
+  --border-radius: 12px;
+  --padding-start: 14px;
+  --padding-end: 14px;
+}
+
+ion-segment {
+  margin-top: 4px;
+}
+
+.form-actions {
+  margin-top: 32px;
+}
+
+.error-message {
+  margin: 6px 4px 0;
+  color: #d32f2f;
+  font-size: 13px;
+}

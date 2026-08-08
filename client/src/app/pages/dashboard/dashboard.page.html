@@ -1,13 +1,77 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+    <ion-title>X-Tracker</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="dashboard">
+
+    <div class="welcome">
+      <h1>Good evening</h1>
+      <p>Here's your financial summary.</p>
+    </div>
+
+    <div class="balance-card">
+      <span class="label">Total Balance</span>
+
+      <h2>
+        ₹{{ balance | number:'1.0-0' }}
+      </h2>
+    </div>
+
+    <div class="summary-grid">
+
+      <div class="summary-card">
+        <span class="label">Income</span>
+
+        <strong>
+          ₹{{ totalIncome | number:'1.0-0' }}
+        </strong>
+      </div>
+
+      <div class="summary-card">
+        <span class="label">Expenses</span>
+
+        <strong>
+          ₹{{ totalExpenses | number:'1.0-0' }}
+        </strong>
+      </div>
+
+    </div>
+
+    <div class="section-header">
+      <h2>Recent Transactions</h2>
+
+      <a routerLink="/tabs/transactions">
+        See all
+      </a>
+    </div>
+
+    <div class="transactions">
+
+      @for (transaction of transactions; track transaction.id) {
+
+        <div class="transaction">
+
+          <div class="transaction-info">
+            <strong>{{ transaction.title }}</strong>
+            <span>{{ transaction.category }}</span>
+          </div>
+
+          <div
+            class="transaction-amount"
+            [class.income]="transaction.type === 'income'"
+          >
+            {{ transaction.type === 'income' ? '+' : '-' }}
+            ₹{{ transaction.amount | number:'1.0-0' }}
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
 </ion-content>

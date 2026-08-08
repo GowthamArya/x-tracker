@@ -1,0 +1,234 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/tabs/transactions"
+      ></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>
+      {{ isEditMode ? 'Edit Transaction' : 'Add Transaction' }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <div class="form-container">
+
+    <div class="page-heading">
+    <h1>
+      {{ isEditMode ? 'Edit Transaction' : 'Add Transaction' }}
+    </h1>      
+    <p>Record your income or expense.</p>
+    </div>
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Transaction Type
+      </ion-label>
+
+      <ion-segment [(ngModel)]="transactionType">
+
+        <ion-segment-button value="expense">
+          <ion-label>Expense</ion-label>
+        </ion-segment-button>
+
+        <ion-segment-button value="income">
+          <ion-label>Income</ion-label>
+        </ion-segment-button>
+
+      </ion-segment>
+
+    </div>
+
+    <!-- Amount -->
+
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Amount
+      </ion-label>
+
+      <ion-input
+        type="number"
+        inputmode="decimal"
+        placeholder="0"
+        [(ngModel)]="amount"
+      ></ion-input>
+
+      @if (submitted && (amount === null || amount <= 0)) {
+        <p class="error-message">
+          Please enter an amount greater than 0.
+        </p>
+      }
+
+    </div>
+
+    <!-- Title -->
+
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Title
+      </ion-label>
+
+      <ion-input
+        type="text"
+        placeholder="e.g. Grocery Shopping"
+        [(ngModel)]="title"
+      ></ion-input>
+
+      @if (submitted && !title.trim()) {
+        <p class="error-message">
+          Please enter a title.
+        </p>
+      }
+
+    </div>
+
+    <!-- Category -->
+
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Category
+      </ion-label>
+
+      <ion-select
+        placeholder="Select category"
+        [(ngModel)]="category"
+      >
+
+        <ion-select-option value="Food">
+          Food
+        </ion-select-option>
+
+        <ion-select-option value="Groceries">
+          Groceries
+        </ion-select-option>
+
+        <ion-select-option value="Transport">
+          Transport
+        </ion-select-option>
+
+        <ion-select-option value="Bills">
+          Bills
+        </ion-select-option>
+
+        <ion-select-option value="Shopping">
+          Shopping
+        </ion-select-option>
+
+        <ion-select-option value="Entertainment">
+          Entertainment
+        </ion-select-option>
+
+        <ion-select-option value="Salary">
+          Salary
+        </ion-select-option>
+
+        <ion-select-option value="Other">
+          Other
+        </ion-select-option>
+
+      </ion-select>
+
+      @if (submitted && !category) {
+        <p class="error-message">
+          Please select a category.
+        </p>
+      }
+
+    </div>
+
+    <!-- Account -->
+
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Account
+      </ion-label>
+
+      <ion-select
+        placeholder="Select account"
+        [(ngModel)]="account"
+      >
+
+        <ion-select-option value="Personal">
+          Personal
+        </ion-select-option>
+
+        <ion-select-option value="Joint">
+          Joint
+        </ion-select-option>
+
+        <ion-select-option value="Savings">
+          Savings
+        </ion-select-option>
+
+      </ion-select>
+
+      @if (submitted && !account) {
+        <p class="error-message">
+          Please select an account.
+        </p>
+      }
+
+    </div>
+
+    <!-- Date -->
+
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Date
+      </ion-label>
+
+      <ion-input
+        type="date"
+        [(ngModel)]="date"
+      ></ion-input>
+
+      @if (submitted && !date) {
+        <p class="error-message">
+          Please select a date.
+        </p>
+      }
+
+    </div>
+
+    <!-- Notes -->
+
+    <div class="form-section">
+
+      <ion-label class="field-label">
+        Notes
+      </ion-label>
+
+      <ion-textarea
+        placeholder="Optional notes"
+        [autoGrow]="true"
+        [(ngModel)]="notes"
+      ></ion-textarea>
+
+    </div>
+
+    <!-- Save -->
+
+    <div class="form-actions">
+
+      <ion-button
+        expand="block"
+        size="large"
+        (click)="saveTransaction()"
+      >
+        {{ isEditMode ? 'Update Transaction' : 'Save Transaction' }}
+      </ion-button>
+
+    </div>
+
+  </div>
+
+</ion-content>

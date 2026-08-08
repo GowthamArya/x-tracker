@@ -44,6 +44,13 @@ export const routes: Routes = [
             (m) => m.MorePage
           ),
       },
+      {
+        path: 'add-transaction',
+        loadComponent: () =>
+          import('./pages/add-transaction/add-transaction.page').then(
+            (m) => m.AddTransactionPage
+          ),
+      },
     ],
   },
 ];

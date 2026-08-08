@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+
 import {
   IonTabs,
   IonTabBar,
   IonTabButton,
   IonIcon,
   IonLabel,
-  IonRouterOutlet,
 } from '@ionic/angular/standalone';
 
 import {
@@ -19,7 +19,6 @@ import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-tabs',
-  standalone: true,
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
   imports: [
@@ -28,7 +27,6 @@ import { addIcons } from 'ionicons';
     IonTabButton,
     IonIcon,
     IonLabel,
-    IonRouterOutlet,
   ],
 })
 export class TabsPage {

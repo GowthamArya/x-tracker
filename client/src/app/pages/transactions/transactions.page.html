@@ -1,13 +1,99 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>transactions</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" >
+  <div class="transaction-page">
+  <div class="page-header">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">transactions</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <div>
+      <h1>Transactions</h1>
+      <p>Your recent income and expenses.</p>
+    </div>
+
+    <ion-button routerLink="/tabs/add-transaction">
+      + Add
+    </ion-button>
+
+  </div>
+
+
+  <div class="filter-bar">
+
+    <ion-button
+      class="filter"
+      [fill]="activeFilter === 'all' ? 'solid' : 'outline'"
+      (click)="setFilter('all')"
+    >
+      All
+    </ion-button>
+
+    <ion-button
+      class="filter"
+      [fill]="activeFilter === 'income' ? 'solid' : 'outline'"
+      (click)="setFilter('income')"
+    >
+      Income
+    </ion-button>
+
+    <ion-button
+      class="filter"
+      [fill]="activeFilter === 'expense' ? 'solid' : 'outline'"
+      (click)="setFilter('expense')"
+    >
+      Expenses
+    </ion-button>
+
+  </div>
+
+
+  <div class="transaction-list">
+    @for (
+      transaction of filteredTransactions;
+      track transaction.id
+    ) {
+      <div class="transaction-card">
+        <div class="transaction-left">
+          <div class="transaction-icon">
+            {{ transaction.type === 'income' ? '↑' : '↓' }}
+          </div>
+          <div class="transaction-details">
+            <strong>
+              {{ transaction.title }}
+            </strong>
+            <span>
+              {{ transaction.category }}
+              ·
+              {{ transaction.account }}
+            </span>
+
+            <small>
+              {{ transaction.date }}
+            </small>
+          </div>
+        </div>
+        <div class="transaction-right">
+          <div
+            class="transaction-amount"
+            [class.income]="transaction.type === 'income'"
+          >
+            {{ transaction.type === 'income' ? '+' : '-' }}
+            ₹{{ transaction.amount | number:'1.0-0' }}
+          </div>
+
+          <ion-button
+            fill="clear"
+            size="small"
+            (click)="openTransactionActions(transaction)"
+          >
+            ⋮
+          </ion-button>
+        </div>
+      </div>
+    }
+</div>
+<ion-action-sheet
+  [isOpen]="actionSheetOpen"
+  [header]="selectedTransaction?.title || 'Transaction'"
+  [buttons]="actionSheetButtons"
+  (didDismiss)="actionSheetOpen = false"
+></ion-action-sheet>
+
+</div>
 </ion-content>
