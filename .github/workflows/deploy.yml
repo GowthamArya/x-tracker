@@ -1,0 +1,58 @@
+name: Deploy Angular to MonsterASP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci
+
+      # 4. Build Angular application
+      - name: Build Angular application
+        working-directory: client
+        run: npm run build -- --configuration production
+
+      # 5. Prepare deployment files
+      - name: Prepare deployment
+        run: |
+          rm -rf deploy
+          mkdir deploy
+
+          DIST_DIR=$(find client/dist -type f -name "index.html" -print -quit | xargs dirname)
+
+          echo "Angular build directory: $DIST_DIR"
+
+          cp -R "$DIST_DIR"/. deploy/
+
+          echo "Files prepared for deployment:"
+          ls -la deploy
+
+      # 6. Deploy to MonsterASP
+      - name: Deploy to MonsterASP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /wwwroot/
+          local-dir: ./deploy/
