@@ -55,6 +55,9 @@ jobs:
           echo "Angular build directory: $DIST_DIR"
 
           cp -R "$DIST_DIR"/. deploy/
+          
+          # Add IIS configuration for Angular client-side routing
+          cp client/web.config deploy/web.config
 
           echo "=== Deployment files ==="
           find deploy -maxdepth 2 -type f
