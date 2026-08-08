@@ -35,8 +35,8 @@ jobs:
       # 5. Show Angular build output
       - name: Show Angular build output
         run: |
-          echo "=== Angular dist directory ==="
-          find client/dist -maxdepth 4 -type f | head -100
+          echo "=== Angular www directory ==="
+          find client/www -maxdepth 4 -type f | head -100
 
       # 6. Prepare deployment
       - name: Prepare deployment
@@ -44,11 +44,11 @@ jobs:
           rm -rf deploy
           mkdir deploy
 
-          # Find index.html ONLY inside Angular's dist folder
-          DIST_DIR=$(find client/dist -type f -name "index.html" -print -quit | xargs -r dirname)
+          # Find index.html inside Angular's configured output directory
+          DIST_DIR=$(find client/www -type f -name "index.html" -print -quit | xargs -r dirname)
 
           if [ -z "$DIST_DIR" ]; then
-            echo "ERROR: Angular index.html was not found inside client/dist"
+            echo "ERROR: Angular index.html was not found inside client/www"
             exit 1
           fi
 
