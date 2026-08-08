@@ -32,27 +32,23 @@ jobs:
         working-directory: client
         run: npm run build -- --configuration production
 
-      # 5. Find Angular build output
-      - name: Find Angular build output
+      # 5. Show Angular build output
+      - name: Show Angular build output
         run: |
-          echo "=== Client directory ==="
-          ls -la client
+          echo "=== Angular dist directory ==="
+          find client/dist -maxdepth 4 -type f | head -100
 
-          echo "=== Looking for index.html ==="
-          find client -type f -name "index.html" -print
-
-      # 6. Prepare deployment files
+      # 6. Prepare deployment
       - name: Prepare deployment
         run: |
           rm -rf deploy
           mkdir deploy
 
-          DIST_DIR=$(find client -type f -name "index.html" -print -quit | xargs -r dirname)
+          # Find index.html ONLY inside Angular's dist folder
+          DIST_DIR=$(find client/dist -type f -name "index.html" -print -quit | xargs -r dirname)
 
           if [ -z "$DIST_DIR" ]; then
-            echo "ERROR: Angular index.html was not found."
-            echo "Build output:"
-            find client -maxdepth 5 -type f | head -100
+            echo "ERROR: Angular index.html was not found inside client/dist"
             exit 1
           fi
 
