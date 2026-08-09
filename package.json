@@ -1,0 +1,13 @@
+{
+  "name": "x-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -n CLIENT,API \"npm run start:client\" \"npm run start:api\"",
+    "start:client": "cd client && ionic serve --port 8100",
+    "start:api": "cd server && dotnet run --launch-profile XTracker.Api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

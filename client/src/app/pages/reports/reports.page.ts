@@ -3,9 +3,6 @@ import { DecimalPipe } from '@angular/common';
 
 import {
   IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
 } from '@ionic/angular/standalone';
 
 import { ReportsService } from '../../services/reports.service';
@@ -17,9 +14,6 @@ import { CategoryReport } from '../../services/reports.service';
   styleUrls: ['./reports.page.scss'],
   imports: [
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     DecimalPipe,
   ],
 })
