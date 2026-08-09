@@ -1,13 +1,125 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Reports</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Reports</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <div class="reports-container">
+
+    <div class="page-heading">
+      <h1>Reports</h1>
+      <p>Understand where your money is going.</p>
+    </div>
+
+
+    <!-- Summary -->
+
+    <div class="summary-grid">
+
+      <div class="summary-card">
+
+        <span class="label">
+          Income
+        </span>
+
+        <strong class="income">
+          ₹{{ totalIncome | number:'1.0-0' }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <span class="label">
+          Expenses
+        </span>
+
+        <strong class="expense">
+          ₹{{ totalExpenses | number:'1.0-0' }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card full-width">
+
+        <span class="label">
+          Balance
+        </span>
+
+        <strong>
+          ₹{{ balance | number:'1.0-0' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Expense Categories -->
+
+    <div class="section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Expenses by Category</h2>
+          <p>Where your money is going.</p>
+        </div>
+
+      </div>
+
+
+      <div class="category-list">
+
+        @if (categoryReports.length === 0) {
+
+          <div class="empty-state">
+            No expenses yet.
+          </div>
+
+        }
+
+
+        @for (
+          report of categoryReports;
+          track report.category
+        ) {
+
+          <div class="category-item">
+
+            <div class="category-header">
+
+              <strong>
+                {{ report.category }}
+              </strong>
+
+              <span>
+                ₹{{ report.amount | number:'1.0-0' }}
+              </span>
+
+            </div>
+
+
+            <div class="progress-track">
+
+              <div
+                class="progress-bar"
+                [style.width.%]="report.percentage"
+              ></div>
+
+            </div>
+
+
+            <small>
+              {{ report.percentage | number:'1.0-0' }}%
+            </small>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
 </ion-content>

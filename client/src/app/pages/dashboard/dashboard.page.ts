@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -25,8 +25,9 @@ import { Transaction } from '../../models/transaction.model';
     RouterLink,
   ],
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage {
   transactions: Transaction[] = [];
+
   totalIncome = 0;
   totalExpenses = 0;
   balance = 0;
@@ -35,14 +36,21 @@ export class DashboardPage implements OnInit {
     private readonly dashboardService: DashboardService
   ) {}
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
     this.loadDashboard();
   }
-
+  
   private loadDashboard(): void {
-    this.transactions = this.dashboardService.getRecentTransactions();
-    this.totalIncome = this.dashboardService.getTotalIncome();
-    this.totalExpenses = this.dashboardService.getTotalExpenses();
-    this.balance = this.dashboardService.getBalance();
+    this.transactions =
+      this.dashboardService.getRecentTransactions();
+
+    this.totalIncome =
+      this.dashboardService.getTotalIncome();
+
+    this.totalExpenses =
+      this.dashboardService.getTotalExpenses();
+
+    this.balance =
+      this.dashboardService.getBalance();
   }
 }
