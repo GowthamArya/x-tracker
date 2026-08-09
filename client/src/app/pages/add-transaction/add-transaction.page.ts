@@ -20,9 +20,19 @@ import {
 } from '@ionic/angular/standalone';
 
 import {
-  Transaction,
   TransactionType,
 } from '../../models/transaction.model';
+
+import { TransactionRequest } from '../../models/transaction-request.model';
+
+import { Account } from '../../models/account.model';
+
+import {
+  Category,
+  CategoriesService,
+} from '../../services/categories.service';
+
+import { AccountsService } from '../../services/accounts.service';
 
 import { TransactionsService } from '../../services/transactions.service';
 
@@ -52,29 +62,80 @@ export class AddTransactionPage implements OnInit {
   transactionType: TransactionType = 'expense';
 
   amount: number | null = null;
+
   title = '';
-  category = '';
-  account = '';
+
+  categoryId: number | null = null;
+
+  accountId: number | null = null;
+
   date = this.getToday();
+
   notes = '';
 
   submitted = false;
 
   isEditMode = false;
+
   editingTransactionId: number | null = null;
+
+  accounts: Account[] = [];
+
+  categories: Category[] = [];
 
   constructor(
     private readonly transactionsService: TransactionsService,
+    private readonly accountsService: AccountsService,
+    private readonly categoriesService: CategoriesService,
     private readonly router: Router,
     private readonly route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.loadAccounts();
+    this.loadCategories();
     this.loadEditTransaction();
   }
 
+  private loadAccounts(): void {
+    this.accountsService
+      .getAccounts()
+      .subscribe({
+        next: (accounts) => {
+          this.accounts = accounts;
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load accounts',
+            error
+          );
+        },
+      });
+  }
+
+  private loadCategories(): void {
+    this.categoriesService
+      .getCategories()
+      .subscribe({
+        next: (categories) => {
+          this.categories = categories;
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load categories',
+            error
+          );
+        },
+      });
+  }
+
   private loadEditTransaction(): void {
-    const editId = this.route.snapshot.queryParamMap.get('edit');
+    const editId =
+      this.route.snapshot.queryParamMap.get(
+        'edit'
+      );
 
     if (!editId) {
       return;
@@ -86,23 +147,49 @@ export class AddTransactionPage implements OnInit {
       return;
     }
 
-    const transaction =
-      this.transactionsService.getTransactionById(transactionId);
+    this.transactionsService
+      .getTransactionById(transactionId)
+      .subscribe({
+        next: (transaction) => {
+          this.isEditMode = true;
 
-    if (!transaction) {
-      return;
-    }
+          this.editingTransactionId =
+            transaction.id;
 
-    this.isEditMode = true;
-    this.editingTransactionId = transaction.id;
+          this.transactionType =
+            transaction.type;
 
-    this.transactionType = transaction.type;
-    this.amount = transaction.amount;
-    this.title = transaction.title;
-    this.category = transaction.category;
-    this.account = transaction.account;
-    this.date = transaction.date;
-    this.notes = transaction.notes ?? '';
+          this.amount =
+            transaction.amount;
+
+          this.title =
+            transaction.title;
+
+          this.categoryId =
+            transaction.categoryId;
+
+          this.accountId =
+            transaction.accountId;
+
+          this.date =
+            transaction.transactionDate
+              .split('T')[0];
+
+          this.notes =
+            transaction.notes ?? '';
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load transaction',
+            error
+          );
+
+          this.router.navigate([
+            '/tabs/transactions',
+          ]);
+        },
+      });
   }
 
   saveTransaction(): void {
@@ -121,45 +208,74 @@ export class AddTransactionPage implements OnInit {
   }
 
   private addTransaction(): void {
-    const transaction: Transaction = {
-      id: Date.now(),
+    const request: TransactionRequest = {
+      accountId: this.accountId!,
+      categoryId: this.categoryId!,
       title: this.title.trim(),
       amount: this.amount!,
       type: this.transactionType,
-      category: this.category,
-      account: this.account,
-      date: this.date,
+      transactionDate: this.date,
       notes: this.notes.trim() || undefined,
     };
 
-    this.transactionsService.addTransaction(transaction);
+    this.transactionsService
+      .addTransaction(request)
+      .subscribe({
+        next: () => {
+          this.clearForm();
 
-    this.clearForm();
+          this.router.navigate([
+            '/tabs/transactions',
+          ]);
+        },
 
-    this.router.navigate(['/tabs/transactions']);
+        error: (error) => {
+          console.error(
+            'Failed to add transaction',
+            error
+          );
+        },
+      });
   }
 
   private updateTransaction(): void {
-    if (this.editingTransactionId === null) {
+    if (
+      this.editingTransactionId === null
+    ) {
       return;
     }
 
-    const transaction: Transaction = {
-      id: this.editingTransactionId,
+    const request: TransactionRequest = {
+      accountId: this.accountId!,
+      categoryId: this.categoryId!,
       title: this.title.trim(),
       amount: this.amount!,
       type: this.transactionType,
-      category: this.category,
-      account: this.account,
-      date: this.date,
+      transactionDate: this.date,
       notes: this.notes.trim() || undefined,
     };
 
-    this.transactionsService.updateTransaction(transaction);
+    this.transactionsService
+      .updateTransaction(
+        this.editingTransactionId,
+        request
+      )
+      .subscribe({
+        next: () => {
+          this.clearForm();
 
-    this.clearForm();
+          this.router.navigate([
+            '/tabs/transactions',
+          ]);
+        },
 
-    this.router.navigate(['/tabs/transactions']);
+        error: (error) => {
+          console.error(
+            'Failed to update transaction',
+            error
+          );
+        },
+      });
   }
 
   private isFormValid(): boolean {
@@ -167,28 +283,37 @@ export class AddTransactionPage implements OnInit {
       this.amount !== null &&
       this.amount > 0 &&
       this.title.trim().length > 0 &&
-      this.category.length > 0 &&
-      this.account.length > 0 &&
+      this.categoryId !== null &&
+      this.accountId !== null &&
       this.date.length > 0
     );
   }
 
   private clearForm(): void {
     this.transactionType = 'expense';
+
     this.amount = null;
+
     this.title = '';
-    this.category = '';
-    this.account = '';
+
+    this.categoryId = null;
+
+    this.accountId = null;
+
     this.date = this.getToday();
+
     this.notes = '';
 
     this.submitted = false;
 
     this.isEditMode = false;
+
     this.editingTransactionId = null;
   }
 
   private getToday(): string {
-    return new Date().toISOString().split('T')[0];
+    return new Date()
+      .toISOString()
+      .split('T')[0];
   }
 }

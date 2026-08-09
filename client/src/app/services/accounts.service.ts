@@ -1,100 +1,64 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { Account } from '../models/account.model';
-import { TransactionsService } from './transactions.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountsService {
-  private accounts: Account[] = [
-    {
-      id: 1,
-      name: 'Personal',
-      openingBalance: 0,
-    },
-    {
-      id: 2,
-      name: 'Joint',
-      openingBalance: 0,
-    },
-    {
-      id: 3,
-      name: 'Savings',
-      openingBalance: 0,
-    },
-  ];
+
+  private readonly apiUrl =
+    'https://localhost:7043/api/Accounts';
 
   constructor(
-    private readonly transactionsService: TransactionsService
+    private readonly http: HttpClient
   ) {}
 
-  getAccounts(): Account[] {
-    return [...this.accounts];
-  }
-
-  getAccountById(id: number): Account | undefined {
-    return this.accounts.find(
-      (account) => account.id === id
+  getAccounts(): Observable<Account[]> {
+    return this.http.get<Account[]>(
+      this.apiUrl
     );
   }
 
-  getAccountBalance(account: Account): number {
-    const transactions =
-      this.transactionsService.getTransactions();
-
-    const accountTransactions = transactions.filter(
-      (transaction) =>
-        transaction.account === account.name
-    );
-
-    const income = accountTransactions
-      .filter((transaction) => transaction.type === 'income')
-      .reduce(
-        (total, transaction) =>
-          total + transaction.amount,
-        0
-      );
-
-    const expenses = accountTransactions
-      .filter((transaction) => transaction.type === 'expense')
-      .reduce(
-        (total, transaction) =>
-          total + transaction.amount,
-        0
-      );
-
-    return account.openingBalance + income - expenses;
-  }
-
-  addAccount(account: Account): void {
-    this.accounts = [
-      ...this.accounts,
-      account,
-    ];
-  }
-
-  updateAccount(account: Account): void {
-    this.accounts = this.accounts.map(
-      (existingAccount) =>
-        existingAccount.id === account.id
-          ? account
-          : existingAccount
+  getAccountById(
+    id: number
+  ): Observable<Account> {
+    return this.http.get<Account>(
+      `${this.apiUrl}/${id}`
     );
   }
 
-  deleteAccount(id: number): void {
-    this.accounts = this.accounts.filter(
-      (account) => account.id !== id
+  addAccount(
+    account: Account
+  ): Observable<Account> {
+    return this.http.post<Account>(
+      this.apiUrl,
+      {
+        name: account.name,
+        openingBalance: account.openingBalance,
+      }
     );
   }
 
-  getAccountTransactions(account: Account) {
-  return this.transactionsService
-    .getTransactions()
-    .filter(
-      (transaction) =>
-        transaction.account === account.name
+  updateAccount(
+    account: Account
+  ): Observable<Account> {
+    return this.http.put<Account>(
+      `${this.apiUrl}/${account.id}`,
+      {
+        name: account.name,
+        openingBalance: account.openingBalance,
+      }
     );
-}
+  }
+
+  deleteAccount(
+    id: number
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
+    );
+  }
 }

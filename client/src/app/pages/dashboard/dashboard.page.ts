@@ -39,18 +39,62 @@ export class DashboardPage {
   ionViewWillEnter(): void {
     this.loadDashboard();
   }
-  
+
   private loadDashboard(): void {
-    this.transactions =
-      this.dashboardService.getRecentTransactions();
+    this.dashboardService
+      .getRecentTransactions()
+      .subscribe({
+        next: (transactions) => {
+          this.transactions = transactions;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load recent transactions',
+            error
+          );
+        },
+      });
 
-    this.totalIncome =
-      this.dashboardService.getTotalIncome();
+    this.dashboardService
+      .getTotalIncome()
+      .subscribe({
+        next: (total) => {
+          this.totalIncome = total;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load total income',
+            error
+          );
+        },
+      });
 
-    this.totalExpenses =
-      this.dashboardService.getTotalExpenses();
+    this.dashboardService
+      .getTotalExpenses()
+      .subscribe({
+        next: (total) => {
+          this.totalExpenses = total;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load total expenses',
+            error
+          );
+        },
+      });
 
-    this.balance =
-      this.dashboardService.getBalance();
+    this.dashboardService
+      .getBalance()
+      .subscribe({
+        next: (balance) => {
+          this.balance = balance;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load balance',
+            error
+          );
+        },
+      });
   }
 }

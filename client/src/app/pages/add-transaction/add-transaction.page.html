@@ -97,45 +97,21 @@
       </ion-label>
 
       <ion-select
-        placeholder="Select category"
-        [(ngModel)]="category"
+        [(ngModel)]="categoryId"
+        interface="popover"
       >
-
-        <ion-select-option value="Food">
-          Food
-        </ion-select-option>
-
-        <ion-select-option value="Groceries">
-          Groceries
-        </ion-select-option>
-
-        <ion-select-option value="Transport">
-          Transport
-        </ion-select-option>
-
-        <ion-select-option value="Bills">
-          Bills
-        </ion-select-option>
-
-        <ion-select-option value="Shopping">
-          Shopping
-        </ion-select-option>
-
-        <ion-select-option value="Entertainment">
-          Entertainment
-        </ion-select-option>
-
-        <ion-select-option value="Salary">
-          Salary
-        </ion-select-option>
-
-        <ion-select-option value="Other">
-          Other
-        </ion-select-option>
-
+        @for (category of categories; track category.id) {
+          @if (category.type === transactionType) {
+            <ion-select-option
+              [value]="category.id"
+            >
+              {{ category.name }}
+            </ion-select-option>
+          }
+        }
       </ion-select>
 
-      @if (submitted && !category) {
+      @if (submitted && !categoryId) {
         <p class="error-message">
           Please select a category.
         </p>
@@ -152,25 +128,19 @@
       </ion-label>
 
       <ion-select
-        placeholder="Select account"
-        [(ngModel)]="account"
+        [(ngModel)]="accountId"
+        interface="popover"
       >
-
-        <ion-select-option value="Personal">
-          Personal
-        </ion-select-option>
-
-        <ion-select-option value="Joint">
-          Joint
-        </ion-select-option>
-
-        <ion-select-option value="Savings">
-          Savings
-        </ion-select-option>
-
+        @for (account of accounts; track account.id) {
+          <ion-select-option
+            [value]="account.id"
+          >
+            {{ account.name }}
+          </ion-select-option>
+        }
       </ion-select>
 
-      @if (submitted && !account) {
+      @if (submitted && !accountId) {
         <p class="error-message">
           Please select an account.
         </p>

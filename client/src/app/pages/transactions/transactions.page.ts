@@ -28,6 +28,7 @@ type TransactionFilter = 'all' | 'income' | 'expense';
 })
 export class TransactionsPage implements OnInit {
   transactions: Transaction[] = [];
+
   filteredTransactions: Transaction[] = [];
 
   activeFilter: TransactionFilter = 'all';
@@ -61,30 +62,50 @@ export class TransactionsPage implements OnInit {
   }
 
   private loadTransactions(): void {
-    this.transactions =
-      this.transactionsService.getTransactions();
+    this.transactionsService
+      .getTransactions()
+      .subscribe({
+        next: (transactions) => {
+          this.transactions = transactions;
+          this.applyFilter();
+        },
 
-    this.applyFilter();
+        error: (error) => {
+          console.error(
+            'Failed to load transactions',
+            error
+          );
+        },
+      });
   }
 
   setFilter(filter: TransactionFilter): void {
     this.activeFilter = filter;
+
     this.applyFilter();
   }
 
   private applyFilter(): void {
     if (this.activeFilter === 'all') {
-      this.filteredTransactions = [...this.transactions];
+      this.filteredTransactions = [
+        ...this.transactions,
+      ];
+
       return;
     }
 
-    this.filteredTransactions = this.transactions.filter(
-      (transaction) => transaction.type === this.activeFilter
-    );
+    this.filteredTransactions =
+      this.transactions.filter(
+        (transaction) =>
+          transaction.type === this.activeFilter
+      );
   }
 
-  openTransactionActions(transaction: Transaction): void {
+  openTransactionActions(
+    transaction: Transaction
+  ): void {
     this.selectedTransaction = transaction;
+
     this.actionSheetOpen = true;
   }
 
@@ -113,13 +134,25 @@ export class TransactionsPage implements OnInit {
       return;
     }
 
-    this.transactionsService.deleteTransaction(
-      this.selectedTransaction.id
-    );
+    const transactionId =
+      this.selectedTransaction.id;
 
-    this.selectedTransaction = null;
-    this.actionSheetOpen = false;
+    this.transactionsService
+      .deleteTransaction(transactionId)
+      .subscribe({
+        next: () => {
+          this.selectedTransaction = null;
+          this.actionSheetOpen = false;
 
-    this.loadTransactions();
+          this.loadTransactions();
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to delete transaction',
+            error
+          );
+        },
+      });
   }
 }

@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "sqlproj: Build x-tracker",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"/Users/gowthamarya/Projects/x-tracker/x-tracker/x-tracker.sqlproj"
+			],
+			"problemMatcher": "$sqlproj-problem-matcher",
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "Builds the x-tracker SQL project"
+		}
+	]
+}

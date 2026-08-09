@@ -1,88 +1,59 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
 import { Transaction } from '../models/transaction.model';
+import { TransactionRequest } from '../models/transaction-request.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransactionsService {
-  private transactions: Transaction[] = [
-    {
-      id: 1,
-      title: 'Salary',
-      amount: 60000,
-      type: 'income',
-      category: 'Salary',
-      account: 'Personal',
-      date: '2026-08-01',
-      notes: 'Monthly salary',
-    },
-    {
-      id: 2,
-      title: 'Lunch',
-      amount: 250,
-      type: 'expense',
-      category: 'Food',
-      account: 'Personal',
-      date: '2026-08-08',
-    },
-    {
-      id: 3,
-      title: 'Uber',
-      amount: 180,
-      type: 'expense',
-      category: 'Transport',
-      account: 'Personal',
-      date: '2026-08-07',
-    },
-    {
-      id: 4,
-      title: 'Electricity Bill',
-      amount: 1200,
-      type: 'expense',
-      category: 'Bills',
-      account: 'Joint',
-      date: '2026-08-05',
-    },
-    {
-      id: 5,
-      title: 'Grocery Shopping',
-      amount: 2500,
-      type: 'expense',
-      category: 'Groceries',
-      account: 'Joint',
-      date: '2026-08-04',
-    },
-  ];
+  private readonly apiUrl =
+    'https://localhost:7043/api/Transactions';
 
-  getTransactions(): Transaction[] {
-    return [...this.transactions];
-  }
+  constructor(
+    private readonly http: HttpClient
+  ) {}
 
-  getTransactionById(id: number): Transaction | undefined {
-    return this.transactions.find(
-      (transaction) => transaction.id === id
+  getTransactions(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(
+      this.apiUrl
     );
   }
 
-  addTransaction(transaction: Transaction): void {
-    this.transactions = [
-      transaction,
-      ...this.transactions,
-    ];
-  }
-
-  updateTransaction(transaction: Transaction): void {
-    this.transactions = this.transactions.map(
-      (existingTransaction) =>
-        existingTransaction.id === transaction.id
-          ? transaction
-          : existingTransaction
+  getTransactionById(
+    id: number
+  ): Observable<Transaction> {
+    return this.http.get<Transaction>(
+      `${this.apiUrl}/${id}`
     );
   }
 
-  deleteTransaction(id: number): void {
-    this.transactions = this.transactions.filter(
-      (transaction) => transaction.id !== id
+  addTransaction(
+    request: TransactionRequest
+  ): Observable<Transaction> {
+    return this.http.post<Transaction>(
+      this.apiUrl,
+      request
+    );
+  }
+
+  updateTransaction(
+    id: number,
+    request: TransactionRequest
+  ): Observable<Transaction> {
+    return this.http.put<Transaction>(
+      `${this.apiUrl}/${id}`,
+      request
+    );
+  }
+
+  deleteTransaction(
+    id: number
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
     );
   }
 }

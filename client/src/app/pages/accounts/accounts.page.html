@@ -6,108 +6,54 @@
 
 <ion-content [fullscreen]="true">
 
-  <div class="accounts-container">
+  <div class="page-heading">
 
-    <div class="page-heading">
-
-      <div>
-        <h1>Accounts</h1>
-        <p>Manage your money across accounts.</p>
-      </div>
-
-      <ion-button
-        (click)="openAddAccount()"
-      >
-        + Add
-      </ion-button>
-
+    <div>
+      <h1>Accounts</h1>
+      <p>Manage your money across accounts.</p>
     </div>
 
+    <ion-button
+      (click)="openAddAccount()"
+    >
+      + Add
+    </ion-button>
 
-    <div class="account-list">
-
-      @for (account of accounts; track account.id) {
-
-        <div class="account-card">
-
-          <div class="account-info">
-
-            <strong>
-              {{ account.name }}
-            </strong>
-
-            <span>
-              Opening balance:
-              ₹{{ account.openingBalance | number:'1.0-0' }}
-            </span>
-
-          </div>
+  </div>
 
 
-          <div class="account-right">
+  <div class="account-list">
 
-            <strong
-              [class.negative]="getBalance(account.id) < 0"
-            >
-              ₹{{ getBalance(account.id) | number:'1.0-0' }}
-            </strong>
+    @for (account of accounts; track account.id) {
 
-            <ion-button
-              fill="clear"
-              size="small"
-              (click)="openAccountActions(account)"
-            >
-              ⋮
-            </ion-button>
+      <div class="account-card">
 
-          </div>
+        <div class="account-info">
+
+          <strong>
+            {{ account.name }}
+          </strong>
+
+          <span>
+            Opening balance:
+            ₹{{ account.openingBalance | number:'1.0-0' }}
+          </span>
 
         </div>
 
-      }
 
-    </div>
+        <div class="account-right">
 
-
-    @if (showForm) {
-
-      <div class="account-form">
-
-        <h2>
-          {{ isEditMode ? 'Edit Account' : 'Add Account' }}
-        </h2>
-
-
-        <ion-input
-          label="Account Name"
-          labelPlacement="stacked"
-          placeholder="e.g. Personal"
-          [(ngModel)]="accountName"
-        ></ion-input>
-
-
-        <ion-input
-          label="Opening Balance"
-          labelPlacement="stacked"
-          type="number"
-          inputmode="decimal"
-          [(ngModel)]="openingBalance"
-        ></ion-input>
-
-
-        <div class="form-actions">
+          <strong>
+            ₹{{ account.openingBalance | number:'1.0-0' }}
+          </strong>
 
           <ion-button
-            fill="outline"
-            (click)="closeForm()"
+            fill="clear"
+            size="small"
+            (click)="openAccountActions(account)"
           >
-            Cancel
-          </ion-button>
-
-          <ion-button
-            (click)="saveAccount()"
-          >
-            {{ isEditMode ? 'Update' : 'Save' }}
+            ⋮
           </ion-button>
 
         </div>
@@ -119,11 +65,74 @@
   </div>
 
 
-  <ion-action-sheet
-    [isOpen]="actionSheetOpen"
-    [header]="selectedAccount?.name || 'Account'"
-    [buttons]="actionSheetButtons"
-    (didDismiss)="actionSheetOpen = false"
-  ></ion-action-sheet>
+  @if (accounts.length === 0) {
+
+    <div class="empty-state">
+      <p>No accounts found.</p>
+
+      <ion-button
+        (click)="openAddAccount()"
+      >
+        Add your first account
+      </ion-button>
+    </div>
+
+  }
+
+
+  @if (showForm) {
+
+    <div class="account-form">
+
+      <h2>
+        {{ isEditMode ? 'Edit Account' : 'Add Account' }}
+      </h2>
+
+
+      <ion-input
+        label="Account Name"
+        labelPlacement="stacked"
+        placeholder="e.g. Personal"
+        [(ngModel)]="accountName"
+      ></ion-input>
+
+
+      <ion-input
+        label="Opening Balance"
+        labelPlacement="stacked"
+        type="number"
+        inputmode="decimal"
+        [(ngModel)]="openingBalance"
+      ></ion-input>
+
+
+      <div class="form-actions">
+
+        <ion-button
+          fill="outline"
+          (click)="closeForm()"
+        >
+          Cancel
+        </ion-button>
+
+        <ion-button
+          (click)="saveAccount()"
+        >
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </ion-button>
+
+      </div>
+
+    </div>
+
+  }
 
 </ion-content>
+
+
+<ion-action-sheet
+  [isOpen]="actionSheetOpen"
+  [header]="selectedAccount?.name || 'Account'"
+  [buttons]="actionSheetButtons"
+  (didDismiss)="actionSheetOpen = false"
+></ion-action-sheet>

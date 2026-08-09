@@ -1,0 +1,10 @@
+CREATE TABLE Users
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    Name NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+
+    CONSTRAINT PK_Users
+        PRIMARY KEY (Id)
+);

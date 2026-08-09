@@ -33,16 +33,60 @@ export class ReportsPage {
   }
 
   private loadReports(): void {
-    this.totalIncome =
-      this.reportsService.getTotalIncome();
+    this.reportsService
+      .getTotalIncome()
+      .subscribe({
+        next: (total) => {
+          this.totalIncome = total;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load total income',
+            error
+          );
+        },
+      });
 
-    this.totalExpenses =
-      this.reportsService.getTotalExpenses();
+    this.reportsService
+      .getTotalExpenses()
+      .subscribe({
+        next: (total) => {
+          this.totalExpenses = total;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load total expenses',
+            error
+          );
+        },
+      });
 
-    this.balance =
-      this.reportsService.getBalance();
+    this.reportsService
+      .getBalance()
+      .subscribe({
+        next: (balance) => {
+          this.balance = balance;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load balance',
+            error
+          );
+        },
+      });
 
-    this.categoryReports =
-      this.reportsService.getExpenseByCategory();
+    this.reportsService
+      .getExpenseByCategory()
+      .subscribe({
+        next: (reports) => {
+          this.categoryReports = reports;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load expense reports',
+            error
+          );
+        },
+      });
   }
 }

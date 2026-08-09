@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import {
@@ -16,6 +15,7 @@ import {
 
 import { Account } from '../../models/account.model';
 import { AccountsService } from '../../services/accounts.service';
+
 @Component({
   selector: 'app-accounts',
   templateUrl: './accounts.page.html',
@@ -34,7 +34,6 @@ import { AccountsService } from '../../services/accounts.service';
 })
 export class AccountsPage {
   accounts: Account[] = [];
-  accountBalances = new Map<number, number>();
 
   actionSheetOpen = false;
   selectedAccount: Account | null = null;
@@ -62,8 +61,7 @@ export class AccountsPage {
   ];
 
   constructor(
-    private readonly accountsService: AccountsService,
-    private readonly router: Router
+    private readonly accountsService: AccountsService
   ) {}
 
   ionViewWillEnter(): void {
@@ -71,21 +69,20 @@ export class AccountsPage {
   }
 
   private loadAccounts(): void {
-    this.accounts =
-      this.accountsService.getAccounts();
+    this.accountsService
+      .getAccounts()
+      .subscribe({
+        next: (accounts) => {
+          this.accounts = accounts;
+        },
 
-    this.accountBalances.clear();
-
-    for (const account of this.accounts) {
-      this.accountBalances.set(
-        account.id,
-        this.accountsService.getAccountBalance(account)
-      );
-    }
-  }
-
-  getBalance(accountId: number): number {
-    return this.accountBalances.get(accountId) ?? 0;
+        error: (error) => {
+          console.error(
+            'Failed to load accounts',
+            error
+          );
+        },
+      });
   }
 
   openAddAccount(): void {
@@ -110,7 +107,9 @@ export class AccountsPage {
 
     this.isEditMode = true;
 
-    this.accountName = this.selectedAccount.name;
+    this.accountName =
+      this.selectedAccount.name;
+
     this.openingBalance =
       this.selectedAccount.openingBalance;
 
@@ -125,24 +124,57 @@ export class AccountsPage {
       return;
     }
 
-    const balance = this.openingBalance ?? 0;
+    const openingBalance =
+      this.openingBalance ?? 0;
 
-    if (this.isEditMode && this.selectedAccount) {
-      this.accountsService.updateAccount({
-        id: this.selectedAccount.id,
-        name,
-        openingBalance: balance,
-      });
-    } else {
-      this.accountsService.addAccount({
-        id: Date.now(),
-        name,
-        openingBalance: balance,
-      });
+    // Edit
+    if (
+      this.isEditMode &&
+      this.selectedAccount
+    ) {
+      this.accountsService
+        .updateAccount({
+          id: this.selectedAccount.id,
+          name,
+          openingBalance,
+        })
+        .subscribe({
+          next: () => {
+            this.closeForm();
+            this.loadAccounts();
+          },
+
+          error: (error) => {
+            console.error(
+              'Failed to update account',
+              error
+            );
+          },
+        });
+
+      return;
     }
 
-    this.closeForm();
-    this.loadAccounts();
+    // Add
+    this.accountsService
+      .addAccount({
+        id: 0,
+        name,
+        openingBalance,
+      })
+      .subscribe({
+        next: () => {
+          this.closeForm();
+          this.loadAccounts();
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to add account',
+            error
+          );
+        },
+      });
   }
 
   deleteAccount(): void {
@@ -152,26 +184,32 @@ export class AccountsPage {
 
     const account = this.selectedAccount;
 
-    const transactions =
-      this.accountsService.getAccountTransactions(account);
+    this.accountsService
+      .deleteAccount(account.id)
+      .subscribe({
+        next: () => {
+          this.selectedAccount = null;
+          this.actionSheetOpen = false;
 
-    if (transactions.length > 0) {
-      this.actionSheetOpen = false;
-      this.selectedAccount = null;
+          this.loadAccounts();
+        },
 
-      alert(
-        `Cannot delete "${account.name}" because it has transactions.`
-      );
+        error: (error) => {
+          console.error(
+            'Failed to delete account',
+            error
+          );
 
-      return;
-    }
+          this.selectedAccount = null;
+          this.actionSheetOpen = false;
 
-    this.accountsService.deleteAccount(account.id);
+          const message =
+            error?.error ||
+            'Unable to delete account.';
 
-    this.selectedAccount = null;
-    this.actionSheetOpen = false;
-
-    this.loadAccounts();
+          alert(message);
+        },
+      });
   }
 
   closeForm(): void {

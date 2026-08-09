@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Observable, map } from 'rxjs';
+
+import { Transaction } from '../models/transaction.model';
 import { TransactionsService } from './transactions.service';
 
 @Injectable({
@@ -9,27 +12,83 @@ export class DashboardService {
     private readonly transactionsService: TransactionsService
   ) {}
 
-  getRecentTransactions() {
+  getRecentTransactions(): Observable<Transaction[]> {
     return this.transactionsService
       .getTransactions()
-      .slice(0, 5);
+      .pipe(
+        map((transactions) =>
+          transactions.slice(0, 5)
+        )
+      );
   }
 
-  getTotalIncome(): number {
+  getTotalIncome(): Observable<number> {
     return this.transactionsService
       .getTransactions()
-      .filter((transaction) => transaction.type === 'income')
-      .reduce((total, transaction) => total + transaction.amount, 0);
+      .pipe(
+        map((transactions) =>
+          transactions
+            .filter(
+              (transaction) =>
+                transaction.type === 'income'
+            )
+            .reduce(
+              (total, transaction) =>
+                total + transaction.amount,
+              0
+            )
+        )
+      );
   }
 
-  getTotalExpenses(): number {
+  getTotalExpenses(): Observable<number> {
     return this.transactionsService
       .getTransactions()
-      .filter((transaction) => transaction.type === 'expense')
-      .reduce((total, transaction) => total + transaction.amount, 0);
+      .pipe(
+        map((transactions) =>
+          transactions
+            .filter(
+              (transaction) =>
+                transaction.type === 'expense'
+            )
+            .reduce(
+              (total, transaction) =>
+                total + transaction.amount,
+              0
+            )
+        )
+      );
   }
 
-  getBalance(): number {
-    return this.getTotalIncome() - this.getTotalExpenses();
+  getBalance(): Observable<number> {
+    return this.transactionsService
+      .getTransactions()
+      .pipe(
+        map((transactions) => {
+          const income = transactions
+            .filter(
+              (transaction) =>
+                transaction.type === 'income'
+            )
+            .reduce(
+              (total, transaction) =>
+                total + transaction.amount,
+              0
+            );
+
+          const expenses = transactions
+            .filter(
+              (transaction) =>
+                transaction.type === 'expense'
+            )
+            .reduce(
+              (total, transaction) =>
+                total + transaction.amount,
+              0
+            );
+
+          return income - expenses;
+        })
+      );
   }
 }
