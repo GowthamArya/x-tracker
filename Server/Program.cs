@@ -94,10 +94,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// CORS
-app.UseCors("XTrackerClient");
-
-// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -113,19 +109,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
-//For Angular
 app.UseStaticFiles();
-app.MapFallbackToFile("index.html");
 
+app.UseCors("XTrackerClient");
 
-// Authentication
 app.UseAuthentication();
 
-// Authorization
 app.UseAuthorization();
 
-// Controllers
 app.MapControllers();
+
+// Angular SPA fallback
+app.MapFallbackToFile("index.html");
 
 app.Run();
