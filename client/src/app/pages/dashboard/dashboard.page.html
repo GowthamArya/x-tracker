@@ -1,9 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>X-Tracker</ion-title>
-    <ion-button fill="clear" slot="end" routerLink="/login">
-      Login
-    </ion-button>
+    @if (!isLoggedIn) {
+      <ion-button fill="clear" slot="end" routerLink="/login">
+        Login
+      </ion-button>
+    }
+    @if (isLoggedIn) {
+      <ion-button fill="clear" slot="end" (click)="logout()">
+        Logout
+      </ion-button>
+    }
   </ion-toolbar>
 </ion-header>
 

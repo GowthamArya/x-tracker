@@ -1,24 +1,112 @@
 <ion-content [fullscreen]="true">
 
-  <div class="login-container">
+  <div class="login-page">
 
-    <div class="login-header">
-      <h1>X-Tracker</h1>
+    <div class="login-container">
 
-      <p>
-        Track your finances simply.
-      </p>
-    </div>
+      <!-- Brand -->
+      <div class="brand">
 
-    <div class="login-actions">
+        <div class="brand-icon">
+          <ion-icon color="danger" name="wallet-outline"></ion-icon>
+        </div>
 
-      <ion-button
-        expand="block"
-        size="large"
-        (click)="loginWithGoogle()"
-      >
-        Continue with Google
-      </ion-button>
+        <ion-text>
+          <h1>X-Tracker</h1>
+        </ion-text>
+
+        <p>
+          Your money, clearly tracked.
+        </p>
+
+      </div>
+
+
+      <!-- Login Card -->
+      <ion-card class="login-card">
+
+        <ion-card-content>
+
+          <div class="login-heading">
+
+            <ion-text color="dark">
+              <h2>Welcome back</h2>
+            </ion-text>
+
+            <ion-text color="medium">
+              <p>
+                Sign in to continue to your dashboard.
+              </p>
+            </ion-text>
+
+          </div>
+
+
+          <!-- Google Login -->
+          <ion-button
+            class="google-button"
+            expand="block"
+            fill="outline"
+            (click)="loginWithGoogle()"
+          >
+
+            <ion-icon
+              name="logo-google"
+              slot="start">
+            </ion-icon>
+
+            Continue with Google
+
+          </ion-button>
+
+
+          <div class="divider">
+            <span>Secure sign in</span>
+          </div>
+
+
+          <div class="security-note">
+
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+
+            <ion-text color="medium">
+              <span>
+                Your account is protected with secure authentication.
+              </span>
+            </ion-text>
+
+          </div>
+
+
+          <p class="privacy-text">
+            By continuing, you agree to use X-Tracker
+            responsibly and securely.
+          </p>
+
+        </ion-card-content>
+
+      </ion-card>
+
+
+      <!-- Footer -->
+      <div class="login-footer">
+
+        <span>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Simple
+        </span>
+
+        <span>
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          Private
+        </span>
+
+        <span>
+          <ion-icon name="flash-outline"></ion-icon>
+          Focused
+        </span>
+
+      </div>
 
     </div>
 

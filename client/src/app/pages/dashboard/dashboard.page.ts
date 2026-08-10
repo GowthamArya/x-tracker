@@ -2,9 +2,16 @@ import { Component } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButton
+} from '@ionic/angular/standalone';
 
 import { DashboardService } from '../../services/dashboard.service';
+import { AuthService } from '../../services/auth.service';
 import { Transaction } from '../../models/transaction.model';
 
 @Component({
@@ -19,24 +26,48 @@ import { Transaction } from '../../models/transaction.model';
     DecimalPipe,
     RouterLink,
     IonButton
-],
+  ],
 })
 export class DashboardPage {
+
   transactions: Transaction[] = [];
+
+  isLoggedIn = false;
 
   totalIncome = 0;
   totalExpenses = 0;
   balance = 0;
 
   constructor(
-    private readonly dashboardService: DashboardService
+    private readonly dashboardService: DashboardService,
+    private readonly authService: AuthService
   ) {}
 
   ionViewWillEnter(): void {
-    this.loadDashboard();
+    this.checkAuthentication();
+  }
+
+  private checkAuthentication(): void {
+
+    this.authService.isLoggedIn()
+      .subscribe({
+        next: (loggedIn) => {
+
+          this.isLoggedIn = loggedIn;
+
+          if (loggedIn) {
+            this.loadDashboard();
+          }
+
+        },
+        error: () => {
+          this.isLoggedIn = false;
+        }
+      });
   }
 
   private loadDashboard(): void {
+
     this.dashboardService
       .getRecentTransactions()
       .subscribe({
@@ -92,5 +123,18 @@ export class DashboardPage {
           );
         },
       });
+  }
+
+  logout(): void {
+    console.log('Logging out...', window.location.href);
+    this.authService.logout().subscribe({
+    next: () => {
+        console.log('Logout successful');
+        return window.location.href = '/login';
+    },
+    error: error => {
+        console.error('Logout failed', error);
+    }
+    });
   }
 }

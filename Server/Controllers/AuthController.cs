@@ -124,11 +124,13 @@ public class AuthController : ControllerBase
             "XTrackerCookie",
             principal
         );
-
-        // Return to Angular
-        return Redirect(
-            "http://localhost:8100/tabs/dashboard"
-        );
+        string? returnUrl = Request.Query["returnUrl"];
+        if (!string.IsNullOrWhiteSpace(returnUrl))
+        {
+            return Redirect(returnUrl);
+        }
+        string dashboardUrl = Environment.GetEnvironmentVariable("DASHBOARD_URL") ?? "/tabs/dashboard";
+        return Redirect(dashboardUrl);
     }
 
     [HttpGet("me")]
@@ -161,7 +163,6 @@ public class AuthController : ControllerBase
         await HttpContext.SignOutAsync(
             "XTrackerCookie"
         );
-
         return Ok();
     }
 }

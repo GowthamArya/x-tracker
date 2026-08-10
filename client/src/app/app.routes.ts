@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './layout/tabs/tabs.page';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -9,6 +10,7 @@ export const routes: Routes = [
   },
   {
     path: 'tabs',
+    canActivate: [authGuard],
     component: TabsPage,
     children: [
       {
