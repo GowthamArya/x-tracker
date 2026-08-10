@@ -1,4 +1,4 @@
-name: Deploy Angular to MonsterASP
+name: Deploy XTracker to MonsterASP
 
 on:
   push:
@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       # 1. Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
+
 
       # 2. Setup Node.js
       - name: Setup Node.js
@@ -22,15 +24,18 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      # 3. Install dependencies
-      - name: Install dependencies
+
+      # 3. Install Angular dependencies
+      - name: Install Angular dependencies
         working-directory: client
         run: npm ci
+
 
       # 4. Build Angular application
       - name: Build Angular application
         working-directory: client
         run: npm run build -- --configuration production
+
 
       # 5. Show Angular build output
       - name: Show Angular build output
@@ -38,14 +43,21 @@ jobs:
           echo "=== Angular www directory ==="
           find client/www -maxdepth 4 -type f | head -100
 
-      # 6. Prepare deployment
-      - name: Prepare deployment
-        run: |
-          rm -rf deploy
-          mkdir deploy
 
-          # Find index.html inside Angular's configured output directory
-          DIST_DIR=$(find client/www -type f -name "index.html" -print -quit | xargs -r dirname)
+      # 6. Copy Angular build into ASP.NET Core wwwroot
+      - name: Copy Angular to ASP.NET Core wwwroot
+        run: |
+          echo "=== Preparing ASP.NET Core wwwroot ==="
+
+          rm -rf Server/wwwroot
+          mkdir -p Server/wwwroot
+
+          # Find Angular index.html
+          DIST_DIR=$(find client/www \
+            -type f \
+            -name "index.html" \
+            -print \
+            -quit | xargs -r dirname)
 
           if [ -z "$DIST_DIR" ]; then
             echo "ERROR: Angular index.html was not found inside client/www"
@@ -54,15 +66,72 @@ jobs:
 
           echo "Angular build directory: $DIST_DIR"
 
-          cp -R "$DIST_DIR"/. deploy/
-          
-          # Add IIS configuration for Angular client-side routing
-          cp client/web.config deploy/web.config
+          # Copy Angular production files
+          cp -R "$DIST_DIR"/. Server/wwwroot/
 
-          echo "=== Deployment files ==="
-          find deploy -maxdepth 2 -type f
+          echo "=== Server/wwwroot ==="
+          find Server/wwwroot -maxdepth 3 -type f | head -100
 
-      # 7. Deploy to MonsterASP
+
+      # 7. Setup .NET 10
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+
+      # 8. Restore ASP.NET Core dependencies
+      - name: Restore .NET dependencies
+        run: dotnet restore Server/server.csproj
+
+
+      # 9. Publish ASP.NET Core application
+      - name: Publish ASP.NET Core application
+        run: |
+          dotnet publish Server/server.csproj \
+            --configuration Release \
+            --output ./publish \
+            --no-restore
+
+
+      # 10. Verify final publish output
+      - name: Verify publish output
+        run: |
+          echo "=== Final publish directory ==="
+          find publish -maxdepth 3 -type f | sort
+
+          echo ""
+          echo "=== Checking Angular files ==="
+
+          if [ ! -f "publish/index.html" ]; then
+            echo "ERROR: Angular index.html is missing from publish directory"
+            exit 1
+          fi
+
+          echo "Angular index.html found"
+
+          echo ""
+          echo "=== Checking ASP.NET Core application ==="
+
+          if [ ! -f "publish/server.dll" ]; then
+            echo "ERROR: server.dll is missing from publish directory"
+            exit 1
+          fi
+
+          echo "server.dll found"
+
+          echo ""
+          echo "=== Checking IIS configuration ==="
+
+          if [ ! -f "publish/web.config" ]; then
+            echo "ERROR: web.config is missing from publish directory"
+            exit 1
+          fi
+
+          echo "web.config found"
+
+
+      # 11. Deploy ASP.NET Core + Angular to MonsterASP
       - name: Deploy to MonsterASP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
@@ -70,4 +139,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /wwwroot/
-          local-dir: ./deploy/
+          local-dir: ./publish/
