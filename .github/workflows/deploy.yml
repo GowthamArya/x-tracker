@@ -1,17 +1,22 @@
-name: Build and Deploy Angular and Web API
+name: Deploy XTracker to MonsterASP
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+
+      # 1. Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -19,60 +24,126 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
 
+
+      # 3. Install Angular dependencies
       - name: Install Angular dependencies
         working-directory: client
         run: npm ci
 
-      - name: Build Angular
+
+      # 4. Build Angular application
+      - name: Build Angular application
         working-directory: client
         run: npm run build -- --configuration production
 
+
+      # 5. Show Angular build output
+      - name: Show Angular build output
+        run: |
+          echo "=== Angular www directory ==="
+          find client/www -maxdepth 4 -type f | head -100
+
+
+      # 6. Copy Angular build into ASP.NET Core wwwroot
+      - name: Copy Angular to ASP.NET Core wwwroot
+        run: |
+          echo "=== Preparing ASP.NET Core wwwroot ==="
+
+          rm -rf Server/wwwroot
+          mkdir -p Server/wwwroot
+
+          # Find Angular index.html
+          DIST_DIR=$(find client/www \
+            -type f \
+            -name "index.html" \
+            -print \
+            -quit | xargs -r dirname)
+
+          if [ -z "$DIST_DIR" ]; then
+            echo "ERROR: Angular index.html was not found inside client/www"
+            exit 1
+          fi
+
+          echo "Angular build directory: $DIST_DIR"
+
+          # Copy Angular production files
+          cp -R "$DIST_DIR"/. Server/wwwroot/
+
+          echo ""
+          echo "=== Server/wwwroot ==="
+          find Server/wwwroot -maxdepth 3 -type f | head -100
+
+
+      # 7. Setup .NET 10
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
-      - name: Restore Web API
-        working-directory: Server
-        run: dotnet restore
 
-      - name: Build Web API
-        working-directory: Server
-        run: dotnet build --configuration Release --no-restore
+      # 8. Restore ASP.NET Core dependencies
+      - name: Restore .NET dependencies
+        run: dotnet restore Server/server.csproj
 
-      - name: Publish Web API
-        working-directory: Server
-        run: dotnet publish --configuration Release --no-build --output ../api-publish
 
-      - name: Prepare Angular deployment
+      # 9. Publish ASP.NET Core application
+      - name: Publish ASP.NET Core application
         run: |
-          rm -rf deploy
-          mkdir deploy
+          dotnet publish Server/server.csproj \
+            --configuration Release \
+            --output ./publish \
+            --no-restore
 
-          DIST_DIR=$(find client/www -type f -name "index.html" -print -quit | xargs -r dirname)
 
-          if [ -z "$DIST_DIR" ]; then
-            echo "Angular index.html was not found"
+      # 10. Verify final publish output
+      - name: Verify publish output
+        run: |
+          echo "=== Final publish directory ==="
+          find publish -maxdepth 3 -type f | sort
+
+          echo ""
+          echo "=== Checking Angular files ==="
+
+          if [ ! -f "publish/wwwroot/index.html" ]; then
+            echo "ERROR: Angular index.html is missing from publish/wwwroot"
             exit 1
           fi
 
-          cp -R "$DIST_DIR"/. deploy/
-          cp client/web.config deploy/web.config
+          echo "Angular index.html found:"
+          echo "publish/wwwroot/index.html"
 
-      - name: Deploy Angular to MonsterASP
+          echo ""
+          echo "=== Checking ASP.NET Core application ==="
+
+          if [ ! -f "publish/server.dll" ]; then
+            echo "ERROR: server.dll is missing from publish directory"
+            exit 1
+          fi
+
+          echo "server.dll found:"
+          echo "publish/server.dll"
+
+          echo ""
+          echo "=== Checking IIS configuration ==="
+
+          if [ ! -f "publish/web.config" ]; then
+            echo "ERROR: web.config is missing from publish directory"
+            exit 1
+          fi
+
+          echo "web.config found:"
+          echo "publish/web.config"
+
+          echo ""
+          echo "=== Deployment structure is valid ==="
+
+
+      # 11. Deploy ASP.NET Core + Angular to MonsterASP
+      - name: Deploy to MonsterASP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /wwwroot/
-          local-dir: ./deploy/
-
-      - name: Deploy Web API to MonsterASP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_API_SERVER_DIR }}
-          local-dir: ./api-publish/
+          local-dir: ./publish/
