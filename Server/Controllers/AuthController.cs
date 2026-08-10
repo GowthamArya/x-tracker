@@ -136,6 +136,7 @@ public class AuthController : ControllerBase
     [HttpGet("me")]
     public IActionResult Me()
     {
+        Console.WriteLine("========== ME ENDPOINT HIT ==========");
         if (!User.Identity?.IsAuthenticated ?? true)
         {
             return Unauthorized();
