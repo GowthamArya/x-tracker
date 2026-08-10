@@ -2,12 +2,7 @@ import { Component } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton } from '@ionic/angular/standalone';
 
 import { DashboardService } from '../../services/dashboard.service';
 import { Transaction } from '../../models/transaction.model';
@@ -23,7 +18,8 @@ import { Transaction } from '../../models/transaction.model';
     IonToolbar,
     DecimalPipe,
     RouterLink,
-  ],
+    IonButton
+],
 })
 export class DashboardPage {
   transactions: Transaction[] = [];

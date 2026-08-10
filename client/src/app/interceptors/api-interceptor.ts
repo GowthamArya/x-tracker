@@ -1,7 +1,8 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
-  const apiUrl = 'https://localhost:7043/api';
+  const apiUrl = environment.apiUrl;
 
   if (req.url.startsWith(apiUrl)) {
     const request = req.clone({

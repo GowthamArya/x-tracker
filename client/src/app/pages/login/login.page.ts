@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonButton, IonContent } from '@ionic/angular/standalone';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,6 @@ export class LoginPage {
 
   loginWithGoogle(): void {
     window.location.href =
-      'https://localhost:7043/api/auth/google';
+      environment.apiUrl + '/auth/google';
   }
 }

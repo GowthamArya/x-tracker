@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Account } from '../models/account.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { Account } from '../models/account.model';
 export class AccountsService {
 
   private readonly apiUrl =
-    'https://localhost:7043/api/Accounts';
+    environment.apiUrl + '/Accounts';
 
   constructor(
     private readonly http: HttpClient

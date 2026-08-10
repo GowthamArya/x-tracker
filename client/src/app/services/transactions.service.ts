@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 
 import { Transaction } from '../models/transaction.model';
 import { TransactionRequest } from '../models/transaction-request.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransactionsService {
   private readonly apiUrl =
-    'https://localhost:7043/api/Transactions';
+    environment.apiUrl + '/Transactions';
 
   constructor(
     private readonly http: HttpClient

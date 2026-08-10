@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export type CategoryType = 'income' | 'expense';
 
@@ -17,7 +18,7 @@ export interface Category {
 })
 export class CategoriesService {
   private readonly apiUrl =
-    'https://localhost:7043/api/Categories';
+    environment.apiUrl + '/Categories';
 
   constructor(
     private readonly http: HttpClient
