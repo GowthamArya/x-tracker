@@ -69,6 +69,7 @@ jobs:
           # Copy Angular production files
           cp -R "$DIST_DIR"/. Server/wwwroot/
 
+          echo ""
           echo "=== Server/wwwroot ==="
           find Server/wwwroot -maxdepth 3 -type f | head -100
 
@@ -103,12 +104,13 @@ jobs:
           echo ""
           echo "=== Checking Angular files ==="
 
-          if [ ! -f "publish/index.html" ]; then
-            echo "ERROR: Angular index.html is missing from publish directory"
+          if [ ! -f "publish/wwwroot/index.html" ]; then
+            echo "ERROR: Angular index.html is missing from publish/wwwroot"
             exit 1
           fi
 
-          echo "Angular index.html found"
+          echo "Angular index.html found:"
+          echo "publish/wwwroot/index.html"
 
           echo ""
           echo "=== Checking ASP.NET Core application ==="
@@ -118,7 +120,8 @@ jobs:
             exit 1
           fi
 
-          echo "server.dll found"
+          echo "server.dll found:"
+          echo "publish/server.dll"
 
           echo ""
           echo "=== Checking IIS configuration ==="
@@ -128,7 +131,11 @@ jobs:
             exit 1
           fi
 
-          echo "web.config found"
+          echo "web.config found:"
+          echo "publish/web.config"
+
+          echo ""
+          echo "=== Deployment structure is valid ==="
 
 
       # 11. Deploy ASP.NET Core + Angular to MonsterASP
