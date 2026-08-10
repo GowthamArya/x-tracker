@@ -113,6 +113,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+//For Angular
+app.UseStaticFiles();
+app.MapFallbackToFile("index.html");
+
+
 // Authentication
 app.UseAuthentication();
 
