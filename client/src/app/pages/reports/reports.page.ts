@@ -7,6 +7,8 @@ import {
 
 import { ReportsService } from '../../services/reports.service';
 import { CategoryReport } from '../../services/reports.service';
+import { Filter.page } from '../filters/filters.page';
+import { Filterpage } from '../filters/filters.page.spec';
 
 @Component({
   selector: 'app-reports',

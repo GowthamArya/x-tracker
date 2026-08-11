@@ -7,6 +7,17 @@
       <p>Understand where your money is going.</p>
     </div>
 
+    <app-transaction-filter
+      [showCategory]="true"
+      [categoryType]="'income'"
+      (filterChange)="onFilterChange($event)"
+    ></app-transaction-filter>
+
+    <app-transaction-filter
+      [showCategory]="true"
+      [categoryType]="'expense'"
+      (filterChange)="onFilterChange($event)"
+    ></app-transaction-filter>
 
     <!-- Summary -->
 

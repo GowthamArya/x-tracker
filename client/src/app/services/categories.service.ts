@@ -2,47 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-
-export type CategoryType = 'income' | 'expense';
-
-export interface Category {
-  id: number;
-  userId: number;
-  name: string;
-  type: CategoryType;
-  createdAt: string;
-}
+import { Category, CategoryType } from '../models/category.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoriesService {
-  private readonly apiUrl =
-    environment.apiUrl + '/Categories';
+  private readonly apiUrl = environment.apiUrl + '/Categories';
 
-  constructor(
-    private readonly http: HttpClient
-  ) {}
+  constructor(private readonly http: HttpClient) {}
 
   getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(
-      this.apiUrl
-    );
+    return this.http.get<Category[]>(this.apiUrl);
   }
 
-  getCategoryById(
-    id: number
-  ): Observable<Category> {
-    return this.http.get<Category>(
-      `${this.apiUrl}/${id}`
-    );
+  getCategoryById(id: number): Observable<Category> {
+    return this.http.get<Category>(`${this.apiUrl}/${id}`);
   }
 
-  getCategoriesByType(
-    type: CategoryType
-  ): Observable<Category[]> {
-    return this.http.get<Category[]>(
-      `${this.apiUrl}?type=${type}`
-    );
+  getCategoriesByType(type: CategoryType): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}?type=${type}`);
   }
 }

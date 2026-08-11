@@ -1,0 +1,75 @@
+<ion-grid>
+  <ion-row>
+    <ion-col size="12" [sizeMd]="showCategory ? '6' : '12'">
+      <ion-item>
+        <ion-label>Date Range</ion-label>
+        <ion-select
+          [(ngModel)]="selectedPreset"
+          (ionChange)="onPresetChange()"
+          interface="popover"
+        >
+          <ion-select-option value="thisMonth">This Month</ion-select-option>
+          <ion-select-option value="lastMonth">Last Month</ion-select-option>
+          <ion-select-option value="thisYear">This Year</ion-select-option>
+          <ion-select-option value="lastYear">Last Year</ion-select-option>
+          <ion-select-option value="custom">Custom</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+
+    <ion-col size="12" sizeMd="6" *ngIf="showCategory">
+      <ion-item>
+        <ion-label>Category</ion-label>
+        <ion-select
+          [(ngModel)]="selectedCategoryId"
+          (ionChange)="onCategoryChange()"
+          interface="popover"
+        >
+          <ion-select-option [value]="null">All Categories</ion-select-option>
+          <ion-select-option
+            *ngFor="let category of categories"
+            [value]="category.id"
+          >
+            {{ category.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="selectedPreset === 'custom'">
+    <ion-col size="6">
+      <ion-item>
+        <ion-label>From</ion-label>
+        <ion-datetime-button datetime="fromPicker"></ion-datetime-button>
+      </ion-item>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime
+            id="fromPicker"
+            presentation="date"
+            [(ngModel)]="customFrom"
+            (ionChange)="onCustomDateChange()"
+          ></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-col>
+
+    <ion-col size="6">
+      <ion-item>
+        <ion-label>To</ion-label>
+        <ion-datetime-button datetime="toPicker"></ion-datetime-button>
+      </ion-item>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime
+            id="toPicker"
+            presentation="date"
+            [(ngModel)]="customTo"
+            (ionChange)="onCustomDateChange()"
+          ></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-col>
+  </ion-row>
+</ion-grid>

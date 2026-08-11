@@ -12,7 +12,8 @@
       "name": "XTracker Client",
       "type": "node-terminal",
       "request": "launch",
-      "command": "cd ${workspaceFolder}/client && ionic serve --port 8100"
+      "command": "ionic serve --port 8100",
+      "cwd": "${workspaceFolder}/client"
     }
   ],
   "compounds": [

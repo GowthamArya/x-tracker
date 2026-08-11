@@ -1,6 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>X-Tracker</ion-title>
+    <div style="display: flex; padding: 0px 20px;">
+      <ion-icon color="danger" name="wallet-outline" size="large"></ion-icon>
+      <ion-title>X-Tracker</ion-title>
+    </div>
+
     @if (!isLoggedIn) {
       <ion-button fill="clear" slot="end" routerLink="/login">
         Login
@@ -16,9 +20,8 @@
 
 <ion-content [fullscreen]="true">
   <div class="dashboard">
-
     <div class="welcome">
-      <h1>Good evening</h1>
+      <h1>{{greeting}}</h1>
       <p>Here's your financial summary.</p>
     </div>
 

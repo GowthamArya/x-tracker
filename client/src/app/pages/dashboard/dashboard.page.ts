@@ -7,12 +7,18 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
-  IonButton
+  IonButton,
+  IonIcon
 } from '@ionic/angular/standalone';
+
+import {
+  walletOutline
+} from 'ionicons/icons';
 
 import { DashboardService } from '../../services/dashboard.service';
 import { AuthService } from '../../services/auth.service';
 import { Transaction } from '../../models/transaction.model';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,6 +30,7 @@ import { Transaction } from '../../models/transaction.model';
     IonTitle,
     IonToolbar,
     DecimalPipe,
+    IonIcon,
     RouterLink,
     IonButton
   ],
@@ -37,11 +44,16 @@ export class DashboardPage {
   totalIncome = 0;
   totalExpenses = 0;
   balance = 0;
-
+  greeting = '';
   constructor(
     private readonly dashboardService: DashboardService,
     private readonly authService: AuthService
-  ) {}
+  ) {
+    addIcons({
+      'wallet-outline': walletOutline,
+    });
+    this.setGreeting();
+  }
 
   ionViewWillEnter(): void {
     this.checkAuthentication();
@@ -65,7 +77,17 @@ export class DashboardPage {
         }
       });
   }
+  private setGreeting(): void {
+    const hour = new Date().getHours();
 
+    if (hour < 12) {
+      this.greeting = 'Good morning';
+    } else if (hour < 17) {
+      this.greeting = 'Good afternoon';
+    } else {
+      this.greeting = 'Good evening';
+    }
+  }
   private loadDashboard(): void {
 
     this.dashboardService
@@ -138,3 +160,4 @@ export class DashboardPage {
     });
   }
 }
+
