@@ -7,7 +7,8 @@ import {
 
 import { ReportsService } from '../../services/reports.service';
 import { CategoryReport } from '../../services/reports.service';
-import { FilterPage } from "../filters/filters.page";
+import { FilterValue } from '../../models/filter.model';
+import { FilterPage } from '../filters/filters.page';
 
 @Component({
   selector: 'app-reports',
@@ -16,15 +17,19 @@ import { FilterPage } from "../filters/filters.page";
   imports: [
     IonContent,
     DecimalPipe,
-    FilterPage
-],
+    FilterPage,
+  ],
 })
 export class ReportsPage {
   totalIncome = 0;
   totalExpenses = 0;
   balance = 0;
 
-  categoryReports: CategoryReport[] = [];
+  incomeCategoryReports: CategoryReport[] = [];
+  expenseCategoryReports: CategoryReport[] = [];
+
+  private incomeFilter: FilterValue | null = null;
+  private expenseFilter: FilterValue | null = null;
 
   constructor(
     private readonly reportsService: ReportsService
@@ -33,66 +38,70 @@ export class ReportsPage {
   ionViewWillEnter(): void {
     this.loadReports();
   }
-  onFilterChange(filter: any): void {
-    console.log('Filter changed:', filter);
 
-    // Reload reports based on the selected filters
+  onFilterChange(filter: FilterValue): void {
+    if (filter.categoryType === 'income') {
+      this.incomeFilter = filter;
+    } else if (filter.categoryType === 'expense') {
+      this.expenseFilter = filter;
+    }
+
     this.loadReports();
   }
+
   private loadReports(): void {
     this.reportsService
-      .getTotalIncome()
+      .getTotalIncome(this.incomeFilter)
       .subscribe({
         next: (total) => {
           this.totalIncome = total;
         },
         error: (error) => {
-          console.error(
-            'Failed to load total income',
-            error
-          );
+          console.error('Failed to load total income', error);
         },
       });
 
     this.reportsService
-      .getTotalExpenses()
+      .getTotalExpenses(this.expenseFilter)
       .subscribe({
         next: (total) => {
           this.totalExpenses = total;
         },
         error: (error) => {
-          console.error(
-            'Failed to load total expenses',
-            error
-          );
+          console.error('Failed to load total expenses', error);
         },
       });
 
     this.reportsService
-      .getBalance()
+      .getBalance(this.incomeFilter, this.expenseFilter)
       .subscribe({
         next: (balance) => {
           this.balance = balance;
         },
         error: (error) => {
-          console.error(
-            'Failed to load balance',
-            error
-          );
+          console.error('Failed to load balance', error);
         },
       });
 
     this.reportsService
-      .getExpenseByCategory()
+      .getIncomeByCategory(this.incomeFilter)
       .subscribe({
         next: (reports) => {
-          this.categoryReports = reports;
+          this.incomeCategoryReports = reports;
         },
         error: (error) => {
-          console.error(
-            'Failed to load expense reports',
-            error
-          );
+          console.error('Failed to load income category reports', error);
+        },
+      });
+
+    this.reportsService
+      .getExpenseByCategory(this.expenseFilter)
+      .subscribe({
+        next: (reports) => {
+          this.expenseCategoryReports = reports;
+        },
+        error: (error) => {
+          console.error('Failed to load expense category reports', error);
         },
       });
   }

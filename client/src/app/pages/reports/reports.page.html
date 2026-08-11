@@ -7,18 +7,19 @@
       <p>Understand where your money is going.</p>
     </div>
 
-    <app-transaction-filter
-      [showCategory]="true"
-      [categoryType]="'income'"
-      (filterChange)="onFilterChange($event)"
-    ></app-transaction-filter>
+    <div>
+      <app-transaction-filter
+        [showCategory]="true"
+        [categoryType]="'income'"
+        (filterChange)="onFilterChange($event)"
+      ></app-transaction-filter>
 
-    <app-transaction-filter
-      [showCategory]="true"
-      [categoryType]="'expense'"
-      (filterChange)="onFilterChange($event)"
-    ></app-transaction-filter>
-
+      <app-transaction-filter
+        [showCategory]="true"
+        [categoryType]="'expense'"
+        (filterChange)="onFilterChange($event)"
+      ></app-transaction-filter>
+    </div>
     <!-- Summary -->
 
     <div class="summary-grid">
@@ -49,7 +50,7 @@
       </div>
 
 
-      <div class="summary-card full-width">
+      <div class="summary-card">
 
         <span class="label">
           Balance
@@ -64,6 +65,54 @@
     </div>
 
 
+    <!-- Income Categories -->
+
+    <div class="section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Income by Category</h2>
+          <p>Where your income is coming from.</p>
+        </div>
+
+      </div>
+
+      <div class="category-list">
+
+        @if (incomeCategoryReports.length === 0) {
+          <div class="empty-state">
+            No income data yet.
+          </div>
+        }
+
+        @for (
+          report of incomeCategoryReports;
+          track report.category
+        ) {
+          <div class="category-item">
+            <div class="category-header">
+              <strong>
+                {{ report.category }}
+              </strong>
+              <span>
+                ₹{{ report.amount | number:'1.0-0' }}
+              </span>
+            </div>
+            <div class="progress-track">
+              <div
+                class="progress-bar"
+                [style.width.%]="report.percentage"
+              ></div>
+            </div>
+            <small>
+              {{ report.percentage | number:'1.0-0' }}%
+            </small>
+          </div>
+        }
+      </div>
+    </div>
+
     <!-- Expense Categories -->
 
     <div class="section">
@@ -77,58 +126,39 @@
 
       </div>
 
-
       <div class="category-list">
 
-        @if (categoryReports.length === 0) {
-
+        @if (expenseCategoryReports.length === 0) {
           <div class="empty-state">
             No expenses yet.
           </div>
-
         }
 
-
         @for (
-          report of categoryReports;
+          report of expenseCategoryReports;
           track report.category
         ) {
-
           <div class="category-item">
-
             <div class="category-header">
-
               <strong>
                 {{ report.category }}
               </strong>
-
               <span>
                 ₹{{ report.amount | number:'1.0-0' }}
               </span>
-
             </div>
-
-
             <div class="progress-track">
-
               <div
                 class="progress-bar"
                 [style.width.%]="report.percentage"
               ></div>
-
             </div>
-
-
             <small>
               {{ report.percentage | number:'1.0-0' }}%
             </small>
-
           </div>
-
         }
-
       </div>
-
     </div>
 
   </div>

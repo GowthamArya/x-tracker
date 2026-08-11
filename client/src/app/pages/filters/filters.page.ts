@@ -2,29 +2,19 @@ import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import {
-  IonItem,
-  IonLabel,
-  IonSelect,
-  IonSelectOption,
-  IonDatetime,
-  IonDatetimeButton,
-  IonModal,
-  IonGrid,
-  IonRow,
-  IonCol
-} from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonSelect, IonSelectOption, IonDatetime, IonDatetimeButton, IonModal, IonGrid, IonRow, IonCol, IonTitle } from '@ionic/angular/standalone';
 
 import { CategoriesService } from '../../services/categories.service';
 import { Category, CategoryType } from '../../models/category.model';
 import { DateFilterPreset, DateRange, FilterValue } from '../../models/filter.model';
-
+import { TitleCasePipe } from '@angular/common';
 @Component({
   selector: 'app-transaction-filter',
   standalone: true,
   templateUrl: './filters.page.html',
   styleUrls: ['./filters.page.scss'],
   imports: [
+    TitleCasePipe,
     CommonModule,
     FormsModule,
     IonItem,
@@ -36,8 +26,9 @@ import { DateFilterPreset, DateRange, FilterValue } from '../../models/filter.mo
     IonModal,
     IonGrid,
     IonRow,
-    IonCol
-  ],
+    IonCol,
+    IonTitle
+],
 })
 export class FilterPage implements OnInit {
 
@@ -107,7 +98,8 @@ export class FilterPage implements OnInit {
     this.filterChange.emit({
       preset: this.selectedPreset,
       dateRange,
-      categoryId: this.selectedCategoryId
+      categoryId: this.selectedCategoryId,
+      categoryType: this.categoryType ?? null
     });
   }
 

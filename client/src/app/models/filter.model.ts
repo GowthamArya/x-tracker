@@ -9,4 +9,5 @@ export interface FilterValue {
   preset: DateFilterPreset;
   dateRange: DateRange;
   categoryId: number | null;
+  categoryType: 'income' | 'expense' | null;
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -41,6 +42,7 @@ import { Category } from 'src/app/models/category.model';
   templateUrl: './add-transaction.page.html',
   styleUrls: ['./add-transaction.page.scss'],
   imports: [
+    CommonModule,
     FormsModule,
     IonBackButton,
     IonButtons,
@@ -82,6 +84,8 @@ export class AddTransactionPage implements OnInit {
   accounts: Account[] = [];
 
   categories: Category[] = [];
+  showCategoryInput = false;
+  newCategoryName = '';
 
   constructor(
     private readonly transactionsService: TransactionsService,
@@ -95,6 +99,40 @@ export class AddTransactionPage implements OnInit {
     this.loadAccounts();
     this.loadCategories();
     this.loadEditTransaction();
+  }
+
+  onTransactionTypeChange(): void {
+    this.categoryId = null;
+    this.loadCategories();
+  }
+
+  toggleCategoryInput(): void {
+    this.showCategoryInput = !this.showCategoryInput;
+  }
+
+  saveNewCategory(): void {
+    const name = this.newCategoryName.trim();
+
+    if (!name) {
+      return;
+    }
+
+    this.categoriesService
+      .createCategory({
+        type: this.transactionType,
+        name,
+      })
+      .subscribe({
+        next: (category) => {
+          this.categories = [category, ...this.categories];
+          this.categoryId = category.id;
+          this.newCategoryName = '';
+          this.showCategoryInput = false;
+        },
+        error: (error) => {
+          console.error('Failed to create category', error);
+        },
+      });
   }
 
   private loadAccounts(): void {
@@ -116,7 +154,7 @@ export class AddTransactionPage implements OnInit {
 
   private loadCategories(): void {
     this.categoriesService
-      .getCategories()
+      .getCategories(null, this.transactionType)
       .subscribe({
         next: (categories) => {
           this.categories = categories;
@@ -156,17 +194,12 @@ export class AddTransactionPage implements OnInit {
           this.editingTransactionId =
             transaction.id;
 
-          this.transactionType =
-            transaction.type;
+          this.transactionType = transaction.type;
+          this.loadCategories();
 
-          this.amount =
-            transaction.amount;
-
-          this.title =
-            transaction.title;
-
-          this.categoryId =
-            transaction.categoryId;
+          this.amount = transaction.amount;
+          this.title = transaction.title;
+          this.categoryId = transaction.categoryId;
 
           this.accountId =
             transaction.accountId;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 import { Transaction } from '../models/transaction.model';
+import { FilterValue } from '../models/filter.model';
 import { TransactionsService } from './transactions.service';
 
 export interface CategoryReport {
@@ -18,124 +19,107 @@ export class ReportsService {
     private readonly transactionsService: TransactionsService
   ) {}
 
-  getTotalIncome(): Observable<number> {
+  getTotalIncome(filter?: FilterValue | null): Observable<number> {
     return this.transactionsService
       .getTransactions()
       .pipe(
         map((transactions) =>
-          transactions
-            .filter(
-              (transaction) =>
-                transaction.type === 'income'
-            )
-            .reduce(
-              (total, transaction) =>
-                total + transaction.amount,
-              0
-            )
+          this.applyReportFilter(
+            transactions,
+            filter,
+            'income'
+          ).reduce(
+            (total, transaction) =>
+              total + transaction.amount,
+            0
+          )
         )
       );
   }
 
-  getTotalExpenses(): Observable<number> {
+  getTotalExpenses(filter?: FilterValue | null): Observable<number> {
     return this.transactionsService
       .getTransactions()
       .pipe(
         map((transactions) =>
-          transactions
-            .filter(
-              (transaction) =>
-                transaction.type === 'expense'
-            )
-            .reduce(
-              (total, transaction) =>
-                total + transaction.amount,
-              0
-            )
+          this.applyReportFilter(
+            transactions,
+            filter,
+            'expense'
+          ).reduce(
+            (total, transaction) =>
+              total + transaction.amount,
+            0
+          )
         )
       );
   }
 
-  getBalance(): Observable<number> {
+  getBalance(
+    incomeFilter?: FilterValue | null,
+    expenseFilter?: FilterValue | null
+  ): Observable<number> {
     return this.transactionsService
       .getTransactions()
       .pipe(
         map((transactions) => {
-          const income = transactions
-            .filter(
-              (transaction) =>
-                transaction.type === 'income'
-            )
-            .reduce(
-              (total, transaction) =>
-                total + transaction.amount,
-              0
-            );
+          const income = this.applyReportFilter(
+            transactions,
+            incomeFilter,
+            'income'
+          ).reduce(
+            (total, transaction) =>
+              total + transaction.amount,
+            0
+          );
 
-          const expenses = transactions
-            .filter(
-              (transaction) =>
-                transaction.type === 'expense'
-            )
-            .reduce(
-              (total, transaction) =>
-                total + transaction.amount,
-              0
-            );
+          const expenses = this.applyReportFilter(
+            transactions,
+            expenseFilter,
+            'expense'
+          ).reduce(
+            (total, transaction) =>
+              total + transaction.amount,
+            0
+          );
 
           return income - expenses;
         })
       );
   }
 
-  getExpenseByCategory(): Observable<CategoryReport[]> {
+  getIncomeByCategory(
+    filter?: FilterValue | null
+  ): Observable<CategoryReport[]> {
     return this.transactionsService
       .getTransactions()
       .pipe(
         map((transactions) => {
-          const expenseTransactions =
-            transactions.filter(
-              (transaction) =>
-                transaction.type === 'expense'
-            );
+          const incomeTransactions = this.applyReportFilter(
+            transactions,
+            filter,
+            'income'
+          );
 
-          const categoryTotals =
-            new Map<string, number>();
+          return this.buildCategoryReports(incomeTransactions);
+        })
+      );
+  }
 
-          for (const transaction of expenseTransactions) {
-            const category =
-              transaction.categoryName;
+  getExpenseByCategory(
+    filter?: FilterValue | null
+  ): Observable<CategoryReport[]> {
+    return this.transactionsService
+      .getTransactions()
+      .pipe(
+        map((transactions) => {
+          const expenseTransactions = this.applyReportFilter(
+            transactions,
+            filter,
+            'expense'
+          );
 
-            const currentAmount =
-              categoryTotals.get(category) ?? 0;
-
-            categoryTotals.set(
-              category,
-              currentAmount + transaction.amount
-            );
-          }
-
-          const totalExpenses =
-            expenseTransactions.reduce(
-              (total, transaction) =>
-                total + transaction.amount,
-              0
-            );
-
-          return Array.from(
-            categoryTotals.entries()
-          )
-            .map(([category, amount]) => ({
-              category,
-              amount,
-              percentage:
-                totalExpenses > 0
-                  ? (amount / totalExpenses) * 100
-                  : 0,
-            }))
-            .sort(
-              (a, b) => b.amount - a.amount
-            );
+          return this.buildCategoryReports(expenseTransactions);
         })
       );
   }
@@ -148,5 +132,60 @@ export class ReportsService {
           transactions.slice(0, 5)
         )
       );
+  }
+
+  private applyReportFilter(
+    transactions: Transaction[],
+    filter: FilterValue | null | undefined,
+    type: 'income' | 'expense'
+  ): Transaction[] {
+    let filtered = transactions;
+
+    if (filter?.dateRange) {
+      const from = new Date(filter.dateRange.from);
+      const to = new Date(filter.dateRange.to);
+
+      filtered = filtered.filter((transaction) => {
+        const date = new Date(transaction.transactionDate);
+        return date >= from && date <= to;
+      });
+    }
+
+    if (filter?.categoryId != null) {
+      filtered = filtered.filter(
+        (transaction) =>
+          transaction.categoryId === filter.categoryId
+      );
+    }
+
+    return filtered.filter(
+      (transaction) => transaction.type === type
+    );
+  }
+
+  private buildCategoryReports(
+    transactions: Transaction[]
+  ): CategoryReport[] {
+    const categoryTotals = new Map<string, number>();
+
+    for (const transaction of transactions) {
+      const category = transaction.categoryName;
+      const currentAmount = categoryTotals.get(category) ?? 0;
+      categoryTotals.set(category, currentAmount + transaction.amount);
+    }
+
+    const totalAmount = transactions.reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+
+    return Array.from(categoryTotals.entries())
+      .map(([category, amount]) => ({
+        category,
+        amount,
+        percentage:
+          totalAmount > 0 ? (amount / totalAmount) * 100 : 0,
+      }))
+      .sort((a, b) => b.amount - a.amount);
   }
 }

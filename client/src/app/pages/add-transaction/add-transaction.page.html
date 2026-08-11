@@ -29,7 +29,10 @@
         Transaction Type
       </ion-label>
 
-      <ion-segment [(ngModel)]="transactionType">
+      <ion-segment
+        [(ngModel)]="transactionType"
+        (ionChange)="onTransactionTypeChange()"
+      >
 
         <ion-segment-button value="expense">
           <ion-label>Expense</ion-label>
@@ -90,26 +93,54 @@
 
     <!-- Category -->
 
-    <div class="form-section">
+    <div class="form-section category-group">
 
       <ion-label class="field-label">
         Category
       </ion-label>
 
-      <ion-select
-        [(ngModel)]="categoryId"
-        interface="popover"
-      >
-        @for (category of categories; track category.id) {
-          @if (category.type === transactionType) {
-            <ion-select-option
-              [value]="category.id"
-            >
-              {{ category.name }}
-            </ion-select-option>
+      <div class="category-row">
+        <ion-select
+          [(ngModel)]="categoryId"
+          interface="popover"
+        >
+          @for (category of categories; track category.id) {
+            @if (category.type === transactionType) {
+              <ion-select-option
+                [value]="category.id"
+              >
+                {{ category.name }}
+              </ion-select-option>
+            }
           }
-        }
-      </ion-select>
+        </ion-select>
+
+        <ion-button
+          fill="outline"
+          size="small"
+          (click)="toggleCategoryInput()"
+        >
+          + New
+        </ion-button>
+      </div>
+
+      <div
+        class="new-category"
+        *ngIf="showCategoryInput"
+      >
+        <ion-input
+          type="text"
+          placeholder="New category name"
+          [(ngModel)]="newCategoryName"
+        ></ion-input>
+        <ion-button
+          fill="solid"
+          size="small"
+          (click)="saveNewCategory()"
+        >
+          Save
+        </ion-button>
+      </div>
 
       @if (submitted && !categoryId) {
         <p class="error-message">

@@ -31,6 +31,10 @@ export class TransactionsPage implements OnInit {
 
   filteredTransactions: Transaction[] = [];
 
+  totalIncome = 0;
+  totalExpense = 0;
+  totalTransactions = 0;
+
   activeFilter: TransactionFilter = 'all';
 
   actionSheetOpen = false;
@@ -67,6 +71,13 @@ export class TransactionsPage implements OnInit {
       .subscribe({
         next: (transactions) => {
           this.transactions = transactions;
+          this.totalTransactions = transactions.length;
+          this.totalIncome = transactions
+            .filter((tx) => tx.type === 'income')
+            .reduce((sum, tx) => sum + tx.amount, 0);
+          this.totalExpense = transactions
+            .filter((tx) => tx.type === 'expense')
+            .reduce((sum, tx) => sum + tx.amount, 0);
           this.applyFilter();
         },
 
@@ -86,19 +97,19 @@ export class TransactionsPage implements OnInit {
   }
 
   private applyFilter(): void {
-    if (this.activeFilter === 'all') {
-      this.filteredTransactions = [
-        ...this.transactions,
-      ];
+    const filtered =
+      this.activeFilter === 'all'
+        ? this.transactions
+        : this.transactions.filter(
+            (transaction) =>
+              transaction.type === this.activeFilter
+          );
 
-      return;
-    }
-
-    this.filteredTransactions =
-      this.transactions.filter(
-        (transaction) =>
-          transaction.type === this.activeFilter
-      );
+    this.filteredTransactions = [...filtered].sort(
+      (a, b) =>
+        new Date(b.transactionDate).getTime() -
+        new Date(a.transactionDate).getTime()
+    );
   }
 
   openTransactionActions(

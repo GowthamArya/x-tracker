@@ -8,7 +8,7 @@ namespace XTracker.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CategoriesController : ControllerBase
+public class CategoriesController : BaseController
 {
     private readonly XTrackerDbContext _context;
 
@@ -19,10 +19,23 @@ public class CategoriesController : ControllerBase
 
     // GET: api/Categories
     [HttpGet]
-    public async Task<ActionResult<List<CategoryDto>>> GetCategories()
+    public async Task<ActionResult<List<CategoryDto>>> GetCategories(
+        [FromQuery] int? userId,
+        [FromQuery] string? type)
     {
-        var categories = await _context.Categories
+        var currentUserId = CurrentUserId;
+
+        var categoriesQuery = _context.Categories
             .AsNoTracking()
+            .Where(x => x.UserId == 1 || x.UserId == currentUserId);
+
+        if (type is not null)
+        {
+            categoriesQuery = categoriesQuery.Where(
+                x => x.Type == type);
+        }
+
+        var categories = await categoriesQuery
             .OrderBy(x => x.Type)
             .ThenBy(x => x.Name)
             .Select(x => new CategoryDto
@@ -81,19 +94,13 @@ public class CategoriesController : ControllerBase
             );
         }
 
-        var userExists = await _context.Users
-            .AnyAsync(x => x.Id == request.UserId);
-
-        if (!userExists)
-        {
-            return BadRequest("Invalid user.");
-        }
+        var userId = CurrentUserId;
 
         var name = request.Name.Trim();
 
         var categoryExists = await _context.Categories
             .AnyAsync(x =>
-                x.UserId == request.UserId &&
+                x.UserId == userId &&
                 x.Name == name &&
                 x.Type == request.Type);
 
@@ -106,7 +113,7 @@ public class CategoriesController : ControllerBase
 
         var category = new Category
         {
-            UserId = request.UserId,
+            UserId = userId,
             Name = name,
             Type = request.Type,
             CreatedAt = DateTime.UtcNow
@@ -130,7 +137,9 @@ public class CategoriesController : ControllerBase
         CategoryRequestDto request)
     {
         var category = await _context.Categories
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(
+                x => x.Id == id &&
+                     x.UserId == CurrentUserId);
 
         if (category is null)
         {
@@ -155,7 +164,7 @@ public class CategoriesController : ControllerBase
         var duplicate = await _context.Categories
             .AnyAsync(x =>
                 x.Id != id &&
-                x.UserId == request.UserId &&
+                x.UserId == CurrentUserId &&
                 x.Name == name &&
                 x.Type == request.Type);
 
@@ -166,7 +175,7 @@ public class CategoriesController : ControllerBase
             );
         }
 
-        category.UserId = request.UserId;
+        category.UserId = CurrentUserId;
         category.Name = name;
         category.Type = request.Type;
 
