@@ -28,13 +28,13 @@ import { TransactionRequest } from '../../models/transaction-request.model';
 import { Account } from '../../models/account.model';
 
 import {
-  Category,
   CategoriesService,
 } from '../../services/categories.service';
 
 import { AccountsService } from '../../services/accounts.service';
 
 import { TransactionsService } from '../../services/transactions.service';
+import { Category } from 'src/app/models/category.model';
 
 @Component({
   selector: 'app-add-transaction',

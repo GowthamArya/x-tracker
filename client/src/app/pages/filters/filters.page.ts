@@ -22,8 +22,8 @@ import { DateFilterPreset, DateRange, FilterValue } from '../../models/filter.mo
 @Component({
   selector: 'app-transaction-filter',
   standalone: true,
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
+  templateUrl: './filters.page.html',
+  styleUrls: ['./filters.page.scss'],
   imports: [
     CommonModule,
     FormsModule,
@@ -39,7 +39,7 @@ import { DateFilterPreset, DateRange, FilterValue } from '../../models/filter.mo
     IonCol
   ],
 })
-export class FilterComponent implements OnInit {
+export class FilterPage implements OnInit {
 
   /** Show/hide the category dropdown on pages that don't need it */
   @Input() showCategory = true;

@@ -7,8 +7,7 @@ import {
 
 import { ReportsService } from '../../services/reports.service';
 import { CategoryReport } from '../../services/reports.service';
-import { Filter.page } from '../filters/filters.page';
-import { Filterpage } from '../filters/filters.page.spec';
+import { FilterPage } from "../filters/filters.page";
 
 @Component({
   selector: 'app-reports',
@@ -17,7 +16,8 @@ import { Filterpage } from '../filters/filters.page.spec';
   imports: [
     IonContent,
     DecimalPipe,
-  ],
+    FilterPage
+],
 })
 export class ReportsPage {
   totalIncome = 0;
@@ -33,7 +33,12 @@ export class ReportsPage {
   ionViewWillEnter(): void {
     this.loadReports();
   }
+  onFilterChange(filter: any): void {
+    console.log('Filter changed:', filter);
 
+    // Reload reports based on the selected filters
+    this.loadReports();
+  }
   private loadReports(): void {
     this.reportsService
       .getTotalIncome()
