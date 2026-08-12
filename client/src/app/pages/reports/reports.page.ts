@@ -28,8 +28,7 @@ export class ReportsPage {
   incomeCategoryReports: CategoryReport[] = [];
   expenseCategoryReports: CategoryReport[] = [];
 
-  private incomeFilter: FilterValue | null = null;
-  private expenseFilter: FilterValue | null = null;
+  private filter: FilterValue | null = null;
 
   constructor(
     private readonly reportsService: ReportsService
@@ -40,18 +39,13 @@ export class ReportsPage {
   }
 
   onFilterChange(filter: FilterValue): void {
-    if (filter.categoryType === 'income') {
-      this.incomeFilter = filter;
-    } else if (filter.categoryType === 'expense') {
-      this.expenseFilter = filter;
-    }
-
+    this.filter = filter;
     this.loadReports();
   }
 
   private loadReports(): void {
     this.reportsService
-      .getTotalIncome(this.incomeFilter)
+      .getTotalIncome(this.filter)
       .subscribe({
         next: (total) => {
           this.totalIncome = total;
@@ -62,7 +56,7 @@ export class ReportsPage {
       });
 
     this.reportsService
-      .getTotalExpenses(this.expenseFilter)
+      .getTotalExpenses(this.filter)
       .subscribe({
         next: (total) => {
           this.totalExpenses = total;
@@ -73,7 +67,7 @@ export class ReportsPage {
       });
 
     this.reportsService
-      .getBalance(this.incomeFilter, this.expenseFilter)
+      .getBalance(this.filter, this.filter)
       .subscribe({
         next: (balance) => {
           this.balance = balance;
@@ -84,7 +78,7 @@ export class ReportsPage {
       });
 
     this.reportsService
-      .getIncomeByCategory(this.incomeFilter)
+      .getIncomeByCategory(this.filter)
       .subscribe({
         next: (reports) => {
           this.incomeCategoryReports = reports;
@@ -95,7 +89,7 @@ export class ReportsPage {
       });
 
     this.reportsService
-      .getExpenseByCategory(this.expenseFilter)
+      .getExpenseByCategory(this.filter)
       .subscribe({
         next: (reports) => {
           this.expenseCategoryReports = reports;

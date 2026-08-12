@@ -65,6 +65,10 @@ export class TransactionsPage implements OnInit {
     this.loadTransactions();
   }
 
+  ionViewWillEnter(): void {
+    this.loadTransactions();
+  }
+
   private loadTransactions(): void {
     this.transactionsService
       .getTransactions()

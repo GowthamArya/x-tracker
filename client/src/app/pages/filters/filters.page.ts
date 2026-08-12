@@ -2,12 +2,14 @@ import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { IonItem, IonLabel, IonSelect, IonSelectOption, IonDatetime, IonDatetimeButton, IonModal, IonGrid, IonRow, IonCol, IonTitle } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonSelect, IonSelectOption, IonDatetime, IonDatetimeButton, IonModal, IonGrid, IonRow, IonCol, IonTitle, IonIcon } from '@ionic/angular/standalone';
 
 import { CategoriesService } from '../../services/categories.service';
 import { Category, CategoryType } from '../../models/category.model';
 import { DateFilterPreset, DateRange, FilterValue } from '../../models/filter.model';
 import { TitleCasePipe } from '@angular/common';
+import { addIcons }  from 'ionicons';
+import { calendarOutline, calendarSharp } from 'ionicons/icons';
 @Component({
   selector: 'app-transaction-filter',
   standalone: true,
@@ -27,7 +29,8 @@ import { TitleCasePipe } from '@angular/common';
     IonGrid,
     IonRow,
     IonCol,
-    IonTitle
+    IonTitle,
+    IonIcon
 ],
 })
 export class FilterPage implements OnInit {
@@ -49,12 +52,19 @@ export class FilterPage implements OnInit {
   customTo: string = new Date().toISOString();
 
   categories: Category[] = [];
+  selectedCategoryType: CategoryType | null = null;
   selectedCategoryId: number | null = null;
 
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) {
+  addIcons({
+    "calendar-outline": calendarOutline,
+    "calendar-sharp": calendarSharp
+  });
+    }
 
   ngOnInit(): void {
     this.selectedPreset = this.defaultPreset;
+    this.selectedCategoryType = this.categoryType ?? null;
 
     if (this.showCategory) {
       this.loadCategories();
@@ -64,8 +74,9 @@ export class FilterPage implements OnInit {
   }
 
   private loadCategories(): void {
-    const request$ = this.categoryType
-      ? this.categoriesService.getCategoriesByType(this.categoryType)
+    const currentType = this.categoryType ?? this.selectedCategoryType;
+    const request$ = currentType
+      ? this.categoriesService.getCategoriesByType(currentType)
       : this.categoriesService.getCategories();
 
     request$.subscribe({
@@ -79,6 +90,10 @@ export class FilterPage implements OnInit {
   }
 
   onPresetChange(): void {
+    if (this.selectedPreset === 'custom') {
+      return;
+    }
+
     this.emitFilter();
   }
 
@@ -88,8 +103,18 @@ export class FilterPage implements OnInit {
     }
   }
 
+  onCategoryTypeChange(): void {
+    this.selectedCategoryId = null;
+    this.loadCategories();
+    this.emitFilter();
+  }
+
   onCategoryChange(): void {
     this.emitFilter();
+  }
+
+  get headline(): string {
+    return this.categoryType ?? this.selectedCategoryType ?? 'Filters';
   }
 
   private emitFilter(): void {
@@ -99,7 +124,7 @@ export class FilterPage implements OnInit {
       preset: this.selectedPreset,
       dateRange,
       categoryId: this.selectedCategoryId,
-      categoryType: this.categoryType ?? null
+      categoryType: this.categoryType ?? this.selectedCategoryType ?? null
     });
   }
 
