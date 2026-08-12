@@ -1,0 +1,22 @@
+.trip-header-card { display:flex; gap:12px; align-items:center; padding:12px; border-bottom:1px solid var(--card-border); background:var(--card-bg) }
+.trip-header-card .avatar { width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,#ff7e5f,#feb47b); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:22px }
+.trip-header-card .middle h2 { margin:0 }
+.muted { color:var(--muted); margin-top:4px }
+.my-balance .label { font-size:12px; color:var(--muted) }
+.my-balance .amount { font-weight:800; font-size:18px; margin-top:4px }
+.positive { color: #0a8a0a }
+.negative { color: #c0392b }
+
+/* Balances table */
+.balances-row { display:flex; align-items:center; gap:12px; width:100%; }
+.balances-name { flex:1; font-weight:600 }
+.balances-cell { width:120px; text-align:right }
+
+@media (max-width: 640px) {
+	.balances-row { flex-direction:column; align-items:flex-start }
+	.balances-cell { width:100%; text-align:left }
+}
+
+/* Ensure theme variables fallback */
+:root { --card-bg: #fff; --card-border: #eee; --muted: #777 }
+@media (prefers-color-scheme: dark) { :root { --card-bg: #121212; --card-border: #222; --muted: #999 } }

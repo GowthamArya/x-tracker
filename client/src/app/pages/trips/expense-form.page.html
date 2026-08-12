@@ -1,0 +1,51 @@
+<ion-content>
+  <div class="page-container">
+    <div class="form-card expense-form">
+      <div class="form-header">
+        <ion-button fill="clear" (click)="cancel()">Cancel</ion-button>
+        <div class="header-actions">
+          <ion-button color="danger" *ngIf="expenseId" (click)="delete()">Delete</ion-button>
+          <ion-button color="primary" (click)="save()">Save</ion-button>
+        </div>
+      </div>
+
+      <div class="form-body">
+        <div class="form-row">
+          <ion-label class="label">Description</ion-label>
+          <ion-input [(ngModel)]="description" placeholder="What was purchased"></ion-input>
+        </div>
+
+        <div class="form-row two-up">
+          <div>
+            <ion-label class="label">Amount</ion-label>
+            <ion-input type="number" [(ngModel)]="amount" placeholder="0.00"></ion-input>
+          </div>
+
+          <div>
+            <ion-label class="label">Paid By</ion-label>
+            <ion-select [(ngModel)]="paidByTripMemberId">
+              <ion-select-option *ngFor="let m of members" [value]="m.id">{{ m.name }}</ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <ion-label class="label">For</ion-label>
+          <ion-select multiple [(ngModel)]="selectedParticipants">
+            <ion-select-option *ngFor="let m of members" [value]="m.id">{{ m.name }}</ion-select-option>
+          </ion-select>
+        </div>
+
+        <div class="form-row">
+          <ion-label class="label">Date</ion-label>
+          <ion-input type="date" [(ngModel)]="expenseDate"></ion-input>
+        </div>
+
+        <div class="form-row">
+          <ion-label class="label">Notes</ion-label>
+          <ion-input [(ngModel)]="notes" placeholder="Optional"></ion-input>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

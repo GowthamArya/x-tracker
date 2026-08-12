@@ -18,6 +18,15 @@ public class XTrackerDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
 
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<Trip> Trips => Set<Trip>();
+
+    public DbSet<TripMember> TripMembers => Set<TripMember>();
+
+    public DbSet<TripExpense> TripExpenses => Set<TripExpense>();
+
+    public DbSet<TripExpenseParticipant> TripExpenseParticipants => Set<TripExpenseParticipant>();
+
+    public DbSet<TripInvite> TripInvites => Set<TripInvite>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Transaction>()
@@ -41,5 +50,49 @@ public class XTrackerDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasIndex(x => x.GoogleId)
             .IsUnique();
+
+        modelBuilder.Entity<Trip>()
+            .HasMany(t => t.Members)
+            .WithOne(m => m.Trip)
+            .HasForeignKey(m => m.TripId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Trip>()
+            .HasMany(t => t.Expenses)
+            .WithOne(e => e.Trip)
+            .HasForeignKey(e => e.TripId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Trip>()
+            .HasMany(t => t.Invites)
+            .WithOne(i => i.Trip)
+            .HasForeignKey(i => i.TripId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TripMember>()
+            .HasIndex(tm => new { tm.TripId, tm.UserId })
+            .IsUnique();
+
+        modelBuilder.Entity<TripExpense>()
+            .HasOne(e => e.PaidBy)
+            .WithMany()
+            .HasForeignKey(e => e.PaidByTripMemberId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<TripExpenseParticipant>()
+            .HasOne(p => p.TripExpense)
+            .WithMany(e => e.Participants)
+            .HasForeignKey(p => p.TripExpenseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TripExpenseParticipant>()
+            .HasOne(p => p.TripMember)
+            .WithMany()
+            .HasForeignKey(p => p.TripMemberId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<TripExpenseParticipant>()
+            .Property(x => x.ShareAmount)
+            .HasPrecision(18, 2);
     }
 }

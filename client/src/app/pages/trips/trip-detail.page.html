@@ -1,0 +1,87 @@
+<ion-content>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>{{ trip?.name }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="editTrip()">Edit</ion-button>
+        <ion-button (click)="shareTrip()">Share</ion-button>
+        <ion-button (click)="addExpense()">Add Expense</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <div class="trip-header-card">
+      <div class="left">
+        <div class="avatar">{{ trip?.name?.charAt(0) }}</div>
+      </div>
+      <div class="middle">
+        <h2>{{ trip?.name }}</h2>
+        @if(trip){
+            @if(trip.description) {
+              <p class="muted">{{ trip.description }}</p>
+            }
+        }
+      </div>
+      <div class="right">
+        <div *ngIf="myBalance" class="my-balance">
+          <div class="label">Your balance</div>
+          <div class="amount" [ngClass]="{ positive: myBalance.balance > 0, negative: myBalance.balance < 0 }">{{ myBalance.balance | currency:'INR':'symbol':'1.0-0' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <ion-item>
+      <ion-label>
+        <h4>Recent Expenses</h4>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let e of expenses">
+      <ion-label>
+        <h3>{{ e.description }}</h3>
+        <p>₹{{ e.amount }}</p>
+        <p>Paid by {{ e.paidByTripMemberId }} • Added by {{ e.addedByUserId }}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <h4>Members</h4>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let m of members">
+      <ion-label>
+        <h3>{{ m.name }} <span *ngIf="m.userId">(linked)</span></h3>
+        <p *ngIf="m.email">{{ m.email }}</p>
+      </ion-label>
+    </ion-item>
+
+      <ion-item>
+        <ion-label>
+          <h3>Total Trip Expense</h3>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-list>
+          <ion-item>
+            <ion-label>
+              <strong>Members</strong>
+            </ion-label>
+          </ion-item>
+          <ion-item *ngFor="let b of balances">
+            <ion-label>
+              <div class="balances-row">
+                <div class="balances-name">{{ b.name }}</div>
+                <div class="balances-cell">{{ b.totalPaid | currency:'INR':'symbol':'1.0-0' }}</div>
+                <div class="balances-cell">{{ b.totalShare | currency:'INR':'symbol':'1.0-0' }}</div>
+                <div class="balances-cell" [ngClass]="{ positive: b.balance > 0, negative: b.balance < 0 }">{{ b.balance | currency:'INR':'symbol':'1.0-0' }}</div>
+              </div>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-item>
+  </ion-list>
+</ion-content>

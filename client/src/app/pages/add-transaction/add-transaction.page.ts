@@ -35,7 +35,7 @@ import {
 import { AccountsService } from '../../services/accounts.service';
 
 import { TransactionsService } from '../../services/transactions.service';
-import { Category } from 'src/app/models/category.model';
+import { Category } from '../../models/category.model';
 
 @Component({
   selector: 'app-add-transaction',

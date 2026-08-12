@@ -1,0 +1,23 @@
+<ion-content>
+  <div class="page-container members-list">
+    <div class="add-member-card">
+      <h3>Add member (by User ID)</h3>
+      <div class="add-row">
+        <ion-input type="number" [(ngModel)]="userIdToAdd" placeholder="User ID"></ion-input>
+        <ion-button (click)="addExistingUser()">Add</ion-button>
+      </div>
+      <p class="hint">If you don't have user ID, add members via invites from the trip page.</p>
+    </div>
+
+    <div class="member-cards">
+      <div class="member-card" *ngFor="let m of members">
+        <div class="avatar">{{ (m.name || 'U')[0] | uppercase }}</div>
+        <div class="member-info">
+          <div class="name">{{ m.name }}</div>
+          <div class="email" *ngIf="m.email">{{ m.email }}</div>
+          <div class="linked" *ngIf="m.userId">Linked account</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

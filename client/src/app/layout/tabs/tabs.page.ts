@@ -13,6 +13,7 @@ import {
   receiptOutline,
   barChartOutline,
   menuOutline,
+  carOutline,
 } from 'ionicons/icons';
 
 import { addIcons } from 'ionicons';
@@ -36,6 +37,7 @@ export class TabsPage {
       receiptOutline,
       barChartOutline,
       menuOutline,
+      carOutline,
     });
   }
 }

@@ -35,3 +35,18 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* App theme variables used by components for consistent light/dark styling */
+:root {
+	--card-bg: #ffffff;
+	--card-border: #e6e6e6;
+	--muted: #6f6f6f;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--card-bg: #0f0f0f;
+		--card-border: #222222;
+		--muted: #999999;
+	}
+}

@@ -1,0 +1,25 @@
+<ion-content>
+  <div class="page-container">
+    <div class="invite-card">
+      <h2>Invite people to</h2>
+      <h3>{{ invite?.tripName || 'this trip' }}</h3>
+
+      <div class="qr-area" *ngIf="invite">
+        <img [src]="qrUrl" alt="Invite QR" />
+        <div class="qr-caption">Scan to join</div>
+      </div>
+
+      <div class="invite-actions">
+        <ion-button (click)="create()">Generate Invite</ion-button>
+        <ion-button (click)="copy()" [disabled]="!invite">Copy Link</ion-button>
+        <ion-button (click)="share()" [disabled]="!invite">Share</ion-button>
+        <ion-button color="danger" (click)="revoke()" *ngIf="invite && invite.isActive">Revoke Invite</ion-button>
+      </div>
+
+      <div class="invite-link" *ngIf="invite">
+        <label>Invite link</label>
+        <textarea readonly>{{ inviteUrl }}</textarea>
+      </div>
+    </div>
+  </div>
+</ion-content>

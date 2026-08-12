@@ -1,0 +1,7 @@
+/* Expense form styles - empty */
+:root { --card-bg: #fff; --card-border: #eee; --muted: #777 }
+@media (prefers-color-scheme: dark) { :root { --card-bg: #0f0f0f; --card-border: #222; --muted: #999 } }
+
+.expense-form { padding:12px }
+.expense-form ion-item { --background: var(--card-bg); border-radius:8px; margin-bottom:8px }
+.expense-form ion-button { margin-top:12px }

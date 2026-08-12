@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonButton, IonContent, IonIcon, IonTabButton, IonLabel, IonText, IonCard, IonCardContent } from '@ionic/angular/standalone';
-import { environment } from 'src/environments/environment';
 import { addIcons } from 'ionicons';
 
 import {
@@ -11,6 +10,7 @@ import {
   lockClosedOutline,
   flashOutline
 } from 'ionicons/icons';
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -37,7 +37,13 @@ export class LoginPage {
   }
 
   loginWithGoogle(): void {
-    window.location.href =
-      `${environment.apiUrl}/auth/google`;
+    const params = new URLSearchParams(window.location.search);
+    const returnUrl = params.get('returnUrl');
+    let url = `${environment.apiUrl}/auth/google`;
+    if (returnUrl) {
+      url += `?returnUrl=${encodeURIComponent(returnUrl)}`;
+    }
+
+    window.location.href = url;
   }
 }

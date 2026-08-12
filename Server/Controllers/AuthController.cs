@@ -22,9 +22,16 @@ public class AuthController : ControllerBase
     [HttpGet("google")]
     public IActionResult GoogleLogin()
     {
+        var returnUrl = Request.Query["returnUrl"].ToString();
+        var redirectUri = "/api/auth/google-callback";
+        if (!string.IsNullOrWhiteSpace(returnUrl))
+        {
+            redirectUri = $"/api/auth/google-callback?returnUrl={System.Net.WebUtility.UrlEncode(returnUrl)}";
+        }
+
         var properties = new AuthenticationProperties
         {
-            RedirectUri = "/api/auth/google-callback"
+            RedirectUri = redirectUri
         };
 
         return Challenge(

@@ -1,91 +1,206 @@
-<ion-grid class="filter-grid">
-  <ion-title>{{ headline | titlecase }}</ion-title>
-  <ion-row>
-    <ion-col size="4">
-      <ion-item>
-        <ion-select
-          [(ngModel)]="selectedPreset"
-          (ionChange)="onPresetChange()"
-        >
-          <ion-select-option value="thisMonth">This Month</ion-select-option>
-          <ion-select-option value="lastMonth">Last Month</ion-select-option>
-          <ion-select-option value="thisYear">This Year</ion-select-option>
-          <ion-select-option value="lastYear">Last Year</ion-select-option>
-          <ion-select-option value="custom">Custom</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ion-col>
+<ion-card class="filter-card">
+  <ion-card-content>
+    <ion-grid class="filter-grid">
+      <ion-row>
 
-    <ion-col size="4" *ngIf="showCategory && categoryType === null">
-      <ion-item>
-        <ion-select
-          [(ngModel)]="selectedCategoryType"
-          (ionChange)="onCategoryTypeChange()"
-          interface="popover"
-        >
-          <ion-select-option [value]="null">All Types</ion-select-option>
-          <ion-select-option value="income">Income</ion-select-option>
-          <ion-select-option value="expense">Expense</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ion-col>
+        <!-- Type -->
+        <ion-col size="12" size-md="4" size-lg="3">
+          <ion-item lines="none" class="filter-item">
+            <ion-icon
+              name="swap-vertical-outline"
+              slot="start"
+              class="filter-icon">
+            </ion-icon>
 
-    <ion-col [size]="showCategory && categoryType === null ? 4 : 6" *ngIf="showCategory">
-      <ion-item>
-        <ion-select
-          [(ngModel)]="selectedCategoryId"
-          (ionChange)="onCategoryChange()"
-          interface="popover"
-        >
-          <ion-select-option [value]="null">All Categories</ion-select-option>
-          <ion-select-option
-            *ngFor="let category of categories"
-            [value]="category.id"
-          >
-            {{ category.name }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+            <ion-select
+              label="Type"
+              label-placement="stacked"
+              [(ngModel)]="selectedCategoryType"
+              (ionChange)="onCategoryTypeChange()"
+              interface="popover"
+              placeholder="All Types">
 
-<ion-grid *ngIf="selectedPreset === 'custom'" class="custom-date-grid">
-  <ion-row>
-    <ion-col size="6">
-      <ion-item class="date-item">
-        <ion-label position="fixed">From</ion-label>
-        <ion-datetime-button datetime="fromPicker"></ion-datetime-button>
-        <ion-icon name="calendar-outline" slot="end"></ion-icon>
-      </ion-item>
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime
-            id="fromPicker"
-            presentation="date"
-            [(ngModel)]="customFrom"
-            (ionChange)="onCustomDateChange()"
-          ></ion-datetime>
-        </ng-template>
-      </ion-modal>
-    </ion-col>
+              <ion-select-option [value]="null">
+                All Types
+              </ion-select-option>
 
-    <ion-col size="6">
-      <ion-item class="date-item">
-        <ion-label position="fixed">To</ion-label>
-        <ion-datetime-button datetime="toPicker"></ion-datetime-button>
-        <ion-icon name="calendar-outline" slot="end"></ion-icon>
-      </ion-item>
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime
-            id="toPicker"
-            presentation="date"
-            [(ngModel)]="customTo"
-            (ionChange)="onCustomDateChange()"
-          ></ion-datetime>
-        </ng-template>
-      </ion-modal>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+              <ion-select-option value="income">
+                Income
+              </ion-select-option>
+
+              <ion-select-option value="expense">
+                Expense
+              </ion-select-option>
+
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+
+        <!-- Date Preset -->
+        <ion-col size="12" size-md="4" size-lg="3">
+          <ion-item lines="none" class="filter-item">
+            <ion-icon
+              name="calendar-outline"
+              slot="start"
+              class="filter-icon">
+            </ion-icon>
+
+            <ion-select
+              label="Date Range"
+              label-placement="stacked"
+              [(ngModel)]="selectedPreset"
+              (ionChange)="onPresetChange()"
+              interface="popover">
+
+              <ion-select-option value="thisMonth">
+                This Month
+              </ion-select-option>
+
+              <ion-select-option value="lastMonth">
+                Last Month
+              </ion-select-option>
+
+              <ion-select-option value="thisYear">
+                This Year
+              </ion-select-option>
+
+              <ion-select-option value="lastYear">
+                Last Year
+              </ion-select-option>
+
+              <ion-select-option value="custom">
+                Custom Range
+              </ion-select-option>
+
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+
+        <!-- Category -->
+        <ion-col *ngIf="showCategory" size="12" size-md="4" size-lg="3">
+
+          <ion-item lines="none" class="filter-item">
+            <ion-icon
+              name="pricetags-outline"
+              slot="start"
+              class="filter-icon">
+            </ion-icon>
+
+            <ion-select
+              label="Category"
+              label-placement="stacked"
+              [(ngModel)]="selectedCategoryId"
+              (ionChange)="onCategoryChange()"
+              interface="popover"
+              placeholder="All Categories">
+
+              <ion-select-option [value]="null">
+                All Categories
+              </ion-select-option>
+
+              <ion-select-option
+                *ngFor="let category of categories"
+                [value]="category.id">
+
+                {{ category.name }}
+
+              </ion-select-option>
+
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+
+
+    <!-- Custom Date Range -->
+    <ion-grid *ngIf="selectedPreset === 'custom'" class="custom-date-grid">
+
+      <ion-row>
+
+        <!-- From -->
+        <ion-col size="12" size-sm="6">
+
+          <ion-item lines="none" class="date-filter-item">
+
+            <ion-icon
+              name="calendar-outline"
+              slot="start">
+            </ion-icon>
+
+            <ion-label>
+              <span class="date-label">From</span>
+
+              <ion-datetime-button
+                datetime="fromPicker">
+              </ion-datetime-button>
+            </ion-label>
+
+          </ion-item>
+
+          <ion-modal
+            [keepContentsMounted]="true">
+
+            <ng-template>
+
+              <ion-datetime
+                id="fromPicker"
+                presentation="date"
+                [(ngModel)]="customFrom"
+                (ionChange)="onCustomDateChange()">
+              </ion-datetime>
+
+            </ng-template>
+
+          </ion-modal>
+
+        </ion-col>
+
+
+        <!-- To -->
+        <ion-col size="12" size-sm="6">
+
+          <ion-item lines="none" class="date-filter-item">
+
+            <ion-icon
+              name="calendar-outline"
+              slot="start">
+            </ion-icon>
+
+            <ion-label>
+              <span class="date-label">To</span>
+
+              <ion-datetime-button
+                datetime="toPicker">
+              </ion-datetime-button>
+            </ion-label>
+
+          </ion-item>
+
+          <ion-modal
+            [keepContentsMounted]="true">
+
+            <ng-template>
+
+              <ion-datetime
+                id="toPicker"
+                presentation="date"
+                [(ngModel)]="customTo"
+                (ionChange)="onCustomDateChange()">
+              </ion-datetime>
+
+            </ng-template>
+
+          </ion-modal>
+
+        </ion-col>
+
+      </ion-row>
+
+    </ion-grid>
+
+  </ion-card-content>
+</ion-card>

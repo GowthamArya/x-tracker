@@ -1,0 +1,207 @@
+<ion-content [fullscreen]="true">
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Trips</ion-title>
+
+      <ion-buttons slot="end">
+        <ion-button
+          fill="solid"
+          shape="round"
+          (click)="createTrip()">
+          <ion-icon
+            name="add-outline"
+            slot="start">
+          </ion-icon>
+          New Trip
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+
+  <div class="page-container">
+
+    <!-- Header -->
+    <div class="page-heading">
+
+      <div>
+        <h1>Trips</h1>
+        <p>Track shared expenses with your travel group.</p>
+      </div>
+
+      <ion-button
+        class="desktop-create"
+        fill="solid"
+        shape="round"
+        (click)="createTrip()">
+
+        <ion-icon
+          name="add-outline"
+          slot="start">
+        </ion-icon>
+
+        Create Trip
+      </ion-button>
+
+    </div>
+
+
+    <!-- Empty State -->
+    @if (trips.length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          <ion-icon name="airplane-outline"></ion-icon>
+        </div>
+
+        <h2>No trips yet</h2>
+
+        <p>
+          Create a trip and start tracking shared expenses
+          with your friends.
+        </p>
+
+        <ion-button
+          fill="solid"
+          shape="round"
+          (click)="createTrip()">
+
+          <ion-icon
+            name="add-outline"
+            slot="start">
+          </ion-icon>
+
+          Create Your First Trip
+
+        </ion-button>
+
+      </div>
+
+    }
+
+
+    <!-- Trip Grid -->
+    @if (trips.length > 0) {
+
+      <div class="trips-grid">
+
+        @for (trip of trips; track trip.id) {
+
+          <article
+            class="trip-card"
+            (click)="openTrip(trip)"
+            tabindex="0">
+
+            <!-- Card Header -->
+            <div class="card-header">
+
+              <div class="trip-avatar">
+                {{ (trip.name || 'T')[0] | uppercase }}
+              </div>
+
+              <div class="trip-info">
+
+                <h2>{{ trip.name }}</h2>
+
+                @if (trip.description) {
+                  <p>{{ trip.description }}</p>
+                }
+
+                <div class="trip-meta">
+
+                  <span>
+                    <ion-icon name="people-outline"></ion-icon>
+                    {{ trip.memberCount }}
+                    {{ trip.memberCount === 1 ? 'member' : 'members' }}
+                  </span>
+
+                  <span class="dot">•</span>
+
+                  <span>
+                    {{ trip.expenseCount }}
+                    {{ trip.expenseCount === 1 ? 'expense' : 'expenses' }}
+                  </span>
+
+                </div>
+
+              </div>
+
+              <ion-icon
+                class="arrow-icon"
+                name="chevron-forward-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <!-- Divider -->
+            <div class="card-divider"></div>
+
+
+            <!-- Spending -->
+            <div class="spending-section">
+
+              <div class="spending-item">
+
+                <span class="label">
+                  Total spent
+                </span>
+
+                <strong>
+                  ₹{{ trip.totalPaid || 0 | number:'1.0-2' }}
+                </strong>
+
+              </div>
+
+
+              <div class="spending-item">
+
+                <span class="label">
+                  Your share
+                </span>
+
+                <strong>
+                  ₹{{ trip.yourShare || 0 | number:'1.0-2' }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- Footer -->
+            <div class="card-footer">
+
+              <span class="view-trip">
+                View trip
+                <ion-icon name="arrow-forward-outline"></ion-icon>
+              </span>
+
+              <ion-button
+                fill="clear"
+                size="small"
+                class="share-button"
+                (click)="$event.stopPropagation(); shareTrip(trip)">
+
+                <ion-icon
+                  name="share-outline"
+                  slot="icon-only">
+                </ion-icon>
+
+              </ion-button>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</ion-content>

@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { IonItem, IonLabel, IonSelect, IonSelectOption, IonDatetime, IonDatetimeButton, IonModal, IonGrid, IonRow, IonCol, IonTitle, IonIcon } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonSelect, IonSelectOption, IonDatetime, IonDatetimeButton, IonModal, IonGrid, IonRow, IonCol, IonTitle, IonIcon, IonCard, IonCardContent } from '@ionic/angular/standalone';
 
 import { CategoriesService } from '../../services/categories.service';
 import { Category, CategoryType } from '../../models/category.model';
@@ -16,7 +16,6 @@ import { calendarOutline, calendarSharp } from 'ionicons/icons';
   templateUrl: './filters.page.html',
   styleUrls: ['./filters.page.scss'],
   imports: [
-    TitleCasePipe,
     CommonModule,
     FormsModule,
     IonItem,
@@ -29,8 +28,9 @@ import { calendarOutline, calendarSharp } from 'ionicons/icons';
     IonGrid,
     IonRow,
     IonCol,
-    IonTitle,
-    IonIcon
+    IonIcon,
+    IonCard,
+    IonCardContent
 ],
 })
 export class FilterPage implements OnInit {

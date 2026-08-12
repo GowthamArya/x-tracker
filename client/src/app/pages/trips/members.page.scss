@@ -1,0 +1,10 @@
+.members-list { padding:12px; max-width:980px; margin:0 auto }
+.add-member-card { background: var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:12px }
+.add-row { display:flex; gap:8px; align-items:center }
+.hint { color:var(--muted); font-size:13px }
+.member-cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:12px }
+.member-card { display:flex; gap:12px; align-items:center; padding:12px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px }
+.member-card .avatar { width:44px; height:44px; border-radius:10px; background:var(--ion-color-primary); color:var(--ion-color-primary-contrast); display:flex; align-items:center; justify-content:center; font-weight:700 }
+.member-info .name { font-weight:700 }
+.member-info .email { color:var(--muted); font-size:13px }
+.member-info .linked { color:var(--ion-color-secondary); font-size:12px; margin-top:4px }

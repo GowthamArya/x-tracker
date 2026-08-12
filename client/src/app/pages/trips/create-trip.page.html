@@ -1,0 +1,22 @@
+<ion-content>
+  <div class="page-container">
+    <div class="form-card create-form">
+      <h2>Create Trip</h2>
+
+      <div class="form-row">
+        <ion-label class="label">Trip Name</ion-label>
+        <ion-input [(ngModel)]="name" placeholder="Enter trip name" required></ion-input>
+      </div>
+
+      <div class="form-row">
+        <ion-label class="label">Description</ion-label>
+        <ion-input [(ngModel)]="description" placeholder="Optional description"></ion-input>
+      </div>
+
+      <div class="form-actions">
+        <ion-button fill="clear" (click)="cancel()">Cancel</ion-button>
+        <ion-button color="primary" [disabled]="!name.trim()" (click)="create()">Create</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
