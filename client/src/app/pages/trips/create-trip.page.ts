@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TripsService } from '../../services/trips.service';
-import { IonContent, IonButton, IonInput, IonLabel } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonInput, IonLabel, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-create-trip',
   templateUrl: './create-trip.page.html',
   styleUrls: ['./create-trip.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonButton, IonInput, IonLabel]
+  imports: [CommonModule, FormsModule, IonContent, IonButton, IonInput, IonLabel, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton]
 })
 export class CreateTripPage {
   name = '';

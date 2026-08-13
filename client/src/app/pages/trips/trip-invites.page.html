@@ -1,3 +1,4 @@
+<ion-header class="app-header"><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/tabs/trips"></ion-back-button></ion-buttons><ion-title>Share trip</ion-title></ion-toolbar></ion-header>
 <ion-content>
   <div class="page-container">
     <div class="invite-card">
@@ -5,8 +6,8 @@
       <h3>{{ invite?.tripName || 'this trip' }}</h3>
 
       <div class="qr-area" *ngIf="invite">
-        <img [src]="qrUrl" alt="Invite QR" />
-        <div class="qr-caption">Scan to join</div>
+        <ion-button fill="clear" (click)="qrOpen = true"><img [src]="qrUrl" alt="Invite QR" /></ion-button>
+        <div class="qr-caption">Tap to enlarge · Scan to join</div>
       </div>
 
       <div class="invite-actions">
@@ -22,4 +23,5 @@
       </div>
     </div>
   </div>
+  <ion-modal [isOpen]="qrOpen" (didDismiss)="qrOpen = false"><ng-template><ion-content class="ion-padding"><ion-button fill="clear" (click)="qrOpen = false">Close</ion-button><img [src]="qrUrl" alt="Trip invite QR code" style="display:block;width:100%;max-width:320px;margin:40px auto" /></ion-content></ng-template></ion-modal>
 </ion-content>

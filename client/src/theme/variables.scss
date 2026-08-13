@@ -1,2 +1,19 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+
+:root {
+  --app-header-gradient: linear-gradient(135deg, #6d28d9 0%, #2563eb 100%);
+  --app-card-bg: #ffffff;
+  --app-card-border: #e5e7eb;
+  --app-radius-lg: 20px;
+  --app-primary-color: #5b21b6;
+  --app-muted-color: #64748b;
+}
+
+body.app-dark {
+  --app-card-bg: #171923;
+  --app-card-border: #2d3342;
+  --app-muted-color: #a8b0c0;
+  --ion-background-color: #0f1117;
+  --ion-text-color: #f8fafc;
+}

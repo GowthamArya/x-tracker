@@ -6,3 +6,19 @@ export interface TripMemberBalance {
   balance: number;
   isCurrentUser: boolean;
 }
+
+export interface TripDebt {
+  fromTripMemberId: number;
+  fromTripMemberName: string;
+  toTripMemberId: number;
+  toTripMemberName: string;
+  amount: number;
+  isFromCurrentUser: boolean;
+  isToCurrentUser: boolean;
+}
+
+export interface TripBalancesSummary {
+  balances: TripMemberBalance[];
+  debts: TripDebt[];
+}
+

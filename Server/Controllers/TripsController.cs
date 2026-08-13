@@ -19,7 +19,7 @@ public class TripsController : BaseController
 
     // GET: api/Trips/{id}/balances
     [HttpGet("{id:int}/balances")]
-    public async Task<ActionResult<List<TripMemberBalanceDto>>> GetBalances(int id)
+    public async Task<ActionResult<TripBalancesResponseDto>> GetBalances(int id)
     {
         var currentUserId = CurrentUserId;
 
@@ -106,11 +106,73 @@ public class TripsController : BaseController
             result.Add(kv.Value);
         }
 
-        // sort by name
+        // sort by current user first, then by name
         result = result.OrderByDescending(r => r.IsCurrentUser).ThenBy(r => r.Name).ToList();
 
-        return Ok(result);
+        // Compute simplified debts (Splitwise debt minimization algorithm)
+        var debts = new List<TripDebtDto>();
+
+        var debtors = result
+            .Where(b => b.Balance < -0.01m)
+            .Select(b => new { MemberId = b.TripMemberId, Name = b.Name, Amount = -b.Balance, b.IsCurrentUser })
+            .OrderByDescending(d => d.Amount)
+            .ToList();
+
+        var creditors = result
+            .Where(b => b.Balance > 0.01m)
+            .Select(b => new { MemberId = b.TripMemberId, Name = b.Name, Amount = b.Balance, b.IsCurrentUser })
+            .OrderByDescending(c => c.Amount)
+            .ToList();
+
+        var debtorState = debtors.Select(d => new { d.MemberId, d.Name, Amount = d.Amount, d.IsCurrentUser }).ToList();
+        var creditorState = creditors.Select(c => new { c.MemberId, c.Name, Amount = c.Amount, c.IsCurrentUser }).ToList();
+
+        int iIdx = 0, jIdx = 0;
+        var debtorList = debtorState.Select(d => new MutableDebtNode { MemberId = d.MemberId, Name = d.Name, Amount = d.Amount, IsCurrentUser = d.IsCurrentUser }).ToList();
+        var creditorList = creditorState.Select(c => new MutableDebtNode { MemberId = c.MemberId, Name = c.Name, Amount = c.Amount, IsCurrentUser = c.IsCurrentUser }).ToList();
+
+        while (iIdx < debtorList.Count && jIdx < creditorList.Count)
+        {
+            var d = debtorList[iIdx];
+            var c = creditorList[jIdx];
+
+            var settleAmount = Math.Min(d.Amount, c.Amount);
+            if (settleAmount > 0.01m)
+            {
+                debts.Add(new TripDebtDto
+                {
+                    FromTripMemberId = d.MemberId,
+                    FromTripMemberName = d.Name,
+                    ToTripMemberId = c.MemberId,
+                    ToTripMemberName = c.Name,
+                    Amount = decimal.Round(settleAmount, 2),
+                    IsFromCurrentUser = d.IsCurrentUser,
+                    IsToCurrentUser = c.IsCurrentUser
+                });
+
+                d.Amount -= settleAmount;
+                c.Amount -= settleAmount;
+            }
+
+            if (d.Amount <= 0.01m) iIdx++;
+            if (c.Amount <= 0.01m) jIdx++;
+        }
+
+        return Ok(new TripBalancesResponseDto
+        {
+            Balances = result,
+            Debts = debts
+        });
     }
+
+    private class MutableDebtNode
+    {
+        public int MemberId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public bool IsCurrentUser { get; set; }
+    }
+
 
     // GET: api/Trips
     [HttpGet]

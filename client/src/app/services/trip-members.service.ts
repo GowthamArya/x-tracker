@@ -15,6 +15,11 @@ export class TripMembersService {
   }
 
   addMember(tripId: number, userId: number) {
-    return this.http.post(`${this.apiBase}/trips/${tripId}/members`, userId, { withCredentials: true });
+    return this.http.post<TripMember>(`${this.apiBase}/trips/${tripId}/members`, userId, { withCredentials: true });
+  }
+
+  addGuestMember(tripId: number, name: string, email?: string) {
+    return this.http.post<TripMember>(`${this.apiBase}/trips/${tripId}/members/guest`, { name, email }, { withCredentials: true });
   }
 }
+

@@ -18,6 +18,10 @@ export class TripInvitesService {
     return this.http.get<TripInvite>(`${this.apiBase}/TripInvites/${token}`, { withCredentials: true });
   }
 
+  getInviteForTrip(tripId: number): Observable<TripInvite> {
+    return this.http.get<TripInvite>(`${this.apiBase}/TripInvites/trip/${tripId}`, { withCredentials: true });
+  }
+
   joinInvite(token: string): Observable<void> {
     return this.http.post<void>(`${this.apiBase}/TripInvites/${token}/join`, {}, { withCredentials: true });
   }

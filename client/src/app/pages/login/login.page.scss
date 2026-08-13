@@ -1,5 +1,5 @@
 ion-content {
-  --background: #f7f8fa;
+  --background: var(--ion-color-light);
 }
 
 .login-page {
@@ -37,7 +37,7 @@ ion-content {
 
   border-radius: 20px;
   box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.12);
+    0 8px 20px var(--ion-color-light);
 }
 
 .brand-icon ion-icon {
@@ -114,7 +114,7 @@ ion-content {
   --border-width: 1px;
 
   --color: #202124;
-  --border-color: #dadce0;
+  --border-color: var(--ion-color-light);
   height: 54px;
 
   font-size: 15px;

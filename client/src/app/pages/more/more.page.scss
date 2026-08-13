@@ -3,8 +3,14 @@ ion-content {
 }
 
 .more-page {
-  padding: 12px 0 32px;
+  padding: 18px 0 32px;
 }
+
+.profile-card { display: flex; align-items: center; gap: 14px; margin: 0 16px 18px; padding: 18px; cursor: pointer; }
+.profile-card > ion-icon:first-child { font-size: 48px; color: var(--app-primary-color); }
+.profile-card > ion-icon:last-child { margin-left: auto; color: var(--ion-color-medium); }
+.profile-card h2, .profile-card p { margin: 0; }
+.profile-card p { color: var(--app-muted-color); margin-top: 4px; }
 
 .section {
   margin-bottom: 18px;

@@ -1,51 +1,175 @@
-<ion-content>
+<ion-header class="ion-no-border navbar-header">
+  <ion-toolbar color="primary" class="gradient-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/trips" (click)="cancel()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ expenseId ? 'Edit Expense' : 'Add Expense' }}</ion-title>
+    <ion-buttons slot="end">
+      @if (expenseId) {
+        <ion-button fill="clear" color="light" (click)="delete()">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      }
+      <ion-button fill="solid" color="light" class="save-top-btn" (click)="save()">
+        <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+        Save
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="form-content">
   <div class="page-container">
-    <div class="form-card expense-form">
-      <div class="form-header">
-        <ion-button fill="clear" (click)="cancel()">Cancel</ion-button>
-        <div class="header-actions">
-          <ion-button color="danger" *ngIf="expenseId" (click)="delete()">Delete</ion-button>
-          <ion-button color="primary" (click)="save()">Save</ion-button>
+
+    <div class="expense-card-form">
+
+      <!-- Description & Amount Hero Section -->
+      <div class="hero-inputs-row">
+        <div class="form-group flex-2">
+          <label class="form-label">Expense Description *</label>
+          <ion-input
+            [(ngModel)]="description"
+            placeholder="e.g. Dinner at Beach Resort, Taxi to Airport"
+            class="custom-input desc-input">
+          </ion-input>
+        </div>
+
+        <div class="form-group flex-1">
+          <label class="form-label">Total Amount (₹) *</label>
+          <ion-input
+            type="number"
+            [(ngModel)]="amount"
+            (ionInput)="splitMode === 'custom' ? distributeEqually() : null"
+            placeholder="0.00"
+            class="custom-input amount-input">
+          </ion-input>
         </div>
       </div>
 
-      <div class="form-body">
-        <div class="form-row">
-          <ion-label class="label">Description</ion-label>
-          <ion-input [(ngModel)]="description" placeholder="What was purchased"></ion-input>
-        </div>
-
-        <div class="form-row two-up">
-          <div>
-            <ion-label class="label">Amount</ion-label>
-            <ion-input type="number" [(ngModel)]="amount" placeholder="0.00"></ion-input>
-          </div>
-
-          <div>
-            <ion-label class="label">Paid By</ion-label>
-            <ion-select [(ngModel)]="paidByTripMemberId">
-              <ion-select-option *ngFor="let m of members" [value]="m.id">{{ m.name }}</ion-select-option>
-            </ion-select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <ion-label class="label">For</ion-label>
-          <ion-select multiple [(ngModel)]="selectedParticipants">
-            <ion-select-option *ngFor="let m of members" [value]="m.id">{{ m.name }}</ion-select-option>
+      <!-- Paid By & Category -->
+      <div class="two-up-row">
+        <div class="form-group">
+          <label class="form-label">Who Paid? *</label>
+          <ion-select [(ngModel)]="paidByTripMemberId" class="custom-select">
+            @for (m of members; track m.id) {
+              <ion-select-option [value]="m.id">{{ m.name }}</ion-select-option>
+            }
           </ion-select>
         </div>
 
-        <div class="form-row">
-          <ion-label class="label">Date</ion-label>
-          <ion-input type="date" [(ngModel)]="expenseDate"></ion-input>
-        </div>
-
-        <div class="form-row">
-          <ion-label class="label">Notes</ion-label>
-          <ion-input [(ngModel)]="notes" placeholder="Optional"></ion-input>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <ion-select [(ngModel)]="categoryId" placeholder="Select category" class="custom-select">
+            @for (cat of categories; track cat.id) {
+              <ion-select-option [value]="cat.id">{{ cat.name }}</ion-select-option>
+            }
+          </ion-select>
         </div>
       </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Split Options Header -->
+      <div class="split-header">
+        <div>
+          <h3>Splitting Options</h3>
+          <p class="sub-text">Choose how this cost is shared among group members</p>
+        </div>
+
+        <ion-segment [(ngModel)]="splitMode" mode="md" class="split-segment">
+          <ion-segment-button value="equal">
+            <ion-icon name="people-outline"></ion-icon>
+            <ion-label>Split Equally</ion-label>
+          </ion-segment-button>
+
+          <ion-segment-button value="custom">
+            <ion-icon name="calculator-outline"></ion-icon>
+            <ion-label>Custom Shares</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <!-- EQUAL SPLIT MODE -->
+      @if (splitMode === 'equal') {
+        <div class="split-section">
+          <div class="select-actions">
+            <span class="lbl">For whom:</span>
+            <div>
+              <ion-button fill="clear" size="small" (click)="selectAllParticipants()">Select All</ion-button>
+              <ion-button fill="clear" size="small" color="medium" (click)="deselectAllParticipants()">Clear All</ion-button>
+            </div>
+          </div>
+
+          <div class="participants-grid">
+            @for (p of participantInputs; track p.memberId) {
+              <div class="participant-checkbox-card" [class.selected]="p.selected" (click)="p.selected = !p.selected">
+                <ion-checkbox [(ngModel)]="p.selected" (click)="$event.stopPropagation()"></ion-checkbox>
+                <div class="p-name">{{ p.memberName }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- CUSTOM SPLIT MODE -->
+      @if (splitMode === 'custom') {
+        <div class="split-section custom-split">
+          <div class="select-actions">
+            <span class="lbl">Specify rupee amount per member:</span>
+            <ion-button fill="outline" size="small" (click)="distributeEqually()">Auto Distribute Equally</ion-button>
+          </div>
+
+          <div class="custom-shares-list">
+            @for (p of participantInputs; track p.memberId) {
+              <div class="custom-share-row">
+                <ion-checkbox [(ngModel)]="p.selected" class="p-check"></ion-checkbox>
+                <span class="p-member-name">{{ p.memberName }}</span>
+                <div class="p-input-wrapper">
+                  <span class="curr">₹</span>
+                  <ion-input
+                    type="number"
+                    [disabled]="!p.selected"
+                    [(ngModel)]="p.amount"
+                    placeholder="0.00"
+                    class="custom-share-input">
+                  </ion-input>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="custom-sum-bar">
+            <span>Entered Total: <strong>₹{{ customTotal | number:'1.0-2' }}</strong></span>
+            <span>Target: <strong>₹{{ (amount || 0) | number:'1.0-2' }}</strong></span>
+          </div>
+        </div>
+      }
+
+      <div class="form-divider"></div>
+
+      <!-- Date & Notes -->
+      <div class="two-up-row">
+        <div class="form-group">
+          <label class="form-label">Expense Date</label>
+          <ion-input type="date" [(ngModel)]="expenseDate" class="custom-input"></ion-input>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notes (Optional)</label>
+          <ion-input [(ngModel)]="notes" placeholder="Receipt notes, bill info..." class="custom-input"></ion-input>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="form-actions-footer">
+        <ion-button fill="clear" color="medium" (click)="cancel()">Cancel</ion-button>
+        <ion-button fill="solid" color="primary" class="save-main-btn" (click)="save()">
+          <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+          {{ expenseId ? 'Update Expense' : 'Save Expense' }}
+        </ion-button>
+      </div>
+
     </div>
+
   </div>
 </ion-content>

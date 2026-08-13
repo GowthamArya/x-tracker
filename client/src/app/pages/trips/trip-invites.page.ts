@@ -3,20 +3,21 @@ import { ActivatedRoute } from '@angular/router';
 import { TripInvitesService } from '../../services/trip-invites.service';
 import { TripInvite } from '../../models/trip-invite.model';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonButton } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonModal, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-trip-invites',
   templateUrl: './trip-invites.page.html',
   styleUrls: ['./trip-invites.page.scss'],
-  imports: [CommonModule, IonContent, IonButton]
+  imports: [CommonModule, IonContent, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonModal]
 })
 export class TripInvitesPage implements OnInit {
   tripId = 0;
   invite: TripInvite | null = null;
   inviteUrl = '';
   qrUrl = '';
+  qrOpen = false;
 
   constructor(private readonly route: ActivatedRoute, private readonly invites: TripInvitesService, private readonly toastCtrl: ToastController) {}
 
@@ -24,6 +25,7 @@ export class TripInvitesPage implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (Number.isNaN(id)) return;
     this.tripId = id;
+    this.invites.getInviteForTrip(this.tripId).subscribe({ next: (invite) => this.setInvite(invite), error: () => undefined });
   }
 
   create(): void {
@@ -39,7 +41,18 @@ export class TripInvitesPage implements OnInit {
   async copy(): Promise<void> {
     if (!this.inviteUrl) return;
     try {
-      await navigator.clipboard.writeText(this.inviteUrl);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(this.inviteUrl);
+      } else {
+        const input = document.createElement('textarea');
+        input.value = this.inviteUrl;
+        input.style.position = 'fixed';
+        input.style.opacity = '0';
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        input.remove();
+      }
       const t = await this.toastCtrl.create({ message: 'Copied invite link', duration: 1500, position: 'bottom' });
       await t.present();
     } catch (e) {

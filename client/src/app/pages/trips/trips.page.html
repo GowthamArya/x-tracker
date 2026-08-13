@@ -1,207 +1,184 @@
-<ion-content [fullscreen]="true">
+<ion-header class="ion-no-border navbar-header">
+  <ion-toolbar color="primary" class="gradient-toolbar">
+    <ion-title>
+      <div class="header-title">
+        <ion-icon name="airplane-outline" class="title-icon"></ion-icon>
+        <span>Trips & Splitwise</span>
+      </div>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="solid" color="light" class="create-top-btn" (click)="createTrip()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        New Trip
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Trips</ion-title>
-
-      <ion-buttons slot="end">
-        <ion-button
-          fill="solid"
-          shape="round"
-          (click)="createTrip()">
-          <ion-icon
-            name="add-outline"
-            slot="start">
-          </ion-icon>
-          New Trip
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-
+<ion-content [fullscreen]="true" class="trips-content">
+  <ion-refresher slot="fixed" (ionRefresh)="loadTrips($event)">
+    <ion-refresher-content pullingText="Pull to refresh trips..." refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
 
   <div class="page-container">
 
-    <!-- Header -->
-    <div class="page-heading">
-
-      <div>
-        <h1>Trips</h1>
-        <p>Track shared expenses with your travel group.</p>
+    <!-- Hero Stats Card -->
+    <div class="hero-stats-card">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h2>Shared Travel & Expense Hub</h2>
+          <p>Split group costs, track individual balances & settle debts effortlessly.</p>
+        </div>
+        <div class="hero-icon-badge">
+          <ion-icon name="sparkles-outline"></ion-icon>
+        </div>
       </div>
 
-      <ion-button
-        class="desktop-create"
-        fill="solid"
-        shape="round"
-        (click)="createTrip()">
-
-        <ion-icon
-          name="add-outline"
-          slot="start">
-        </ion-icon>
-
-        Create Trip
-      </ion-button>
-
-    </div>
-
-
-    <!-- Empty State -->
-    @if (trips.length === 0) {
-
-      <div class="empty-state">
-
-        <div class="empty-icon">
+      <div class="stats-row">
+        <div class="stat-pill">
           <ion-icon name="airplane-outline"></ion-icon>
+          <div class="stat-info">
+            <span class="num">{{ trips.length }}</span>
+            <span class="lbl">Trips</span>
+          </div>
         </div>
 
-        <h2>No trips yet</h2>
+        <div class="stat-pill">
+          <ion-icon name="receipt-outline"></ion-icon>
+          <div class="stat-info">
+            <span class="num">{{ totalExpensesCount }}</span>
+            <span class="lbl">Expenses</span>
+          </div>
+        </div>
 
-        <p>
-          Create a trip and start tracking shared expenses
-          with your friends.
-        </p>
-
-        <ion-button
-          fill="solid"
-          shape="round"
-          (click)="createTrip()">
-
-          <ion-icon
-            name="add-outline"
-            slot="start">
-          </ion-icon>
-
-          Create Your First Trip
-
-        </ion-button>
-
+        <div class="stat-pill">
+          <ion-icon name="people-outline"></ion-icon>
+          <div class="stat-info">
+            <span class="num">{{ totalMembersCount }}</span>
+            <span class="lbl">Members</span>
+          </div>
+        </div>
       </div>
+    </div>
 
+    <!-- Search & Action Bar -->
+    <div class="search-section">
+      <ion-searchbar
+        [(ngModel)]="searchQuery"
+        (ionInput)="applyFilter()"
+        placeholder="Search trips by name or location..."
+        class="custom-searchbar">
+      </ion-searchbar>
+    </div>
+
+    <!-- Empty State -->
+    @if (filteredTrips.length === 0) {
+      <div class="empty-state-card">
+        <div class="empty-icon-wrapper">
+          <ion-icon name="airplane-outline"></ion-icon>
+        </div>
+        @if (searchQuery) {
+          <h3>No matching trips</h3>
+          <p>No trips match "{{ searchQuery }}". Try clearing your search.</p>
+          <ion-button fill="clear" (click)="searchQuery = ''; applyFilter()">Clear Search</ion-button>
+        } @else {
+          <h3>No trips created yet</h3>
+          <p>Start your first travel group, invite friends, and split expenses seamlessly!</p>
+          <ion-button fill="solid" color="primary" shape="round" (click)="createTrip()">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Create Your First Trip
+          </ion-button>
+        }
+      </div>
     }
 
-
-    <!-- Trip Grid -->
-    @if (trips.length > 0) {
-
+    <!-- Trip Cards Grid -->
+    @if (filteredTrips.length > 0) {
       <div class="trips-grid">
+        @for (trip of filteredTrips; track trip.id; let idx = $index) {
+          <div class="trip-card" (click)="openTrip(trip)">
 
-        @for (trip of trips; track trip.id) {
-
-          <article
-            class="trip-card"
-            (click)="openTrip(trip)"
-            tabindex="0">
-
-            <!-- Card Header -->
-            <div class="card-header">
-
-              <div class="trip-avatar">
+            <!-- Card Top Header -->
+            <div class="trip-card-header">
+              <div class="trip-avatar" [style.background]="getAvatarColor(idx)">
                 {{ (trip.name || 'T')[0] | uppercase }}
               </div>
-
-              <div class="trip-info">
-
-                <h2>{{ trip.name }}</h2>
-
-                @if (trip.description) {
-                  <p>{{ trip.description }}</p>
-                }
-
-                <div class="trip-meta">
-
-                  <span>
-                    <ion-icon name="people-outline"></ion-icon>
-                    {{ trip.memberCount }}
-                    {{ trip.memberCount === 1 ? 'member' : 'members' }}
-                  </span>
-
-                  <span class="dot">•</span>
-
-                  <span>
-                    {{ trip.expenseCount }}
-                    {{ trip.expenseCount === 1 ? 'expense' : 'expenses' }}
-                  </span>
-
+              <div class="trip-title-area">
+                <div class="title-row">
+                  <h3>{{ trip.name }}</h3>
+                  <ion-badge color="primary" class="splitwise-badge">
+                    Splitwise Active
+                  </ion-badge>
                 </div>
-
+                @if (trip.description) {
+                  <p class="description-text">{{ trip.description }}</p>
+                }
               </div>
-
-              <ion-icon
-                class="arrow-icon"
-                name="chevron-forward-outline">
-              </ion-icon>
-
             </div>
 
+            <!-- Card Meta Info Chips -->
+            <div class="trip-meta-chips">
+              <ion-chip outline color="tertiary" class="meta-chip">
+                <ion-icon name="people-outline"></ion-icon>
+                <span>{{ trip.memberCount }} {{ trip.memberCount === 1 ? 'member' : 'members' }}</span>
+              </ion-chip>
 
-            <!-- Divider -->
+              <ion-chip outline color="secondary" class="meta-chip">
+                <ion-icon name="receipt-outline"></ion-icon>
+                <span>{{ trip.expenseCount }} {{ trip.expenseCount === 1 ? 'expense' : 'expenses' }}</span>
+              </ion-chip>
+
+              @if (trip.startDate) {
+                <ion-chip outline color="medium" class="meta-chip">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  <span>{{ trip.startDate | date:'mediumDate' }}</span>
+                </ion-chip>
+              }
+            </div>
+
             <div class="card-divider"></div>
 
-
-            <!-- Spending -->
-            <div class="spending-section">
-
-              <div class="spending-item">
-
-                <span class="label">
-                  Total spent
-                </span>
-
-                <strong>
-                  ₹{{ trip.totalPaid || 0 | number:'1.0-2' }}
-                </strong>
-
+            <!-- Card Spending Summary -->
+            <div class="spending-block">
+              <div class="spending-column">
+                <span class="spending-label">Group Spending</span>
+                <span class="spending-amount">₹{{ trip.totalPaid || 0 | number:'1.0-2' }}</span>
               </div>
 
-
-              <div class="spending-item">
-
-                <span class="label">
-                  Your share
-                </span>
-
-                <strong>
-                  ₹{{ trip.yourShare || 0 | number:'1.0-2' }}
-                </strong>
-
+              <div class="spending-column right">
+                <span class="spending-label">Your Share</span>
+                <span class="spending-amount share">₹{{ trip.yourShare || 0 | number:'1.0-2' }}</span>
               </div>
-
             </div>
 
-
-            <!-- Footer -->
-            <div class="card-footer">
-
-              <span class="view-trip">
-                View trip
+            <!-- Card Footer Action -->
+            <div class="trip-card-footer">
+              <span class="action-link">
+                Open Trip & Balances
                 <ion-icon name="arrow-forward-outline"></ion-icon>
               </span>
 
               <ion-button
                 fill="clear"
                 size="small"
-                class="share-button"
+                class="share-btn"
                 (click)="$event.stopPropagation(); shareTrip(trip)">
-
-                <ion-icon
-                  name="share-outline"
-                  slot="icon-only">
-                </ion-icon>
-
+                <ion-icon name="share-outline" slot="icon-only"></ion-icon>
               </ion-button>
-
             </div>
 
-          </article>
-
+          </div>
         }
-
       </div>
-
     }
 
   </div>
 
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
+    <ion-fab-button color="primary" (click)="createTrip()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

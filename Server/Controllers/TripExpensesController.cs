@@ -35,18 +35,27 @@ public class ExpensesController : BaseController
             .AsNoTracking()
             .Where(e => e.TripId == tripId)
             .OrderByDescending(e => e.ExpenseDate)
+            .ThenByDescending(e => e.Id)
             .Select(e => new TripExpenseDto
             {
                 Id = e.Id,
                 TripId = e.TripId,
                 CategoryId = e.CategoryId,
                 PaidByTripMemberId = e.PaidByTripMemberId,
+                PaidByMemberName = e.PaidBy != null ? e.PaidBy.Name : string.Empty,
                 AddedByUserId = e.AddedByUserId,
                 Description = e.Description,
                 Amount = e.Amount,
                 ExpenseDate = e.ExpenseDate,
                 Notes = e.Notes,
-                CreatedAt = e.CreatedAt
+                CreatedAt = e.CreatedAt,
+                IsSettlement = e.Description.StartsWith("Settlement:") || (e.Notes != null && e.Notes.Contains("Settlement")),
+                Participants = e.Participants.Select(p => new TripExpenseParticipantDto
+                {
+                    TripMemberId = p.TripMemberId,
+                    Name = p.TripMember != null ? p.TripMember.Name : string.Empty,
+                    ShareAmount = p.ShareAmount ?? 0m
+                }).ToList()
             })
             .ToListAsync();
 
@@ -76,12 +85,20 @@ public class ExpensesController : BaseController
                 TripId = e.TripId,
                 CategoryId = e.CategoryId,
                 PaidByTripMemberId = e.PaidByTripMemberId,
+                PaidByMemberName = e.PaidBy != null ? e.PaidBy.Name : string.Empty,
                 AddedByUserId = e.AddedByUserId,
                 Description = e.Description,
                 Amount = e.Amount,
                 ExpenseDate = e.ExpenseDate,
                 Notes = e.Notes,
-                CreatedAt = e.CreatedAt
+                CreatedAt = e.CreatedAt,
+                IsSettlement = e.Description.StartsWith("Settlement:") || (e.Notes != null && e.Notes.Contains("Settlement")),
+                Participants = e.Participants.Select(p => new TripExpenseParticipantDto
+                {
+                    TripMemberId = p.TripMemberId,
+                    Name = p.TripMember != null ? p.TripMember.Name : string.Empty,
+                    ShareAmount = p.ShareAmount ?? 0m
+                }).ToList()
             })
             .FirstOrDefaultAsync();
 
@@ -132,18 +149,39 @@ public class ExpensesController : BaseController
 
         _context.TripExpenses.Add(expense);
 
-        // Participants
-        foreach (var participantId in request.ParticipantTripMemberIds.Distinct())
+        // Save participants & custom shares
+        if (request.ParticipantShares != null && request.ParticipantShares.Count > 0)
         {
-            var p = await _context.TripMembers.FirstOrDefaultAsync(tm => tm.TripId == tripId && tm.Id == participantId);
-
-            if (p != null)
+            foreach (var ps in request.ParticipantShares)
             {
-                _context.TripExpenseParticipants.Add(new TripExpenseParticipant
+                var p = await _context.TripMembers.FirstOrDefaultAsync(tm => tm.TripId == tripId && tm.Id == ps.TripMemberId);
+
+                if (p != null)
                 {
-                    TripExpense = expense,
-                    TripMemberId = p.Id
-                });
+                    _context.TripExpenseParticipants.Add(new TripExpenseParticipant
+                    {
+                        TripExpense = expense,
+                        TripMemberId = p.Id,
+                        ShareAmount = ps.ShareAmount
+                    });
+                }
+            }
+        }
+        else
+        {
+            foreach (var participantId in request.ParticipantTripMemberIds.Distinct())
+            {
+                var p = await _context.TripMembers.FirstOrDefaultAsync(tm => tm.TripId == tripId && tm.Id == participantId);
+
+                if (p != null)
+                {
+                    _context.TripExpenseParticipants.Add(new TripExpenseParticipant
+                    {
+                        TripExpense = expense,
+                        TripMemberId = p.Id,
+                        ShareAmount = null
+                    });
+                }
             }
         }
 
@@ -155,12 +193,14 @@ public class ExpensesController : BaseController
             TripId = expense.TripId,
             CategoryId = expense.CategoryId,
             PaidByTripMemberId = expense.PaidByTripMemberId,
+            PaidByMemberName = paidByMember.Name,
             AddedByUserId = expense.AddedByUserId,
             Description = expense.Description,
             Amount = expense.Amount,
             ExpenseDate = expense.ExpenseDate,
             Notes = expense.Notes,
-            CreatedAt = expense.CreatedAt
+            CreatedAt = expense.CreatedAt,
+            IsSettlement = request.IsSettlement || expense.Description.StartsWith("Settlement:")
         });
     }
 
@@ -207,17 +247,38 @@ public class ExpensesController : BaseController
         // Replace participants
         _context.TripExpenseParticipants.RemoveRange(expense.Participants);
 
-        foreach (var participantId in request.ParticipantTripMemberIds.Distinct())
+        if (request.ParticipantShares != null && request.ParticipantShares.Count > 0)
         {
-            var p = await _context.TripMembers.FirstOrDefaultAsync(tm => tm.TripId == tripId && tm.Id == participantId);
-
-            if (p != null)
+            foreach (var ps in request.ParticipantShares)
             {
-                _context.TripExpenseParticipants.Add(new TripExpenseParticipant
+                var p = await _context.TripMembers.FirstOrDefaultAsync(tm => tm.TripId == tripId && tm.Id == ps.TripMemberId);
+
+                if (p != null)
                 {
-                    TripExpenseId = expense.Id,
-                    TripMemberId = p.Id
-                });
+                    _context.TripExpenseParticipants.Add(new TripExpenseParticipant
+                    {
+                        TripExpenseId = expense.Id,
+                        TripMemberId = p.Id,
+                        ShareAmount = ps.ShareAmount
+                    });
+                }
+            }
+        }
+        else
+        {
+            foreach (var participantId in request.ParticipantTripMemberIds.Distinct())
+            {
+                var p = await _context.TripMembers.FirstOrDefaultAsync(tm => tm.TripId == tripId && tm.Id == participantId);
+
+                if (p != null)
+                {
+                    _context.TripExpenseParticipants.Add(new TripExpenseParticipant
+                    {
+                        TripExpenseId = expense.Id,
+                        TripMemberId = p.Id,
+                        ShareAmount = null
+                    });
+                }
             }
         }
 
@@ -229,12 +290,14 @@ public class ExpensesController : BaseController
             TripId = expense.TripId,
             CategoryId = expense.CategoryId,
             PaidByTripMemberId = expense.PaidByTripMemberId,
+            PaidByMemberName = paidByMember.Name,
             AddedByUserId = expense.AddedByUserId,
             Description = expense.Description,
             Amount = expense.Amount,
             ExpenseDate = expense.ExpenseDate,
             Notes = expense.Notes,
-            CreatedAt = expense.CreatedAt
+            CreatedAt = expense.CreatedAt,
+            IsSettlement = request.IsSettlement || expense.Description.StartsWith("Settlement:")
         });
     }
 

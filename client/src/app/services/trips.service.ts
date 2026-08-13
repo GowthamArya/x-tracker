@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Trip } from '../models/trip.model';
-import { TripMemberBalance } from '../models/trip-member-balance.model';
+import { TripBalancesSummary } from '../models/trip-member-balance.model';
 
 export interface CreateTripRequest {
   name: string;
@@ -32,7 +32,8 @@ export class TripsService {
     return this.http.get<Trip>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }
     
-  getBalances(tripId: number) {
-    return this.http.get<TripMemberBalance[]>(`${this.apiUrl}/${tripId}/balances`, { withCredentials: true });
+  getBalances(tripId: number): Observable<TripBalancesSummary> {
+    return this.http.get<TripBalancesSummary>(`${this.apiUrl}/${tripId}/balances`, { withCredentials: true });
   }
 }
+

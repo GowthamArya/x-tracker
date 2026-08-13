@@ -30,3 +30,6 @@ obj/
 
 # Logs
 *.log
+
+
+/client/www/

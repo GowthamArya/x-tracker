@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripInvitesService } from '../../services/trip-invites.service';
-import { TripInvitesPage } from '../trips/trip-invites.page';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonButton, IonList, IonItem, IonLabel, IonSpinner } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonList, IonItem, IonLabel, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-join-trip',
   templateUrl: './join-trip.page.html',
   styleUrls: ['./join-trip.page.scss'],
-  imports: [CommonModule, IonContent, IonButton, IonList, IonItem, IonLabel, IonSpinner]
+  imports: [CommonModule, IonContent, IonButton, IonList, IonItem, IonLabel, IonSpinner, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton]
 })
 export class JoinTripPage implements OnInit {
   token = '';

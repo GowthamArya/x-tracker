@@ -38,15 +38,13 @@
 
 /* App theme variables used by components for consistent light/dark styling */
 :root {
-	--card-bg: #ffffff;
-	--card-border: #e6e6e6;
-	--muted: #6f6f6f;
+	--card-bg: var(--app-card-bg);
+	--card-border: var(--app-card-border);
+	--muted: var(--app-muted-color);
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--card-bg: #0f0f0f;
-		--card-border: #222222;
-		--muted: #999999;
-	}
-}
+ion-header.navbar-header,
+ion-header.app-header { background: var(--app-header-gradient); }
+ion-header.navbar-header ion-toolbar,
+ion-header.app-header ion-toolbar { --background: transparent; --color: #fff; }
+.app-card { background: var(--app-card-bg); border: 1px solid var(--app-card-border); border-radius: var(--app-radius-lg); }

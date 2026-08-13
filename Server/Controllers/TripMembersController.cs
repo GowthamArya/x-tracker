@@ -99,4 +99,54 @@ public class MembersController : BaseController
             IsOwner = member.IsOwner
         });
     }
+
+    // POST: api/trips/{tripId}/members/guest (add guest/virtual member by name)
+    [HttpPost("guest")]
+    public async Task<ActionResult<TripMemberDto>> AddGuestMember(int tripId, [FromBody] AddGuestMemberRequest request)
+    {
+        var currentUserId = CurrentUserId;
+
+        var requesterIsMember = await _context.TripMembers.AnyAsync(m => m.TripId == tripId && m.UserId == currentUserId);
+
+        if (!requesterIsMember)
+        {
+            return Forbid();
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            return BadRequest("Member name is required.");
+        }
+
+        var member = new TripMember
+        {
+            TripId = tripId,
+            UserId = null,
+            Name = request.Name.Trim(),
+            Email = request.Email?.Trim(),
+            JoinedAt = DateTime.UtcNow,
+            IsOwner = false
+        };
+
+        _context.TripMembers.Add(member);
+
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetMembers), new { tripId = tripId }, new TripMemberDto
+        {
+            Id = member.Id,
+            UserId = member.UserId,
+            Name = member.Name,
+            Email = member.Email,
+            JoinedAt = member.JoinedAt,
+            IsOwner = member.IsOwner
+        });
+    }
 }
+
+public class AddGuestMemberRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string? Email { get; set; }
+}
+

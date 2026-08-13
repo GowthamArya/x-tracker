@@ -7,6 +7,10 @@ import {
   IonActionSheet,
   IonButton,
   IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
 } from '@ionic/angular/standalone';
 
 import { TransactionsService } from '../../services/transactions.service';
@@ -22,6 +26,10 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     IonActionSheet,
     IonButton,
     IonContent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
     DecimalPipe,
     RouterLink,
   ],

@@ -25,42 +25,60 @@ public class TripInvitesController : BaseController
         var currentUserId = CurrentUserId;
 
         var isMember = await _context.TripMembers
-            .AnyAsync(m => m.TripId == tripId && m.UserId == currentUserId && m.IsOwner);
+            .AnyAsync(m => m.TripId == tripId && m.UserId == currentUserId);
 
         if (!isMember)
         {
             return Forbid();
         }
 
-        var token = Guid.NewGuid().ToString("N");
+        var now = DateTime.UtcNow;
+        var existingInvite = await _context.TripInvites
+            .Where(i => i.TripId == tripId && i.IsActive && (!i.ExpiresAt.HasValue || i.ExpiresAt > now))
+            .OrderByDescending(i => i.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (existingInvite is not null)
+        {
+            return Ok(await ToDto(existingInvite));
+        }
 
         var invite = new TripInvite
         {
             TripId = tripId,
-            Token = token,
+            Token = Guid.NewGuid().ToString("N"),
             CreatedByUserId = currentUserId,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = now,
             IsActive = true,
-            ExpiresAt = DateTime.UtcNow.AddDays(30)
+            ExpiresAt = now.AddDays(30)
         };
 
         _context.TripInvites.Add(invite);
 
         await _context.SaveChangesAsync();
 
-        // include non-sensitive trip name for display
-        var tripName = await _context.Trips.Where(t => t.Id == invite.TripId).Select(t => t.Name).FirstOrDefaultAsync();
+        return CreatedAtAction(nameof(GetInvite), new { token = invite.Token }, await ToDto(invite));
+    }
 
-        return CreatedAtAction(nameof(GetInvite), new { token = invite.Token }, new TripInviteDto
+    // GET: api/TripInvites/trip/{tripId}
+    // Authenticated members can retrieve the current active link without creating another token.
+    [HttpGet("trip/{tripId:int}")]
+    public async Task<ActionResult<TripInviteDto>> GetInviteForTrip(int tripId)
+    {
+        var isMember = await _context.TripMembers
+            .AnyAsync(m => m.TripId == tripId && m.UserId == CurrentUserId);
+
+        if (!isMember)
         {
-            Id = invite.Id,
-            TripId = invite.TripId,
-            Token = invite.Token,
-            CreatedAt = invite.CreatedAt,
-            ExpiresAt = invite.ExpiresAt,
-            IsActive = invite.IsActive,
-            TripName = tripName
-        });
+            return Forbid();
+        }
+
+        var invite = await _context.TripInvites
+            .Where(i => i.TripId == tripId && i.IsActive && (!i.ExpiresAt.HasValue || i.ExpiresAt > DateTime.UtcNow))
+            .OrderByDescending(i => i.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        return invite is null ? NotFound() : Ok(await ToDto(invite));
     }
 
     // GET: api/TripInvites/{token}
@@ -70,7 +88,7 @@ public class TripInvitesController : BaseController
     {
         var invite = await _context.TripInvites
             .AsNoTracking()
-            .Where(i => i.Token == token && i.IsActive)
+            .Where(i => i.Token == token && i.IsActive && (!i.ExpiresAt.HasValue || i.ExpiresAt > DateTime.UtcNow))
             .Select(i => new TripInviteDto
             {
                 Id = i.Id,
@@ -89,6 +107,25 @@ public class TripInvitesController : BaseController
         }
 
         return Ok(invite);
+    }
+
+    private async Task<TripInviteDto> ToDto(TripInvite invite)
+    {
+        var tripName = await _context.Trips
+            .Where(t => t.Id == invite.TripId)
+            .Select(t => t.Name)
+            .FirstOrDefaultAsync();
+
+        return new TripInviteDto
+        {
+            Id = invite.Id,
+            TripId = invite.TripId,
+            Token = invite.Token,
+            CreatedAt = invite.CreatedAt,
+            ExpiresAt = invite.ExpiresAt,
+            IsActive = invite.IsActive,
+            TripName = tripName
+        };
     }
 
     // POST: api/TripInvites/{token}/join

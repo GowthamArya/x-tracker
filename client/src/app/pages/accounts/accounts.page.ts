@@ -6,6 +6,8 @@ import {
   ActionSheetButton,
   IonActionSheet,
   IonButton,
+  IonButtons,
+  IonBackButton,
   IonContent,
   IonHeader,
   IonInput,
@@ -23,6 +25,8 @@ import { AccountsService } from '../../services/accounts.service';
   imports: [
     IonActionSheet,
     IonButton,
+    IonButtons,
+    IonBackButton,
     IonContent,
     IonHeader,
     IonInput,

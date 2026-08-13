@@ -2,14 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "XTracker API",
+      "name": "API",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}/server/server.csproj",
-      "launchSettingsProfile": "XTracker.Api"
+      "projectPath": "${workspaceFolder}/server/server.csproj"
     },
     {
-      "name": "XTracker Client",
+      "name": "Client",
       "type": "node-terminal",
       "request": "launch",
       "command": "ionic serve --port 8100",
@@ -18,10 +17,10 @@
   ],
   "compounds": [
     {
-      "name": "XTracker - Full Stack Debug",
+      "name": "XTracker - Debug",
       "configurations": [
-        "XTracker API",
-        "XTracker Client"
+        "API",
+        "Client"
       ],
       "stopAll": true
     }
