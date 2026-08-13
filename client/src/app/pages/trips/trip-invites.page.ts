@@ -5,6 +5,7 @@ import { TripInvite } from '../../models/trip-invite.model';
 import { CommonModule } from '@angular/common';
 import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonModal, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular';
+import { ShareService } from '../../services/share.service';
 
 @Component({
   selector: 'app-trip-invites',
@@ -19,7 +20,7 @@ export class TripInvitesPage implements OnInit {
   qrUrl = '';
   qrOpen = false;
 
-  constructor(private readonly route: ActivatedRoute, private readonly invites: TripInvitesService, private readonly toastCtrl: ToastController) {}
+  constructor(private readonly route: ActivatedRoute, private readonly invites: TripInvitesService, private readonly toastCtrl: ToastController, private readonly shareService: ShareService) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -64,12 +65,9 @@ export class TripInvitesPage implements OnInit {
 
   share(): void {
     if (!this.inviteUrl) return;
-    if ((navigator as any).share) {
-      (navigator as any).share({ title: 'Join my trip', text: 'Join my trip on X-Tracker', url: this.inviteUrl }).catch((e: any) => console.error(e));
-    } else {
-      // fallback to copy
-      this.copy();
-    }
+    this.shareService.shareOrCopy(this.inviteUrl, 'Join my trip on X-Tracker', 'Join my trip on X-Tracker')
+      .then(async result => { const toast = await this.toastCtrl.create({ message: result === 'shared' ? 'Share sheet opened' : 'Invite link copied', duration: 1500, position: 'bottom' }); await toast.present(); })
+      .catch(async error => { if (error?.name === 'AbortError') return; await this.copy(); });
   }
 
   revoke(): void {

@@ -41,6 +41,7 @@ import {
 import { Trip } from '../../models/trip.model';
 import { TripsService } from '../../services/trips.service';
 import { TripInvitesService } from '../../services/trip-invites.service';
+import { ShareService } from '../../services/share.service';
 
 @Component({
   selector: 'app-trips',
@@ -78,7 +79,8 @@ export class TripsPage implements OnInit {
     private readonly invitesService: TripInvitesService,
     private readonly router: Router,
     private readonly toastCtrl: ToastController,
-    private readonly alertCtrl: AlertController
+    private readonly alertCtrl: AlertController,
+    private readonly shareService: ShareService
   ) {
     addIcons({
       addOutline,
@@ -177,7 +179,7 @@ export class TripsPage implements OnInit {
       this.invitesService.createInvite(trip.id).subscribe({
         next: async (invite) => {
           const joinUrl = `${window.location.origin}/join/trip/${invite.token}`;
-          await navigator.clipboard?.writeText(joinUrl);
+          await this.shareService.shareOrCopy(joinUrl, 'Join my trip on X-Tracker', `Join ${trip.name} on X-Tracker.`);
           const toast = await this.toastCtrl.create({
             message: `Invite link for "${trip.name}" copied to clipboard!`,
             duration: 2500,
@@ -188,7 +190,7 @@ export class TripsPage implements OnInit {
         },
         error: async () => {
           const joinUrl = `${window.location.origin}/tabs/trips/${trip.id}`;
-          await navigator.clipboard?.writeText(joinUrl);
+          await this.shareService.shareOrCopy(joinUrl, 'Join my trip on X-Tracker', `Join ${trip.name} on X-Tracker.`);
           const toast = await this.toastCtrl.create({
             message: `Trip link copied to clipboard`,
             duration: 2000,
@@ -210,11 +212,11 @@ export class TripsPage implements OnInit {
 
   getAvatarColor(index: number): string {
     const gradients = [
-      'linear-gradient(135deg, #b7444d 0%, #e05454 100%)',
+      'linear-gradient(135deg, #9f5b61 0%, #c86b6b 100%)',
       'linear-gradient(135deg, #a83f49 0%, #e36767 100%)',
       'linear-gradient(135deg, #c74a4a 0%, #ef8a8a 100%)',
-      'linear-gradient(135deg, #943a45 0%, #e05454 100%)',
-      'linear-gradient(135deg, #b7444d 0%, #ef8a8a 100%)'
+      'linear-gradient(135deg, #8f555c 0%, #c86b6b 100%)',
+      'linear-gradient(135deg, #9f5b61 0%, #d18181 100%)'
     ];
     return gradients[index % gradients.length];
   }

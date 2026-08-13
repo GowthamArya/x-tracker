@@ -1,6 +1,171 @@
-:root { --card-bg: #fff; --card-border: #eee; --muted: #777 }
-@media (prefers-color-scheme: dark) { :root { --card-bg: #0f0f0f; --card-border: #222; --muted: #999 } }
+:host {
+  display: block;
+}
 
-.create-form { padding:12px }
-.create-form ion-item { --background: var(--card-bg); border-radius:8px; margin-bottom:8px }
-.create-form ion-button { margin-top:12px }
+.create-trip-content {
+  --background: radial-gradient(circle at top, rgba(var(--app-primary-rgb), 0.14), transparent 38%), var(--ion-background-color);
+}
+
+.create-trip-shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(24px, 6vw, 72px) 16px 48px;
+}
+
+.create-trip-intro {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.intro-badge {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: rgba(var(--app-primary-rgb), 0.12);
+  color: var(--app-primary-color);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+}
+
+.intro-badge ion-icon {
+  font-size: 1.6rem;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--app-primary-color);
+}
+
+.create-trip-intro h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  color: var(--app-heading-color);
+}
+
+.intro-copy {
+  margin: 10px auto 0;
+  max-width: 32rem;
+  color: var(--app-muted-color);
+  line-height: 1.55;
+}
+
+.create-form {
+  padding: clamp(20px, 4vw, 34px);
+  border-radius: var(--app-radius-lg);
+  backdrop-filter: blur(14px);
+}
+
+.form-copy h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--app-heading-color);
+}
+
+.form-copy p {
+  margin: 6px 0 0;
+  color: var(--app-muted-color);
+  line-height: 1.5;
+}
+
+.field-group {
+  margin-top: 20px;
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-heading-color);
+}
+
+.required-indicator {
+  color: var(--app-primary-color);
+}
+
+.create-input {
+  margin-top: 10px;
+  --background: var(--app-input-bg);
+  --color: var(--ion-text-color);
+  --placeholder-color: var(--app-muted-color);
+  --highlight-color-focused: var(--app-primary-color);
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --border-radius: 16px;
+  border: 1px solid var(--app-input-border);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.create-textarea {
+  min-height: 132px;
+}
+
+.form-hint {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--app-surface-strong);
+  color: var(--app-muted-color);
+  line-height: 1.5;
+}
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.secondary-action,
+.primary-action {
+  min-width: 132px;
+  height: 48px;
+  --border-radius: 14px;
+}
+
+.secondary-action {
+  --color: var(--app-muted-color);
+}
+
+.primary-action {
+  --background: var(--app-primary-color);
+  --background-hover: var(--app-primary-color);
+  --background-activated: var(--ion-color-primary-shade);
+  --color: #ffffff;
+}
+
+.primary-action.button-disabled {
+  opacity: 0.6;
+}
+
+@media (max-width: 576px) {
+  .create-trip-shell {
+    padding-inline: 14px;
+  }
+
+  .create-form {
+    padding: 18px 16px;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+
+  .secondary-action,
+  .primary-action {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

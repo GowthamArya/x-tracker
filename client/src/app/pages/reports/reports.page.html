@@ -1,19 +1,9 @@
-<ion-header class="app-header"><ion-toolbar><ion-title>Reports</ion-title><ion-buttons slot="end"><ion-button>Period</ion-button></ion-buttons></ion-toolbar></ion-header>
+<ion-header class="app-header"><ion-toolbar><ion-title>Reports</ion-title><ion-buttons slot="end"><ion-button fill="outline" (click)="openFilters()">Filter</ion-button></ion-buttons></ion-toolbar></ion-header>
 <ion-content [fullscreen]="true">
 
   <div class="reports-container">
 
-    <div class="page-heading">
-      <h1>Reports</h1>
-      <p>Understand where your money is going.</p>
-    </div>
-
-    <div>
-      <app-transaction-filter
-        [showCategory]="true"
-        (filterChange)="onFilterChange($event)"
-      ></app-transaction-filter>
-    </div>
+    @if (filter) { <div class="active-period">{{ filter.preset === 'thisMonth' ? 'This month' : filter.preset === 'thisYear' ? 'This year' : 'Filtered period' }} · Tap Filter to change</div> }
     <!-- Summary -->
 
     <div class="summary-grid">
@@ -157,4 +147,5 @@
 
   </div>
 
+  <ion-modal [isOpen]="filtersOpen" (didDismiss)="filtersOpen = false" [initialBreakpoint]="0.72" [breakpoints]="[0, 0.72, 0.95]"><ng-template><ion-header class="app-header"><ion-toolbar><ion-title>Filter reports</ion-title><ion-buttons slot="end"><ion-button (click)="filtersOpen = false">Done</ion-button></ion-buttons></ion-toolbar></ion-header><ion-content class="ion-padding"><app-transaction-filter [showCategory]="true" (filterChange)="onFilterChange($event)"></app-transaction-filter></ion-content></ng-template></ion-modal>
 </ion-content>

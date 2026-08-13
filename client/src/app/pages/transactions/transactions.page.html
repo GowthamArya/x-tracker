@@ -1,21 +1,8 @@
 <ion-header class="app-header"><ion-toolbar><ion-title>Transactions</ion-title><ion-buttons slot="end"><ion-button routerLink="/tabs/add-transaction">+ Add</ion-button></ion-buttons></ion-toolbar></ion-header>
 <ion-content [fullscreen]="true" >
   <div class="transaction-page">
-  <div class="page-header">
-
-    <div>
-      <h1>Transactions</h1>
-      <p>Your recent income and expenses.</p>
-    </div>
-
-    <ion-button routerLink="/tabs/add-transaction">
-      + Add
-    </ion-button>
-
-  </div>
-
   <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="applyFilter()" placeholder="Search title, category, or account" class="transaction-search"></ion-searchbar>
-  <app-transaction-filter [showCategory]="true" defaultPreset="thisYear" (filterChange)="onFilterChange($event)"></app-transaction-filter>
+  <div class="list-toolbar"><span class="result-count">{{ filteredTransactions.length }} transactions</span><ion-button fill="outline" size="small" (click)="openFilters()">Filter</ion-button></div>
 
   <div class="filter-bar quick-filter-bar">
 
@@ -97,6 +84,8 @@
   [buttons]="actionSheetButtons"
   (didDismiss)="actionSheetOpen = false"
 ></ion-action-sheet>
+
+<ion-modal [isOpen]="filtersOpen" (didDismiss)="filtersOpen = false" [initialBreakpoint]="0.72" [breakpoints]="[0, 0.72, 0.95]"><ng-template><ion-header class="app-header"><ion-toolbar><ion-title>Filter transactions</ion-title><ion-buttons slot="end"><ion-button (click)="filtersOpen = false">Done</ion-button></ion-buttons></ion-toolbar></ion-header><ion-content class="ion-padding"><app-transaction-filter [showCategory]="true" defaultPreset="thisYear" (filterChange)="onFilterChange($event)"></app-transaction-filter></ion-content></ng-template></ion-modal>
 
 </div>
 </ion-content>

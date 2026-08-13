@@ -62,6 +62,7 @@ import { TripsService } from '../../services/trips.service';
 import { TripExpensesService } from '../../services/trip-expenses.service';
 import { TripMembersService } from '../../services/trip-members.service';
 import { TripInvitesService } from '../../services/trip-invites.service';
+import { ShareService } from '../../services/share.service';
 import { Trip } from '../../models/trip.model';
 import { TripExpense } from '../../models/trip-expense.model';
 import { TripMember } from '../../models/trip-member.model';
@@ -142,6 +143,7 @@ export class TripDetailPage implements OnInit {
     private readonly expensesService: TripExpensesService,
     private readonly membersService: TripMembersService,
     private readonly invitesService: TripInvitesService,
+    private readonly shareService: ShareService,
     private readonly toastCtrl: ToastController,
     private readonly alertCtrl: AlertController
   ) {
@@ -257,8 +259,8 @@ export class TripDetailPage implements OnInit {
 
     const categoryTotals: { [key: string]: { name: string; icon: string; amount: number; color: string } } = {
       Food: { name: 'Food & Dining', icon: 'restaurant-outline', amount: 0, color: '#f59e0b' },
-      Transport: { name: 'Transport & Travel', icon: 'car-outline', amount: 0, color: '#e05454' },
-      Stay: { name: 'Stay & Hotel', icon: 'bed-outline', amount: 0, color: '#b7444d' },
+      Transport: { name: 'Transport & Travel', icon: 'car-outline', amount: 0, color: '#c86b6b' },
+      Stay: { name: 'Stay & Hotel', icon: 'bed-outline', amount: 0, color: '#9f5b61' },
       Entertainment: { name: 'Activities & Events', icon: 'ticket-outline', amount: 0, color: '#ec4899' },
       Shopping: { name: 'Shopping & Gifts', icon: 'bag-handle-outline', amount: 0, color: '#10b981' },
       Other: { name: 'General & Others', icon: 'cart-outline', amount: 0, color: '#64748b' }
@@ -438,7 +440,7 @@ export class TripDetailPage implements OnInit {
       this.invitesService.createInvite(this.tripId).subscribe({
         next: async (invite) => {
           const joinUrl = `${window.location.origin}/join/trip/${invite.token}`;
-          await navigator.clipboard?.writeText(joinUrl);
+          await this.shareService.shareOrCopy(joinUrl, 'Join my trip on X-Tracker', `Join ${this.trip?.name || 'my trip'} on X-Tracker.`);
           const toast = await this.toastCtrl.create({
             message: 'Trip invite link copied to clipboard!',
             duration: 2500,
@@ -449,7 +451,7 @@ export class TripDetailPage implements OnInit {
         },
         error: async () => {
           const url = `${window.location.origin}/tabs/trips/${this.tripId}`;
-          await navigator.clipboard?.writeText(url);
+          await this.shareService.shareOrCopy(url, this.trip?.name || 'Trip', 'Open this trip in X-Tracker.');
           const toast = await this.toastCtrl.create({ message: 'Trip link copied', duration: 1500, position: 'bottom' });
           await toast.present();
         }

@@ -1,90 +1,16 @@
-<ion-header class="app-header">
+<ion-header class="app-header dashboard-header">
   <ion-toolbar>
-    <div style="display: flex; padding: 0px 20px;">
-      <img class="app-logo" src="assets/xtracker-logo.png" alt="X-Tracker logo">
-      <ion-title>X-Tracker</ion-title>
-    </div>
-
-    @if (!isLoggedIn) {
-      <ion-button fill="clear" slot="end" routerLink="/login">
-        Login
-      </ion-button>
-    }
-    @if (isLoggedIn) {
-      <ion-button fill="clear" slot="end" (click)="logout()">
-        Logout
-      </ion-button>
-    }
+    <div class="brand-lockup"><img class="app-logo" src="assets/xtracker-logo.png" alt="X-Tracker logo"><span>X-Tracker</span></div>
+    <ion-buttons slot="end"><ion-button fill="clear" routerLink="/tabs/more" aria-label="Open settings">Settings</ion-button></ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="dashboard">
-    <div class="welcome">
-      <h1>{{greeting}}</h1>
-      <p>Here's your financial summary.</p>
-    </div>
-
-    <div class="balance-card">
-      <span class="label">Total Balance</span>
-
-      <h2>
-        ₹{{ balance | number:'1.0-0' }}
-      </h2>
-    </div>
-
-    <div class="summary-grid">
-
-      <div class="summary-card">
-        <span class="label">Income</span>
-
-        <strong>
-          ₹{{ totalIncome | number:'1.0-0' }}
-        </strong>
-      </div>
-
-      <div class="summary-card">
-        <span class="label">Expenses</span>
-
-        <strong>
-          ₹{{ totalExpenses | number:'1.0-0' }}
-        </strong>
-      </div>
-
-    </div>
-
-    <div class="section-header">
-      <h2>Recent Transactions</h2>
-
-      <a routerLink="/tabs/transactions">
-        See all
-      </a>
-    </div>
-
-    <div class="transactions">
-
-      @for (transaction of transactions; track transaction.id) {
-
-        <div class="transaction">
-
-          <div class="transaction-info">
-            <strong>{{ transaction.title }}</strong>
-            <span>{{ transaction.categoryName }}</span>
-          </div>
-
-          <div
-            class="transaction-amount"
-            [class.income]="transaction.type === 'income'"
-          >
-            {{ transaction.type === 'income' ? '+' : '-' }}
-            ₹{{ transaction.amount | number:'1.0-0' }}
-          </div>
-
-        </div>
-
-      }
-
-    </div>
-
-  </div>
+  <main class="dashboard">
+    <section class="welcome"><span class="eyebrow">PERSONAL FINANCE</span><h1>{{ greeting }}<span class="accent-dot">.</span></h1><p>A clear view of what came in, what went out, and what matters next.</p></section>
+    <section class="balance-card"><div class="balance-topline"><span>Available balance</span><span class="balance-period">All accounts</span></div><h2>₹{{ balance | number:'1.0-0' }}</h2><div class="balance-foot"><span>{{ balance >= 0 ? 'You are in a positive position' : 'Review your spending this month' }}</span><ion-icon name="arrow-up-outline"></ion-icon></div></section>
+    <section class="summary-grid" aria-label="Financial summary"><div class="summary-card income-card"><span class="label">Income</span><strong>₹{{ totalIncome | number:'1.0-0' }}</strong><span class="summary-note">Money in</span></div><div class="summary-card expense-card"><span class="label">Expenses</span><strong>₹{{ totalExpenses | number:'1.0-0' }}</strong><span class="summary-note">Money out</span></div></section>
+    <section class="quick-actions" aria-label="Quick actions"><ion-button class="primary-action" routerLink="/tabs/add-transaction"><ion-icon name="add-outline" slot="start"></ion-icon>Add transaction</ion-button><ion-button fill="outline" routerLink="/tabs/trips/create"><ion-icon name="airplane-outline" slot="start"></ion-icon>New trip</ion-button></section>
+    <section class="activity-section"><div class="section-header"><div><span class="eyebrow">ACTIVITY</span><h2>Recent transactions</h2></div><a routerLink="/tabs/transactions">View all</a></div><div class="transactions app-card">@for (transaction of transactions; track transaction.id) {<div class="transaction"><div class="transaction-mark" [class.income]="transaction.type === 'income'">{{ transaction.type === 'income' ? '↗' : '↘' }}</div><div class="transaction-info"><strong>{{ transaction.title }}</strong><span>{{ transaction.categoryName || 'Uncategorized' }}</span></div><div class="transaction-amount" [class.income]="transaction.type === 'income'">{{ transaction.type === 'income' ? '+' : '-' }}₹{{ transaction.amount | number:'1.0-0' }}</div></div>} @empty {<div class="empty-activity"><span>No transactions yet</span><a routerLink="/tabs/add-transaction">Add your first one</a></div>}</div></section>
+  </main>
 </ion-content>

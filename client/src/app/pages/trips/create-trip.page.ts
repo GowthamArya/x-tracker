@@ -1,21 +1,25 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TripsService } from '../../services/trips.service';
-import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonInput, IonLabel, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonButton, IonContent, IonHeader, IonIcon, IonInput, IonLabel, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { addIcons } from 'ionicons';
+import { airplaneOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-create-trip',
   templateUrl: './create-trip.page.html',
   styleUrls: ['./create-trip.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonButton, IonInput, IonLabel, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton]
+  imports: [CommonModule, FormsModule, IonContent, IonButton, IonInput, IonTextarea, IonLabel, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonIcon]
 })
 export class CreateTripPage {
   name = '';
   description = '';
 
-  constructor(private readonly tripsService: TripsService, private readonly router: Router) {}
+  constructor(private readonly tripsService: TripsService, private readonly router: Router) {
+    addIcons({ airplaneOutline });
+  }
 
   create(): void {
     const payload = { name: this.name.trim(), description: this.description.trim() };

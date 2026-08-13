@@ -5,14 +5,13 @@ import { RouterLink } from '@angular/router';
 import {
   IonContent,
   IonHeader,
-  IonTitle,
   IonToolbar,
-  IonButton
+  IonButton,
+  IonIcon,
+  IonButtons
 } from '@ionic/angular/standalone';
 
-import {
-  walletOutline
-} from 'ionicons/icons';
+import { addOutline, airplaneOutline, arrowUpOutline } from 'ionicons/icons';
 
 import { DashboardService } from '../../services/dashboard.service';
 import { AuthService } from '../../services/auth.service';
@@ -26,11 +25,12 @@ import { addIcons } from 'ionicons';
   imports: [
     IonContent,
     IonHeader,
-    IonTitle,
     IonToolbar,
     DecimalPipe,
     RouterLink,
-    IonButton
+    IonButton,
+    IonIcon,
+    IonButtons
   ],
 })
 export class DashboardPage {
@@ -47,9 +47,7 @@ export class DashboardPage {
     private readonly dashboardService: DashboardService,
     private readonly authService: AuthService
   ) {
-    addIcons({
-      'wallet-outline': walletOutline,
-    });
+    addIcons({ addOutline, airplaneOutline, arrowUpOutline });
     this.setGreeting();
   }
 

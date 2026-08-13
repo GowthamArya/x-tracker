@@ -8,6 +8,7 @@ import {
   IonTitle,
   IonButtons,
   IonButton,
+  IonModal,
 } from '@ionic/angular/standalone';
 
 import { ReportsService } from '../../services/reports.service';
@@ -26,6 +27,7 @@ import { FilterPage } from '../filters/filters.page';
     IonTitle,
     IonButtons,
     IonButton,
+    IonModal,
     DecimalPipe,
     FilterPage,
   ],
@@ -38,7 +40,8 @@ export class ReportsPage {
   incomeCategoryReports: CategoryReport[] = [];
   expenseCategoryReports: CategoryReport[] = [];
 
-  private filter: FilterValue | null = null;
+  filter: FilterValue | null = null;
+  filtersOpen = false;
 
   constructor(
     private readonly reportsService: ReportsService
@@ -52,6 +55,8 @@ export class ReportsPage {
     this.filter = filter;
     this.loadReports();
   }
+
+  openFilters(): void { this.filtersOpen = true; }
 
   private loadReports(): void {
     this.reportsService.getSummary(this.filter).subscribe({

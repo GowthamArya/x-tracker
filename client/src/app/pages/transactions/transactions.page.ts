@@ -13,6 +13,7 @@ import {
   IonTitle,
   IonButtons,
   IonSearchbar,
+  IonModal,
 } from '@ionic/angular/standalone';
 
 import { TransactionsService } from '../../services/transactions.service';
@@ -35,6 +36,7 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     IonTitle,
     IonButtons,
     IonSearchbar,
+    IonModal,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -53,6 +55,7 @@ export class TransactionsPage implements OnInit {
   activeFilter: TransactionFilter = 'all';
   searchQuery = '';
   filter: FilterValue | null = null;
+  filtersOpen = false;
 
   actionSheetOpen = false;
   selectedTransaction: Transaction | null = null;
@@ -118,6 +121,7 @@ export class TransactionsPage implements OnInit {
   }
 
   onFilterChange(filter: FilterValue): void { this.filter = filter; this.applyFilter(); }
+  openFilters(): void { this.filtersOpen = true; }
 
   applyFilter(): void {
     let filtered =
