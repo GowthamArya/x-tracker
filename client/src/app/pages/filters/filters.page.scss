@@ -1,5 +1,7 @@
 .filter-card {
-  margin: 12px 0;
+  width: 100%;
+  max-width: 980px;
+  margin: 12px auto;
   border-radius: 16px;
   box-shadow: none;
   border: 1px solid var(--app-card-border);
@@ -7,6 +9,16 @@
 }
 
 .filter-grid {
+  padding: 0;
+}
+
+.filter-grid ion-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.filter-grid ion-col {
   padding: 0;
 }
 
@@ -33,6 +45,16 @@
 
 .custom-date-grid {
   padding: 8px 0 0;
+}
+
+.custom-date-grid ion-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.custom-date-grid ion-col {
+  padding: 0;
 }
 
 .date-filter-item {
@@ -85,5 +107,10 @@
 
   .custom-date-grid {
     padding-top: 4px;
+  }
+
+  .filter-grid ion-row,
+  .custom-date-grid ion-row {
+    grid-template-columns: 1fr;
   }
 }

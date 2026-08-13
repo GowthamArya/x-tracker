@@ -71,6 +71,11 @@ public class AuthController : ControllerBase
                 x => x.Type == ClaimTypes.Name
             )?.Value;
 
+        var photoUrl =
+            claims.FirstOrDefault(
+                x => x.Type == "picture"
+            )?.Value;
+
         if (string.IsNullOrWhiteSpace(googleId) ||
             string.IsNullOrWhiteSpace(email))
         {
@@ -115,6 +120,11 @@ public class AuthController : ControllerBase
             new(
                 ClaimTypes.Email,
                 user.Email
+            ),
+
+            new(
+                "picture",
+                photoUrl ?? string.Empty
             )
         };
 
@@ -161,6 +171,10 @@ public class AuthController : ControllerBase
 
             Email = User.FindFirstValue(
                 ClaimTypes.Email
+            ),
+
+            PhotoUrl = User.FindFirstValue(
+                "picture"
             )
         });
     }
@@ -172,5 +186,125 @@ public class AuthController : ControllerBase
             "XTrackerCookie"
         );
         return Ok();
+    }
+
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteMe()
+    {
+        if (!User.Identity?.IsAuthenticated ?? true)
+        {
+            return Unauthorized();
+        }
+
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(currentUserId, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+
+        var accountIds = await _context.Accounts
+            .Where(a => a.UserId == userId)
+            .Select(a => a.Id)
+            .ToListAsync();
+
+        var categoryIds = await _context.Categories
+            .Where(c => c.UserId == userId)
+            .Select(c => c.Id)
+            .ToListAsync();
+
+        var sharedTripIds = await _context.TripMembers
+            .Where(m => m.UserId == userId)
+            .Select(m => m.TripId)
+            .Distinct()
+            .ToListAsync();
+
+        var ownedTripIds = await _context.Trips
+            .Where(t => t.CreatedByUserId == userId)
+            .Select(t => t.Id)
+            .ToListAsync();
+
+        var userTripMemberIds = await _context.TripMembers
+            .Where(m => m.UserId == userId)
+            .Select(m => m.Id)
+            .ToListAsync();
+
+        var expenseIdsToDelete = await _context.TripExpenses
+            .Where(e =>
+                e.AddedByUserId == userId ||
+                userTripMemberIds.Contains(e.PaidByTripMemberId) ||
+                ownedTripIds.Contains(e.TripId))
+            .Select(e => e.Id)
+            .ToListAsync();
+
+        if (expenseIdsToDelete.Count > 0)
+        {
+            await _context.TripExpenseParticipants
+                .Where(p => expenseIdsToDelete.Contains(p.TripExpenseId))
+                .ExecuteDeleteAsync();
+
+            await _context.TripExpenses
+                .Where(e => expenseIdsToDelete.Contains(e.Id))
+                .ExecuteDeleteAsync();
+        }
+
+        if (sharedTripIds.Count > 0)
+        {
+            await _context.TripInvites
+                .Where(i => sharedTripIds.Contains(i.TripId) && i.CreatedByUserId == userId)
+                .ExecuteDeleteAsync();
+
+            await _context.TripMembers
+                .Where(m => sharedTripIds.Contains(m.TripId) && m.UserId == userId)
+                .ExecuteDeleteAsync();
+        }
+
+        if (ownedTripIds.Count > 0)
+        {
+            await _context.TripInvites
+                .Where(i => ownedTripIds.Contains(i.TripId))
+                .ExecuteDeleteAsync();
+
+            await _context.TripMembers
+                .Where(m => ownedTripIds.Contains(m.TripId))
+                .ExecuteDeleteAsync();
+
+            await _context.Trips
+                .Where(t => ownedTripIds.Contains(t.Id))
+                .ExecuteDeleteAsync();
+        }
+
+        if (accountIds.Count > 0)
+        {
+            await _context.Transactions
+                .Where(t => accountIds.Contains(t.AccountId))
+                .ExecuteDeleteAsync();
+
+            await _context.Accounts
+                .Where(a => accountIds.Contains(a.Id))
+                .ExecuteDeleteAsync();
+        }
+
+        if (categoryIds.Count > 0)
+        {
+            await _context.Categories
+                .Where(c => categoryIds.Contains(c.Id))
+                .ExecuteDeleteAsync();
+        }
+
+        await _context.Transactions
+            .Where(t => t.UserId == userId)
+            .ExecuteDeleteAsync();
+
+        await _context.Users
+            .Where(u => u.Id == userId)
+            .ExecuteDeleteAsync();
+
+        await transaction.CommitAsync();
+
+        await HttpContext.SignOutAsync("XTrackerCookie");
+
+        return NoContent();
     }
 }

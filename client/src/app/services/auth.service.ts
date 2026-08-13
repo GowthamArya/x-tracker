@@ -7,6 +7,7 @@ export interface CurrentUser {
   id: string;
   name: string;
   email: string;
+  photoUrl?: string | null;
 }
 
 @Injectable({
@@ -48,7 +49,6 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
-    
     return this.http
       .post<void>(
         `${this.apiUrl}/auth/logout`,
@@ -57,6 +57,18 @@ export class AuthService {
           withCredentials: true
         }
       )
+      .pipe(
+        tap(() => {
+          this.currentUser = null;
+        })
+      );
+  }
+
+  deleteAccount(): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/auth/me`, {
+        withCredentials: true
+      })
       .pipe(
         tap(() => {
           this.currentUser = null;

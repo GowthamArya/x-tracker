@@ -1,4 +1,6 @@
 .transactions-page {
+  max-width: 980px;
+  margin: 0 auto;
   padding: 20px 16px 32px;
 }
 
@@ -85,5 +87,30 @@
 }
 
 .transaction-page {
+  max-width: 980px;
+  margin: 0 auto;
   padding: 20px 16px 32px;
+}
+
+ion-modal.compact-filters-modal::part(content) {
+  max-width: 860px;
+  width: min(860px, calc(100vw - 24px));
+  margin: auto;
+  border-radius: 24px 24px 0 0;
+}
+
+@media (min-width: 900px) {
+  .transaction-page {
+    padding-top: 24px;
+  }
+
+  .transaction-search {
+    max-width: 640px;
+  }
+
+  .list-toolbar,
+  .filter-bar,
+  .transaction-list {
+    max-width: 720px;
+  }
 }

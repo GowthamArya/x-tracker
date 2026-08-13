@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonModal, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline } from 'ionicons/icons';
+import { walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline } from 'ionicons/icons';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 import { TransactionsService } from '../../services/transactions.service';
 import { TripsService } from '../../services/trips.service';
@@ -20,7 +20,7 @@ export class MorePage implements OnInit {
   ];
 
   constructor(private readonly auth: AuthService, private readonly router: Router, private readonly alerts: AlertController, private readonly toast: ToastController, private readonly transactions: TransactionsService, private readonly trips: TripsService) {
-    addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline });
+    addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline });
   }
 
   ngOnInit(): void {
@@ -43,6 +43,15 @@ export class MorePage implements OnInit {
     await alert.present();
   }
 
+  get profileAvatar(): string | null {
+    return this.user?.photoUrl?.trim() ? this.user.photoUrl.trim() : null;
+  }
+
+  get profileInitial(): string {
+    const source = this.user?.name?.trim() || this.user?.email?.trim() || 'X';
+    return source.charAt(0).toUpperCase();
+  }
+
   exportData(format: 'csv' | 'json'): void {
     forkJoin({ transactions: this.transactions.getTransactions(), trips: this.trips.getTrips() }).subscribe({ next: ({ transactions, trips }) => {
       if (format === 'json') { this.download(JSON.stringify({ exportedAt: new Date().toISOString(), transactions, trips }, null, 2), 'xtracker-export.json', 'application/json'); return; }
@@ -54,6 +63,25 @@ export class MorePage implements OnInit {
 
   async logout(): Promise<void> {
     const alert = await this.alerts.create({ header: 'Sign out?', message: 'Your data will remain safely stored.', buttons: [{ text: 'Cancel', role: 'cancel' }, { text: 'Sign out', role: 'destructive', handler: () => this.auth.logout().subscribe({ next: () => this.router.navigate(['/login']), error: () => this.showToast('Sign out failed. Please try again.') }) }] });
+    await alert.present();
+  }
+
+  async deleteAccount(): Promise<void> {
+    const alert = await this.alerts.create({
+      header: 'Delete account?',
+      message: 'This will permanently remove your profile, transactions, trips you created, and your membership data. This cannot be undone.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete account',
+          role: 'destructive',
+          handler: () => this.auth.deleteAccount().subscribe({
+            next: () => this.router.navigate(['/login']),
+            error: () => this.showToast('Unable to delete account right now.')
+          })
+        }
+      ]
+    });
     await alert.present();
   }
 

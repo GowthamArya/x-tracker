@@ -147,5 +147,5 @@
 
   </div>
 
-  <ion-modal [isOpen]="filtersOpen" (didDismiss)="filtersOpen = false" [initialBreakpoint]="0.72" [breakpoints]="[0, 0.72, 0.95]"><ng-template><ion-header class="app-header"><ion-toolbar><ion-title>Filter reports</ion-title><ion-buttons slot="end"><ion-button (click)="filtersOpen = false">Done</ion-button></ion-buttons></ion-toolbar></ion-header><ion-content class="ion-padding"><app-transaction-filter [showCategory]="true" (filterChange)="onFilterChange($event)"></app-transaction-filter></ion-content></ng-template></ion-modal>
+  <ion-modal class="compact-filters-modal" [isOpen]="filtersOpen" (didDismiss)="filtersOpen = false" [initialBreakpoint]="0.72" [breakpoints]="[0, 0.72, 0.95]"><ng-template><ion-header class="app-header"><ion-toolbar><ion-title>Filter reports</ion-title><ion-buttons slot="end"><ion-button (click)="filtersOpen = false">Done</ion-button></ion-buttons></ion-toolbar></ion-header><ion-content class="ion-padding"><app-transaction-filter [showCategory]="true" (filterChange)="onFilterChange($event)"></app-transaction-filter></ion-content></ng-template></ion-modal>
 </ion-content>
