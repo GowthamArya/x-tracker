@@ -70,6 +70,14 @@ builder.Services
             builder.Configuration[
                 "Authentication:Google:ClientSecret"
             ]!;
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+        options.ClaimActions.MapJsonKey(
+                "urn:google:picture",
+                "picture",
+                "url"
+            );
+        options.SaveTokens = true;
     });
 
 builder.Services.AddAuthorization();

@@ -72,8 +72,10 @@ public class AuthController : ControllerBase
             )?.Value;
 
         var photoUrl =
-            claims.FirstOrDefault(
-                x => x.Type == "picture"
+            claims.FirstOrDefault(x =>
+                x.Type == "picture" ||
+                x.Type == "urn:google:picture" ||
+                x.Type == "http://schemas.google.com/claims/picture"
             )?.Value;
 
         if (string.IsNullOrWhiteSpace(googleId) ||
