@@ -20,6 +20,8 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
 import { apiInterceptor } from './app/interceptors/api-interceptor';
+import { provideServiceWorker } from '@angular/service-worker';
+import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -40,5 +42,10 @@ bootstrapApplication(AppComponent, {
         apiInterceptor,
       ])
     ),
+
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 });

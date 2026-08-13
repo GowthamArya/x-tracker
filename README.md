@@ -64,7 +64,17 @@ npm run lint
 npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
-The production build is written to `client/www`. The web app includes a manifest and can be installed as a standalone app from supported browsers.
+The production build is written to `client/www` and is an installable PWA. It needs HTTPS in production (or `localhost` while developing) for the offline service worker to run.
+
+## Install the PWA
+
+Deploy the contents of `client/www` behind HTTPS, with `/api` routed to the ASP.NET API. Then open the site in a browser:
+
+- **iPhone / iPad:** Safari → Share → **Add to Home Screen**.
+- **Android:** Chrome → menu → **Install app** (or **Add to Home screen**).
+- **Desktop:** Chrome or Edge → Install icon in the address bar.
+
+The first visit downloads the app shell. Later visits can open the interface without a network connection; actions and account data still require the API, and are never stored in the service-worker cache. Deploy every update with the generated `ngsw.json` file so installed apps receive the new version.
 
 ## iOS and Android
 
