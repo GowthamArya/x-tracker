@@ -53,6 +53,8 @@ Open http://localhost:8100. If the local HTTPS certificate is not trusted:
 dotnet dev-certs https --trust
 ```
 
+To test on an iPhone, do not use `localhost`: it means the iPhone itself. Serve the client from an HTTPS URL reachable by the phone (a deployed URL or HTTPS tunnel), and configure Google OAuth with that URL. The sign-in flow returns to the exact browser URL that initiated it.
+
 ## Web commands
 
 ```bash

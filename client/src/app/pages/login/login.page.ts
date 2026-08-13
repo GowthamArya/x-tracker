@@ -38,15 +38,28 @@ export class LoginPage {
 
   loginWithGoogle(): void {
     const params = new URLSearchParams(window.location.search);
-    const returnUrl = params.get('returnUrl');
-    if (returnUrl) {
-      localStorage.setItem('xtracker_return_url', returnUrl);
-    }
-    let url = `${environment.apiUrl}/auth/google`;
-    if (returnUrl) {
-      url += `?returnUrl=${encodeURIComponent(returnUrl)}`;
+    const requestedReturnUrl = params.get('returnUrl');
+    let returnUrl = `${window.location.origin}/tabs/dashboard`;
+
+    if (requestedReturnUrl) {
+      try {
+        const target = new URL(requestedReturnUrl, window.location.origin);
+
+        // Only resume navigation within this installed/web app. This prevents a
+        // stale or hostile query parameter from redirecting a signed-in user away.
+        if (target.origin === window.location.origin) {
+          returnUrl = target.toString();
+        }
+      } catch {
+        // A malformed return URL should never prevent sign-in.
+      }
     }
 
-    window.location.href = url;
+    localStorage.setItem('xtracker_return_url', returnUrl);
+    const url = `${environment.apiUrl}/auth/google?returnUrl=${encodeURIComponent(returnUrl)}`;
+
+    // Use a top-level navigation for Google OAuth. This also works in Safari's
+    // standalone PWA mode, where popup-based sign-in is unreliable.
+    window.location.assign(url);
   }
 }
