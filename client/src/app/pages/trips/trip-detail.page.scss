@@ -1,28 +1,25 @@
 .gradient-toolbar {
-  --background: var(--app-header-gradient);
-  --color: #ffffff;
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
 
   .add-btn {
     --border-radius: 20px;
     font-weight: 600;
-    --color: var(--app-primary-color);
+    --color: var(--ion-color-primary);
   }
 }
 
 .segment-container {
-  background: var(--app-header-gradient);
-  padding: 0 12px 10px 12px;
+  background: var(--ion-color-primary);
+  padding: 0 12px 10px;
 
   .custom-segment {
-    background: rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
+    background: var(--ion-color-light);
     border-radius: 14px;
     padding: 3px;
 
     ion-segment-button {
-      --color: #ffe1e1;
-      --color-checked: #ffffff;
-      --indicator-color: rgba(255, 255, 255, 0.25);
+      --indicator-color: var(--ion-color-primary-tint);
       font-weight: 600;
       font-size: 0.82rem;
       min-height: 38px;
@@ -36,7 +33,7 @@
 }
 
 .detail-content {
-  --background: var(--ion-background-color, #f8fafc);
+  --background: var(--ion-background-color);
 }
 
 .page-container {
@@ -45,32 +42,33 @@
   padding: 16px;
 }
 
-/* My Personal Balance Banner */
+/* Personal Balance Banner */
 .my-balance-banner {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #ffffff;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
   border-radius: 18px;
   padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  border-left: 6px solid rgba(var(--app-primary-rgb), 0.75);
+  border-left: 6px solid var(--ion-color-primary-shade);
 
   &.positive {
-    border-left-color: #10b981;
+    border-left-color: var(--ion-color-success);
+
     .banner-icon {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
+      background: var(--ion-color-success);
+      color: var(--ion-color-success);
     }
   }
 
   &.negative {
-    border-left-color: #f43f5e;
+    border-left-color: var(--ion-color-danger);
+
     .banner-icon {
-      background: rgba(244, 63, 94, 0.2);
-      color: #fb7185;
+      background: var(--ion-color-danger);
+      color: var(--ion-color-danger);
     }
   }
 
@@ -87,24 +85,27 @@
       align-items: center;
       justify-content: center;
       font-size: 1.6rem;
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffd3d3;
+      background: var(--ion-color-primary);
+      color: var(--ion-color-primary);
     }
 
     .banner-text {
       .banner-label {
         font-size: 0.78rem;
         text-transform: uppercase;
-        color: #e5c7c7;
+        color: var(--ion-color-primary-contrast);
+        opacity: 0.8;
         font-weight: 600;
         letter-spacing: 0.5px;
       }
+
       h2 {
-        margin: 2px 0 0 0;
+        margin: 2px 0 0;
         font-size: 1.25rem;
         font-weight: 700;
+
         strong {
-          color: #ffd3d3;
+          color: var(--ion-color-primary-contrast);
         }
       }
     }
@@ -113,18 +114,17 @@
   .settle-top-btn {
     --border-radius: 20px;
     font-weight: 700;
-    --color: #0f172a;
+    --color: var(--ion-color-primary);
   }
 }
 
 /* Common Section Cards */
 .section-card {
-  background: var(--app-card-bg);
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--ion-color-step-150, #f1f5f9);
+  box-shadow: var(--ion-box-shadow, none);
+  border: 1px solid var(--ion-color-light-shade);
 
   .section-header {
     display: flex;
@@ -138,17 +138,18 @@
       font-weight: 700;
       color: var(--ion-text-color);
     }
+
     .section-sub {
-      margin: 2px 0 0 0;
+      margin: 2px 0 0;
       font-size: 0.85rem;
-      color: var(--app-muted-color);
+      color: var(--ion-color-medium);
     }
 
     .member-count-tag {
       font-size: 0.78rem;
       font-weight: 600;
-      background: var(--app-surface-strong);
-      color: var(--app-muted-color);
+      background: var(--ion-color-light);
+      color: var(--ion-color-medium);
       padding: 4px 10px;
       border-radius: 12px;
     }
@@ -160,30 +161,30 @@
   }
 }
 
-/* Debts Grid Cards */
+/* Debts */
 .all-settled-box {
   text-align: center;
   padding: 30px 16px;
-  background: rgba(22, 163, 74, 0.08);
+  background: var(--ion-color-success-tint);
   border-radius: 16px;
-  border: 1px dashed rgba(22, 163, 74, 0.22);
+  border: 1px dashed var(--ion-color-success);
 
   .settled-icon {
     font-size: 3rem;
-    color: #7ee0a8;
+    color: var(--ion-color-success);
     margin-bottom: 8px;
   }
 
   h4 {
-    margin: 0 0 4px 0;
+    margin: 0 0 4px;
     font-weight: 700;
-    color: #b7f7cf;
+    color: var(--ion-color-success-shade);
   }
 
   p {
     margin: 0;
     font-size: 0.9rem;
-    color: var(--app-muted-color);
+    color: var(--ion-color-medium);
   }
 }
 
@@ -193,18 +194,16 @@
   gap: 12px;
 
   .debt-card {
-    background: var(--app-card-bg);
     border-radius: 14px;
     padding: 14px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid var(--app-card-border);
-    transition: all 0.2s;
+    border: 1px solid var(--ion-color-light-shade);
+    transition: box-shadow 0.2s, transform 0.2s;
 
     &.highlight-user {
-      background: #eef2ff;
-      border-color: rgba(var(--app-primary-rgb), 0.3);
+      border-color: var(--ion-color-primary);
     }
 
     .debt-info {
@@ -212,17 +211,18 @@
         font-size: 0.92rem;
         color: var(--ion-text-color);
 
-        .debtor, .creditor {
+        .debtor,
+        .creditor {
           font-weight: 700;
           color: var(--ion-text-color);
 
           &.me {
-            color: var(--app-primary-color);
+            color: var(--ion-color-primary);
           }
         }
 
         .owes-text {
-          color: var(--app-muted-color);
+          color: var(--ion-color-medium);
           margin: 0 4px;
         }
       }
@@ -230,7 +230,7 @@
       .debt-amount {
         font-size: 1.15rem;
         font-weight: 800;
-        color: var(--app-primary-color);
+        color: var(--ion-color-primary);
         margin-top: 4px;
       }
     }
@@ -255,21 +255,17 @@
     text-align: left;
     font-size: 0.78rem;
     text-transform: uppercase;
-    color: var(--app-muted-color);
+    color: var(--ion-color-medium);
     font-weight: 700;
     padding: 10px 12px;
-    border-bottom: 2px solid var(--app-card-border);
+    border-bottom: 2px solid var(--ion-color-light-shade);
   }
 
   td {
     padding: 12px;
-    border-bottom: 1px solid var(--app-card-border);
+    border-bottom: 1px solid var(--ion-color-light-shade);
     font-size: 0.92rem;
     vertical-align: middle;
-  }
-
-  tr.current-user-row {
-    background: rgba(var(--app-primary-rgb), 0.08);
   }
 
   .member-cell {
@@ -281,8 +277,6 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: var(--app-header-gradient);
-      color: #ffffff;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -298,6 +292,7 @@
       .name {
         font-weight: 600;
       }
+
       .you-badge {
         font-size: 0.65rem;
       }
@@ -308,8 +303,13 @@
     font-weight: 600;
   }
 
-  .text-right { text-align: right; }
-  .text-center { text-align: center; }
+  .text-right {
+    text-align: right;
+  }
+
+  .text-center {
+    text-align: center;
+  }
 
   .balance-tag {
     display: inline-block;
@@ -319,56 +319,65 @@
     font-size: 0.85rem;
 
     &.positive {
-    background: rgba(22, 163, 74, 0.14);
-    color: #7ee0a8;
+      background: var(--ion-color-success-tint);
+      color: var(--ion-color-success-shade);
     }
 
     &.negative {
-    background: rgba(225, 29, 72, 0.14);
-    color: #fda4af;
+      background: var(--ion-color-danger-tint);
+      color: var(--ion-color-danger-shade);
     }
 
     &.zero {
-    background: var(--app-surface-strong);
-    color: var(--app-muted-color);
+      background: var(--ion-color-light);
+      color: var(--ion-color-medium);
     }
   }
 }
 
-/* Expenses List */
+/* Expenses */
 .filter-row {
   margin-bottom: 16px;
 
   .custom-search {
-    --background: var(--app-card-bg);
+    --background: var(--ion-item-background);
     --border-radius: 14px;
-    --box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     padding: 0;
   }
 }
 
 .empty-tab-card {
-  background: var(--app-card-bg);
+  background: var(--ion-item-background);
   border-radius: 20px;
   padding: 40px 20px;
   text-align: center;
-  border: 1px dashed var(--app-card-border);
+  border: 1px dashed var(--ion-color-light-shade);
 
   .empty-icon {
     width: 64px;
     height: 64px;
-    background: rgba(var(--app-primary-rgb), 0.14);
-    color: var(--app-primary-color);
+    background: var(--ion-color-primary-tint);
+    color: var(--ion-color-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 16px auto;
+    margin: 0 auto 16px;
     font-size: 2rem;
   }
 
-  h3 { margin: 0 0 6px 0; font-size: 1.2rem; font-weight: 700; }
-  p { margin: 0 auto 16px auto; color: var(--app-muted-color); max-width: 320px; font-size: 0.9rem; }
+  h3 {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0 auto 16px;
+    color: var(--ion-color-medium);
+    max-width: 320px;
+    font-size: 0.9rem;
+  }
 }
 
 .expense-list {
@@ -378,36 +387,28 @@
 }
 
 .expense-card {
-  background: var(--app-card-bg);
+  background: var(--ion-item-background);
   border-radius: 16px;
   padding: 16px;
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--app-card-border);
+  border: 1px solid var(--ion-color-light-shade);
 
   &.is-settlement {
-    background: rgba(22, 163, 74, 0.08);
-    border-color: rgba(22, 163, 74, 0.22);
+    border-color: var(--ion-color-success);
   }
 
   .exp-icon-wrapper {
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: rgba(var(--app-primary-rgb), 0.14);
-    color: var(--app-primary-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.3rem;
     flex-shrink: 0;
 
-    &.settlement {
-      background: rgba(22, 163, 74, 0.14);
-      color: #7ee0a8;
-    }
   }
 
   .exp-main-info {
@@ -432,7 +433,7 @@
         color: var(--ion-text-color);
 
         &.settlement {
-          color: #7ee0a8;
+          color: var(--ion-color-success);
         }
       }
     }
@@ -440,7 +441,7 @@
     .exp-sub-row {
       margin-top: 4px;
       font-size: 0.82rem;
-      color: var(--app-muted-color);
+      color: var(--ion-color-medium);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -460,12 +461,10 @@
         font-size: 0.72rem;
         margin: 0;
 
-        ion-icon { font-size: 0.85rem; margin-right: 4px; }
-      }
-
-      .settlement-badge {
-        --background: #22c55e;
-        --color: #ffffff;
+        ion-icon {
+          font-size: 0.85rem;
+          margin-right: 4px;
+        }
       }
     }
   }
@@ -477,27 +476,27 @@
   }
 }
 
-/* Members List */
+/* Members */
 .members-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
 
   .member-card {
-    background: var(--app-card-bg);
+    background: var(--ion-item-background);
     border-radius: 14px;
     padding: 14px;
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    border: 1px solid var(--app-card-border);
+    border: 1px solid var(--ion-color-light-shade);
 
     .member-avatar-lg {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--app-header-gradient);
-      color: #ffffff;
+      background: var(--ion-color-primary);
+      color: var(--ion-color-primary-contrast);
       font-size: 1.2rem;
       font-weight: 800;
       display: flex;
@@ -509,8 +508,19 @@
     .member-details {
       flex: 1;
 
-      h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--ion-text-color); }
-      .email { margin: 2px 0 0 0; font-size: 0.78rem; color: var(--app-muted-color); overflow-wrap: anywhere; }
+      h4 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--ion-text-color);
+      }
+
+      .email {
+        margin: 2px 0 0;
+        font-size: 0.78rem;
+        color: var(--ion-color-medium);
+        overflow-wrap: anywhere;
+      }
     }
 
     .member-badges {
@@ -533,7 +543,7 @@
   }
 }
 
-/* Analytics Tab */
+/* Analytics */
 .stats-overview-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -541,20 +551,21 @@
   margin-bottom: 20px;
 
   .overview-card {
-    background: var(--app-header-gradient);
-    color: #ffffff;
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
     border-radius: 16px;
     padding: 18px;
 
     .card-label {
       font-size: 0.78rem;
       text-transform: uppercase;
-      color: #ffe1e1;
+      color: var(--ion-color-primary-contrast);
+      opacity: 0.8;
       font-weight: 600;
     }
 
     .card-val {
-      margin: 4px 0 0 0;
+      margin: 4px 0 0;
       font-size: 1.5rem;
       font-weight: 800;
     }
@@ -579,12 +590,22 @@
         gap: 8px;
         font-weight: 600;
 
-        ion-icon { font-size: 1.1rem; }
+        ion-icon {
+          font-size: 1.1rem;
+          color: var(--ion-color-primary);
+        }
       }
 
       .cat-values {
-        strong { font-weight: 700; }
-        .pct { color: var(--app-muted-color); font-size: 0.8rem; margin-left: 4px; }
+        strong {
+          font-weight: 700;
+        }
+
+        .pct {
+          color: var(--ion-color-medium);
+          font-size: 0.8rem;
+          margin-left: 4px;
+        }
       }
     }
 
@@ -596,7 +617,7 @@
 }
 
 .no-analytics {
-  color: var(--app-muted-color);
+  color: var(--ion-color-medium);
   text-align: center;
   padding: 20px 0;
 }
@@ -604,17 +625,12 @@
 .custom-fab {
   margin-bottom: 16px;
   margin-right: 16px;
-
-  ion-fab-button {
-    --background: var(--app-header-gradient);
-    --box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
-  }
 }
 
 /* Modals */
 .modal-form {
   .modal-sub {
-    color: var(--app-muted-color);
+    color: var(--ion-color-medium);
     font-size: 0.9rem;
     margin-bottom: 20px;
   }
@@ -630,13 +646,12 @@
       display: block;
     }
 
-    .custom-input, .custom-select {
-      --background: #f8fafc;
+    .custom-input,
+    .custom-select {
+      --background: var(--ion-item-background);
       --border-radius: 12px;
       --padding-start: 12px;
       --padding-end: 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
     }
   }
 
@@ -645,5 +660,55 @@
     justify-content: flex-end;
     gap: 12px;
     margin-top: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-container {
+    padding: 12px;
+  }
+
+  .my-balance-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+
+    .settle-top-btn {
+      align-self: flex-start;
+    }
+  }
+
+  .stats-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-card {
+    padding: 16px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .section-header .btn-group {
+    width: 100%;
+  }
+
+  .section-header .btn-group ion-button {
+    flex: 1;
+  }
+
+  .expense-card {
+    padding: 12px;
+  }
+
+  .exp-title-row {
+    flex-direction: column;
+    gap: 2px !important;
+  }
+
+  .balances-table {
+    min-width: 650px;
   }
 }

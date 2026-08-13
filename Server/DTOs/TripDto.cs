@@ -19,4 +19,8 @@ public class TripDto
     public int MemberCount { get; set; }
 
     public int ExpenseCount { get; set; }
+
+    public decimal TotalPaid { get; set; }
+
+    public decimal YourShare { get; set; }
 }

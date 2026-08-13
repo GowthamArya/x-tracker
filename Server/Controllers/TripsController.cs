@@ -180,24 +180,15 @@ public class TripsController : BaseController
     {
         var currentUserId = CurrentUserId;
 
-        var trips = await _context.Trips
+        var tripEntities = await _context.Trips
             .AsNoTracking()
             .Where(t => t.Members.Any(m => m.UserId == currentUserId))
-            .Select(t => new TripDto
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
-                StartDate = t.StartDate,
-                EndDate = t.EndDate,
-                CreatedByUserId = t.CreatedByUserId,
-                CreatedAt = t.CreatedAt,
-                MemberCount = t.Members.Count,
-                ExpenseCount = t.Expenses.Count
-            })
+            .Include(t => t.Members)
+            .Include(t => t.Expenses)
+                .ThenInclude(e => e.Participants)
             .ToListAsync();
 
-        return Ok(trips);
+        return Ok(tripEntities.Select(t => ToTripDto(t, currentUserId)).ToList());
     }
 
     // POST: api/Trips
@@ -263,18 +254,9 @@ public class TripsController : BaseController
         var trip = await _context.Trips
             .AsNoTracking()
             .Where(t => t.Id == id && t.Members.Any(m => m.UserId == currentUserId))
-            .Select(t => new TripDto
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
-                StartDate = t.StartDate,
-                EndDate = t.EndDate,
-                CreatedByUserId = t.CreatedByUserId,
-                CreatedAt = t.CreatedAt,
-                MemberCount = t.Members.Count,
-                ExpenseCount = t.Expenses.Count
-            })
+            .Include(t => t.Members)
+            .Include(t => t.Expenses)
+                .ThenInclude(e => e.Participants)
             .FirstOrDefaultAsync();
 
         if (trip is null)
@@ -282,7 +264,51 @@ public class TripsController : BaseController
             return NotFound();
         }
 
-        return Ok(trip);
+        return Ok(ToTripDto(trip, currentUserId));
+    }
+
+    private static TripDto ToTripDto(Trip trip, int currentUserId)
+    {
+        var totalPaid = 0m;
+        var yourShare = 0m;
+        var currentMemberIds = trip.Members
+            .Where(member => member.UserId == currentUserId)
+            .Select(member => member.Id)
+            .ToHashSet();
+
+        foreach (var expense in trip.Expenses.Where(expense =>
+                     !expense.Description.StartsWith("Settlement:") &&
+                     !(expense.Notes?.Contains("Settlement") ?? false)))
+        {
+            totalPaid += expense.Amount;
+
+            var explicitShares = expense.Participants
+                .Where(participant => participant.ShareAmount.HasValue)
+                .Sum(participant => participant.ShareAmount!.Value);
+            var equalShareCount = expense.Participants.Count(participant => !participant.ShareAmount.HasValue);
+            var equalShare = equalShareCount > 0
+                ? decimal.Round((expense.Amount - explicitShares) / equalShareCount, 2)
+                : 0m;
+
+            yourShare += expense.Participants
+                .Where(participant => currentMemberIds.Contains(participant.TripMemberId))
+                .Sum(participant => participant.ShareAmount ?? equalShare);
+        }
+
+        return new TripDto
+        {
+            Id = trip.Id,
+            Name = trip.Name,
+            Description = trip.Description,
+            StartDate = trip.StartDate,
+            EndDate = trip.EndDate,
+            CreatedByUserId = trip.CreatedByUserId,
+            CreatedAt = trip.CreatedAt,
+            MemberCount = trip.Members.Count,
+            ExpenseCount = trip.Expenses.Count,
+            TotalPaid = totalPaid,
+            YourShare = yourShare,
+        };
     }
 
     // DELETE: api/Trips/{id}

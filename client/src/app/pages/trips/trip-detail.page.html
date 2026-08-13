@@ -3,11 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/trips" text="Trips"></ion-back-button>
     </ion-buttons>
+
     <ion-title>{{ trip?.name || 'Trip Details' }}</ion-title>
+
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="shareTrip()">
         <ion-icon name="share-outline" slot="icon-only"></ion-icon>
       </ion-button>
+
       <ion-button fill="solid" color="light" class="add-btn" (click)="addExpense()">
         <ion-icon name="add-outline" slot="start"></ion-icon>
         Expense
@@ -15,7 +18,6 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <!-- Segment Tab Control -->
   <div class="segment-container">
     <ion-segment [(ngModel)]="activeSegment" mode="md" class="custom-segment">
       <ion-segment-button value="expenses">
@@ -43,17 +45,18 @@
 
 <ion-content [fullscreen]="true" class="detail-content">
   <ion-refresher slot="fixed" (ionRefresh)="load($event)">
-    <ion-refresher-content pullingText="Pull to refresh..." refreshingSpinner="crescent">
+    <ion-refresher-content
+      pullingText="Pull to refresh..."
+      refreshingSpinner="crescent">
     </ion-refresher-content>
   </ion-refresher>
 
   <div class="page-container">
 
-    <!-- TAB 1: EXPENSES TIMELINE -->
+    <!-- EXPENSES -->
     @if (activeSegment === 'expenses') {
       <div class="expenses-tab">
 
-        <!-- Search & Filter Controls -->
         <div class="filter-row">
           <ion-searchbar
             [(ngModel)]="searchExpenseQuery"
@@ -63,12 +66,18 @@
           </ion-searchbar>
         </div>
 
-        <!-- Empty Expenses State -->
         @if (filteredExpenses.length === 0) {
           <div class="empty-tab-card">
-            <div class="empty-icon"><ion-icon name="receipt-outline"></ion-icon></div>
+            <div class="empty-icon">
+              <ion-icon name="receipt-outline"></ion-icon>
+            </div>
+
             <h3>No expenses found</h3>
-            <p>Add group expenses to start splitting costs among trip members.</p>
+
+            <p>
+              Add group expenses to start splitting costs among trip members.
+            </p>
+
             <ion-button fill="solid" color="primary" (click)="addExpense()">
               <ion-icon name="add-outline" slot="start"></ion-icon>
               Add First Expense
@@ -76,55 +85,110 @@
           </div>
         }
 
-        <!-- Expense Timeline List -->
         @if (filteredExpenses.length > 0) {
           <div class="expense-list">
             @for (exp of filteredExpenses; track exp.id) {
-              <div class="expense-card" [class.is-settlement]="exp.isSettlement">
+              <div
+                class="expense-card"
+                [class.is-settlement]="exp.isSettlement">
 
-                <div class="exp-icon-wrapper" [class.settlement]="exp.isSettlement">
-                  <ion-icon [name]="getCategoryIcon(exp.categoryId, exp.description)"></ion-icon>
+                <div
+                  class="exp-icon-wrapper"
+                  [class.settlement]="exp.isSettlement">
+
+                  <ion-icon
+                    [name]="getCategoryIcon(exp.categoryId, exp.description)"
+                    [color]="exp.isSettlement ? 'success' : 'primary'">
+                  </ion-icon>
                 </div>
 
                 <div class="exp-main-info">
+
                   <div class="exp-title-row">
-                    <h4 class="exp-desc">{{ exp.description }}</h4>
-                    <span class="exp-amount" [class.settlement]="exp.isSettlement">
+                    <h4 class="exp-desc">
+                      {{ exp.description }}
+                    </h4>
+
+                    <span
+                      class="exp-amount"
+                      [class.settlement]="exp.isSettlement">
                       ₹{{ exp.amount | number:'1.0-2' }}
                     </span>
                   </div>
 
                   <div class="exp-sub-row">
                     <span class="exp-payer">
-                      Paid by <strong>{{ exp.paidByMemberName || getMemberName(exp.paidByTripMemberId) }}</strong>
+                      Paid by
+                      <strong>
+                        {{ exp.paidByMemberName || getMemberName(exp.paidByTripMemberId) }}
+                      </strong>
                     </span>
+
                     <span class="dot">•</span>
-                    <span class="exp-date">{{ exp.expenseDate | date:'mediumDate' }}</span>
+
+                    <span class="exp-date">
+                      {{ exp.expenseDate | date:'mediumDate' }}
+                    </span>
                   </div>
 
                   @if (exp.participants && exp.participants.length > 0) {
                     <div class="exp-participants">
-                      <ion-chip outline color="medium" class="part-chip">
+
+                      <ion-chip
+                        outline
+                        color="medium"
+                        class="part-chip">
+
                         <ion-icon name="people-outline"></ion-icon>
-                        <span>Split among {{ exp.participants.length }} members</span>
+
+                        <span>
+                          Split among {{ exp.participants.length }} members
+                        </span>
                       </ion-chip>
+
                       @if (exp.isSettlement) {
-                        <ion-chip color="success" class="part-chip settlement-badge">
+                        <ion-chip
+                          color="success"
+                          class="part-chip">
+
                           <ion-icon name="swap-horizontal-outline"></ion-icon>
+
                           <span>Settlement</span>
                         </ion-chip>
                       }
+
                     </div>
                   }
+
                 </div>
 
                 <div class="exp-actions">
-                  <ion-button fill="clear" size="small" (click)="editExpense(exp.id)">
-                    <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+
+                  <ion-button
+                    fill="clear"
+                    size="small"
+                    (click)="editExpense(exp.id)">
+
+                    <ion-icon
+                      name="pencil-outline"
+                      slot="icon-only">
+                    </ion-icon>
+
                   </ion-button>
-                  <ion-button fill="clear" color="danger" size="small" (click)="deleteExpense(exp)">
-                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+
+                  <ion-button
+                    fill="clear"
+                    color="danger"
+                    size="small"
+                    (click)="deleteExpense(exp)">
+
+                    <ion-icon
+                      name="trash-outline"
+                      slot="icon-only">
+                    </ion-icon>
+
                   </ion-button>
+
                 </div>
 
               </div>
@@ -135,101 +199,206 @@
       </div>
     }
 
-    <!-- TAB 2: BALANCES & SPLITWISE DEBTS -->
+    <!-- BALANCES -->
     @if (activeSegment === 'balances') {
       <div class="balances-tab">
 
-        <!-- My Net Balance Card -->
         @if (myBalance) {
-          <div class="my-balance-banner" [class.positive]="myBalance.balance > 0.01" [class.negative]="myBalance.balance < -0.01">
+          <div
+            class="my-balance-banner"
+            [class.positive]="myBalance.balance > 0.01"
+            [class.negative]="myBalance.balance < -0.01">
+
             <div class="banner-left">
+
               <div class="banner-icon">
-                <ion-icon [name]="myBalance.balance >= 0 ? 'wallet-outline' : 'cash-outline'"></ion-icon>
+                <ion-icon
+                  [name]="myBalance.balance >= 0 ? 'wallet-outline' : 'cash-outline'"
+                  [color]="
+                    myBalance.balance > 0.01
+                      ? 'success'
+                      : myBalance.balance < -0.01
+                        ? 'danger'
+                        : 'light'
+                  ">
+                </ion-icon>
               </div>
+
               <div class="banner-text">
-                <span class="banner-label">Your Personal Balance</span>
+                <span class="banner-label">
+                  Your Personal Balance
+                </span>
+
                 @if (myBalance.balance > 0.01) {
-                  <h2>You are owed <strong>₹{{ myBalance.balance | number:'1.0-2' }}</strong> overall</h2>
-                } @else if (myBalance.balance < -0.01) {
-                  <h2>You owe <strong>₹{{ -myBalance.balance | number:'1.0-2' }}</strong> overall</h2>
-                } @else {
+                  <h2>
+                    You are owed
+                    <strong>
+                      ₹{{ myBalance.balance | number:'1.0-2' }}
+                    </strong>
+                    overall
+                  </h2>
+                }
+                @else if (myBalance.balance < -0.01) {
+                  <h2>
+                    You owe
+                    <strong>
+                      ₹{{ -myBalance.balance | number:'1.0-2' }}
+                    </strong>
+                    overall
+                  </h2>
+                }
+                @else {
                   <h2>You are all settled up! 🎉</h2>
                 }
               </div>
+
             </div>
 
-            <ion-button fill="solid" color="light" class="settle-top-btn" (click)="openSettleUp()">
-              <ion-icon name="swap-horizontal-outline" slot="start"></ion-icon>
+            <ion-button
+              fill="solid"
+              color="light"
+              class="settle-top-btn"
+              (click)="openSettleUp()">
+
+              <ion-icon
+                name="swap-horizontal-outline"
+                slot="start">
+              </ion-icon>
+
               Settle Up
             </ion-button>
+
           </div>
         }
 
-        <!-- Simplified Debts Section (Who Owes Whom) -->
         <div class="section-card">
+
           <div class="section-header">
+
             <div>
               <h3>Who Owes Whom (Simplified Debts)</h3>
-              <p class="section-sub">Splitwise debt minimization algorithm results</p>
+
+              <p class="section-sub">
+                Splitwise debt minimization algorithm results
+              </p>
             </div>
-            <ion-button fill="outline" size="small" shape="round" (click)="openSettleUp()">
-              <ion-icon name="add-outline" slot="start"></ion-icon>
+
+            <ion-button
+              fill="outline"
+              size="small"
+              shape="round"
+              (click)="openSettleUp()">
+
+              <ion-icon
+                name="add-outline"
+                slot="start">
+              </ion-icon>
+
               Record Payment
             </ion-button>
+
           </div>
 
           @if (debts.length === 0) {
             <div class="all-settled-box">
-              <ion-icon name="checkmark-circle-outline" class="settled-icon"></ion-icon>
+
+              <ion-icon
+                name="checkmark-circle-outline"
+                color="success"
+                class="settled-icon">
+              </ion-icon>
+
               <h4>No outstanding debts</h4>
-              <p>Everyone in this trip is completely settled up!</p>
+
+              <p>
+                Everyone in this trip is completely settled up!
+              </p>
+
             </div>
           }
 
           @if (debts.length > 0) {
             <div class="debts-grid">
-              @for (debt of debts; track debt.fromTripMemberId + '-' + debt.toTripMemberId) {
-                <div class="debt-card" [class.highlight-user]="debt.isFromCurrentUser || debt.isToCurrentUser">
+
+              @for (
+                debt of debts;
+                track debt.fromTripMemberId + '-' + debt.toTripMemberId
+              ) {
+
+                <div
+                  class="debt-card"
+                  [class.highlight-user]="
+                    debt.isFromCurrentUser || debt.isToCurrentUser
+                  ">
+
                   <div class="debt-info">
+
                     <div class="debt-names">
-                      <span class="debtor" [class.me]="debt.isFromCurrentUser">
+
+                      <span
+                        class="debtor"
+                        [class.me]="debt.isFromCurrentUser">
+
                         {{ debt.isFromCurrentUser ? 'You' : debt.fromTripMemberName }}
+
                       </span>
-                      <span class="owes-text">owes</span>
-                      <span class="creditor" [class.me]="debt.isToCurrentUser">
+
+                      <span class="owes-text">
+                        owes
+                      </span>
+
+                      <span
+                        class="creditor"
+                        [class.me]="debt.isToCurrentUser">
+
                         {{ debt.isToCurrentUser ? 'you' : debt.toTripMemberName }}
+
                       </span>
+
                     </div>
 
                     <div class="debt-amount">
                       ₹{{ debt.amount | number:'1.0-2' }}
                     </div>
+
                   </div>
 
                   <ion-button
                     fill="solid"
-                    size="small"
                     color="primary"
+                    size="small"
                     shape="round"
                     class="settle-btn"
                     (click)="openSettleUp(debt)">
+
                     Settle Up
+
                   </ion-button>
+
                 </div>
               }
+
             </div>
           }
+
         </div>
 
-        <!-- Comprehensive Balances Table -->
         <div class="section-card">
+
           <div class="section-header">
+
             <h3>Full Group Balance Sheet</h3>
-            <span class="member-count-tag">{{ balances.length }} Members</span>
+
+            <span class="member-count-tag">
+              {{ balances.length }} Members
+            </span>
+
           </div>
 
           <div class="table-responsive">
+
             <table class="balances-table">
+
               <thead>
                 <tr>
                   <th>Member</th>
@@ -239,19 +408,35 @@
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
+
               <tbody>
+
                 @for (b of balances; track b.tripMemberId) {
+
                   <tr [class.current-user-row]="b.isCurrentUser">
+
                     <td class="member-cell">
+
                       <div class="member-avatar">
                         {{ (b.name || 'M')[0] | uppercase }}
                       </div>
+
                       <div class="member-name-group">
-                        <span class="name">{{ b.name }}</span>
+
+                        <span class="name">
+                          {{ b.name }}
+                        </span>
+
                         @if (b.isCurrentUser) {
-                          <ion-badge color="primary" class="you-badge">You</ion-badge>
+                          <ion-badge
+                            color="primary"
+                            class="you-badge">
+                            You
+                          </ion-badge>
                         }
+
                       </div>
+
                     </td>
 
                     <td class="text-right amount-col">
@@ -263,72 +448,155 @@
                     </td>
 
                     <td class="text-right amount-col">
+
                       @if (b.balance > 0.01) {
-                        <span class="balance-tag positive">+₹{{ b.balance | number:'1.0-2' }}</span>
-                      } @else if (b.balance < -0.01) {
-                        <span class="balance-tag negative">-₹{{ -b.balance | number:'1.0-2' }}</span>
-                      } @else {
-                        <span class="balance-tag zero">Settled</span>
+
+                        <span class="balance-tag positive">
+                          +₹{{ b.balance | number:'1.0-2' }}
+                        </span>
+
                       }
+                      @else if (b.balance < -0.01) {
+
+                        <span class="balance-tag negative">
+                          -₹{{ -b.balance | number:'1.0-2' }}
+                        </span>
+
+                      }
+                      @else {
+
+                        <span class="balance-tag zero">
+                          Settled
+                        </span>
+
+                      }
+
                     </td>
 
                     <td class="text-center">
-                      <ion-button fill="clear" size="small" (click)="openSettleUp()">
-                        <ion-icon name="swap-horizontal-outline" slot="icon-only"></ion-icon>
+
+                      <ion-button
+                        fill="clear"
+                        size="small"
+                        (click)="openSettleUp()">
+
+                        <ion-icon
+                          name="swap-horizontal-outline"
+                          slot="icon-only">
+                        </ion-icon>
+
                       </ion-button>
+
                     </td>
+
                   </tr>
                 }
+
               </tbody>
+
             </table>
+
           </div>
+
         </div>
 
       </div>
     }
 
-    <!-- TAB 3: MEMBERS MANAGEMENT -->
+    <!-- MEMBERS -->
     @if (activeSegment === 'members') {
       <div class="members-tab">
+
         <div class="section-card">
+
           <div class="section-header">
+
             <div>
               <h3>Trip Members & Friends</h3>
-              <p class="section-sub">People sharing expenses in this trip</p>
+
+              <p class="section-sub">
+                People sharing expenses in this trip
+              </p>
             </div>
+
             <div class="btn-group">
-              <ion-button fill="outline" size="small" (click)="openAddGuestModal()">
-                <ion-icon name="person-add-outline" slot="start"></ion-icon>
+
+              <ion-button
+                fill="outline"
+                size="small"
+                (click)="openAddGuestModal()">
+
+                <ion-icon
+                  name="person-add-outline"
+                  slot="start">
+                </ion-icon>
+
                 Add Guest
+
               </ion-button>
-              <ion-button fill="solid" color="primary" size="small" (click)="shareTrip()">
-                <ion-icon name="link-outline" slot="start"></ion-icon>
+
+              <ion-button
+                fill="solid"
+                color="primary"
+                size="small"
+                (click)="shareTrip()">
+
+                <ion-icon
+                  name="link-outline"
+                  slot="start">
+                </ion-icon>
+
                 Invite Link
+
               </ion-button>
+
             </div>
+
           </div>
 
           <div class="members-list">
+
             @for (m of members; track m.id) {
+
               <div class="member-card">
+
                 <div class="member-avatar-lg">
                   {{ (m.name || 'M')[0] | uppercase }}
                 </div>
+
                 <div class="member-details">
+
                   <h4>{{ m.name }}</h4>
-                  <p class="email">{{ m.email || 'Virtual / Guest Member' }}</p>
+
+                  <p class="email">
+                    {{ m.email || 'Virtual / Guest Member' }}
+                  </p>
+
                 </div>
+
                 <div class="member-badges">
+
                   @if (m.isOwner) {
-                    <ion-badge color="warning">Organizer</ion-badge>
+                    <ion-badge color="warning">
+                      Organizer
+                    </ion-badge>
                   }
+
                   @if (m.userId) {
-                    <ion-badge color="success">Linked User</ion-badge>
-                  } @else {
-                    <ion-badge color="medium">Guest</ion-badge>
+                    <ion-badge color="success">
+                      Linked User
+                    </ion-badge>
                   }
+                  @else {
+                    <ion-badge color="medium">
+                      Guest
+                    </ion-badge>
+                  }
+
                 </div>
+
                 @if (canRemoveMember(m)) {
+
                   <ion-button
                     class="remove-member-button"
                     fill="clear"
@@ -336,62 +604,117 @@
                     size="small"
                     [attr.aria-label]="'Remove ' + m.name"
                     (click)="confirmRemoveMember(m)">
-                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+
+                    <ion-icon
+                      name="trash-outline"
+                      slot="icon-only">
+                    </ion-icon>
+
                   </ion-button>
+
                 }
+
               </div>
             }
+
           </div>
+
         </div>
+
       </div>
     }
 
-    <!-- TAB 4: ANALYTICS -->
+    <!-- ANALYTICS -->
     @if (activeSegment === 'analytics') {
       <div class="analytics-tab">
 
         <div class="stats-overview-grid">
+
           <div class="overview-card">
-            <span class="card-label">Total Trip Expenses</span>
-            <h2 class="card-val">₹{{ totalTripExpense | number:'1.0-2' }}</h2>
+            <span class="card-label">
+              Total Trip Expenses
+            </span>
+
+            <h2 class="card-val">
+              ₹{{ totalTripExpense | number:'1.0-2' }}
+            </h2>
           </div>
 
           <div class="overview-card">
-            <span class="card-label">Average / Member</span>
+
+            <span class="card-label">
+              Average / Member
+            </span>
+
             <h2 class="card-val">
-              ₹{{ members.length > 0 ? (totalTripExpense / members.length | number:'1.0-2') : '0' }}
+              ₹{{
+                members.length > 0
+                  ? (totalTripExpense / members.length | number:'1.0-2')
+                  : '0'
+              }}
             </h2>
+
           </div>
+
         </div>
 
         <div class="section-card">
+
           <div class="section-header">
             <h3>Category Expenditure Breakdown</h3>
           </div>
 
           @if (categoryAnalytics.length === 0) {
-            <p class="no-analytics">No categorised expenses recorded yet.</p>
+            <p class="no-analytics">
+              No categorised expenses recorded yet.
+            </p>
           }
 
           <div class="analytics-list">
+
             @for (cat of categoryAnalytics; track cat.name) {
+
               <div class="category-item">
+
                 <div class="cat-header">
+
                   <div class="cat-title">
-                    <ion-icon [name]="cat.icon" [style.color]="cat.color"></ion-icon>
-                    <span>{{ cat.name }}</span>
+
+                    <ion-icon
+                      [name]="cat.icon"
+                      color="primary">
+                    </ion-icon>
+
+                    <span>
+                      {{ cat.name }}
+                    </span>
+
                   </div>
+
                   <div class="cat-values">
-                    <strong>₹{{ cat.totalAmount | number:'1.0-2' }}</strong>
-                    <span class="pct">({{ cat.percentage }}%)</span>
+
+                    <strong>
+                      ₹{{ cat.totalAmount | number:'1.0-2' }}
+                    </strong>
+
+                    <span class="pct">
+                      ({{ cat.percentage }}%)
+                    </span>
+
                   </div>
+
                 </div>
 
-                <ion-progress-bar [value]="cat.percentage / 100" [style.--progress-background]="cat.color">
+                <ion-progress-bar
+                  color="primary"
+                  [value]="cat.percentage / 100">
                 </ion-progress-bar>
+
               </div>
             }
+
           </div>
+
         </div>
 
       </div>
@@ -399,113 +722,262 @@
 
   </div>
 
-  <!-- Floating Action Button for Add Expense -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
-    <ion-fab-button color="primary" (click)="addExpense()">
+  <!-- ADD EXPENSE FAB -->
+  <ion-fab
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    class="custom-fab">
+
+    <ion-fab-button
+      color="primary"
+      (click)="addExpense()">
+
       <ion-icon name="add-outline"></ion-icon>
+
     </ion-fab-button>
+
   </ion-fab>
 
   <!-- SETTLE UP MODAL -->
-  <ion-modal [isOpen]="isSettleUpModalOpen" (didDismiss)="closeSettleUpModal()">
+  <ion-modal
+    [isOpen]="isSettleUpModalOpen"
+    (didDismiss)="closeSettleUpModal()">
+
     <ng-template>
+
       <ion-header>
+
         <ion-toolbar color="primary">
-          <ion-title>Settle Up Payment</ion-title>
+
+          <ion-title>
+            Settle Up Payment
+          </ion-title>
+
           <ion-buttons slot="end">
+
             <ion-button (click)="closeSettleUpModal()">
-              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+
+              <ion-icon
+                name="close-outline"
+                slot="icon-only">
+              </ion-icon>
+
             </ion-button>
+
           </ion-buttons>
+
         </ion-toolbar>
+
       </ion-header>
 
       <ion-content class="modal-content ion-padding">
+
         <div class="modal-form">
-          <p class="modal-sub">Record a debt payment made between trip members.</p>
+
+          <p class="modal-sub">
+            Record a debt payment made between trip members.
+          </p>
 
           <div class="form-row">
-            <ion-label class="label">Payer (Who paid?)</ion-label>
-            <ion-select [(ngModel)]="settlePayerMemberId" class="custom-select">
+
+            <ion-label class="label">
+              Payer (Who paid?)
+            </ion-label>
+
+            <ion-select
+              [(ngModel)]="settlePayerMemberId"
+              class="custom-select">
+
               @for (m of members; track m.id) {
-                <ion-select-option [value]="m.id">{{ m.name }}</ion-select-option>
+                <ion-select-option [value]="m.id">
+                  {{ m.name }}
+                </ion-select-option>
               }
+
             </ion-select>
+
           </div>
 
           <div class="form-row">
-            <ion-label class="label">Recipient (Who received money?)</ion-label>
-            <ion-select [(ngModel)]="settleReceiverMemberId" class="custom-select">
+
+            <ion-label class="label">
+              Recipient (Who received money?)
+            </ion-label>
+
+            <ion-select
+              [(ngModel)]="settleReceiverMemberId"
+              class="custom-select">
+
               @for (m of members; track m.id) {
-                <ion-select-option [value]="m.id">{{ m.name }}</ion-select-option>
+                <ion-select-option [value]="m.id">
+                  {{ m.name }}
+                </ion-select-option>
               }
+
             </ion-select>
+
           </div>
 
           <div class="form-row">
-            <ion-label class="label">Amount Paid (₹)</ion-label>
-            <ion-input type="number" [(ngModel)]="settleAmount" placeholder="0.00" class="custom-input">
+
+            <ion-label class="label">
+              Amount Paid (₹)
+            </ion-label>
+
+            <ion-input
+              type="number"
+              [(ngModel)]="settleAmount"
+              placeholder="0.00"
+              class="custom-input">
             </ion-input>
+
           </div>
 
           <div class="form-row">
-            <ion-label class="label">Notes / Reference</ion-label>
-            <ion-input [(ngModel)]="settleNotes" placeholder="e.g. UPI transfer, Cash payment" class="custom-input">
+
+            <ion-label class="label">
+              Notes / Reference
+            </ion-label>
+
+            <ion-input
+              [(ngModel)]="settleNotes"
+              placeholder="e.g. UPI transfer, Cash payment"
+              class="custom-input">
             </ion-input>
+
           </div>
 
           <div class="modal-actions">
-            <ion-button fill="clear" (click)="closeSettleUpModal()">Cancel</ion-button>
-            <ion-button fill="solid" color="primary" (click)="saveSettlement()">
-              <ion-icon name="checkmark-outline" slot="start"></ion-icon>
-              Record Settlement
+
+            <ion-button
+              fill="clear"
+              (click)="closeSettleUpModal()">
+              Cancel
             </ion-button>
+
+            <ion-button
+              fill="solid"
+              color="primary"
+              (click)="saveSettlement()">
+
+              <ion-icon
+                name="checkmark-outline"
+                slot="start">
+              </ion-icon>
+
+              Record Settlement
+
+            </ion-button>
+
           </div>
+
         </div>
+
       </ion-content>
+
     </ng-template>
+
   </ion-modal>
 
   <!-- ADD GUEST MEMBER MODAL -->
-  <ion-modal [isOpen]="isAddGuestModalOpen" (didDismiss)="closeAddGuestModal()">
+  <ion-modal
+    [isOpen]="isAddGuestModalOpen"
+    (didDismiss)="closeAddGuestModal()">
+
     <ng-template>
+
       <ion-header>
+
         <ion-toolbar color="primary">
-          <ion-title>Add Guest Member</ion-title>
+
+          <ion-title>
+            Add Guest Member
+          </ion-title>
+
           <ion-buttons slot="end">
+
             <ion-button (click)="closeAddGuestModal()">
-              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+
+              <ion-icon
+                name="close-outline"
+                slot="icon-only">
+              </ion-icon>
+
             </ion-button>
+
           </ion-buttons>
+
         </ion-toolbar>
+
       </ion-header>
 
       <ion-content class="modal-content ion-padding">
+
         <div class="modal-form">
-          <p class="modal-sub">Add a friend by name to split expenses with them.</p>
+
+          <p class="modal-sub">
+            Add a friend by name to split expenses with them.
+          </p>
 
           <div class="form-row">
-            <ion-label class="label">Full Name *</ion-label>
-            <ion-input [(ngModel)]="guestName" placeholder="e.g. Rahul Sharma" class="custom-input">
+
+            <ion-label class="label">
+              Full Name *
+            </ion-label>
+
+            <ion-input
+              [(ngModel)]="guestName"
+              placeholder="e.g. Rahul Sharma"
+              class="custom-input">
             </ion-input>
+
           </div>
 
           <div class="form-row">
-            <ion-label class="label">Email Address (Optional)</ion-label>
-            <ion-input [(ngModel)]="guestEmail" placeholder="rahul@example.com" class="custom-input">
+
+            <ion-label class="label">
+              Email Address (Optional)
+            </ion-label>
+
+            <ion-input
+              [(ngModel)]="guestEmail"
+              placeholder="rahul@example.com"
+              class="custom-input">
             </ion-input>
+
           </div>
 
           <div class="modal-actions">
-            <ion-button fill="clear" (click)="closeAddGuestModal()">Cancel</ion-button>
-            <ion-button fill="solid" color="primary" (click)="saveGuestMember()">
-              <ion-icon name="person-add-outline" slot="start"></ion-icon>
-              Add Member
+
+            <ion-button
+              fill="clear"
+              (click)="closeAddGuestModal()">
+              Cancel
             </ion-button>
+
+            <ion-button
+              fill="solid"
+              color="primary"
+              (click)="saveGuestMember()">
+
+              <ion-icon
+                name="person-add-outline"
+                slot="start">
+              </ion-icon>
+
+              Add Member
+
+            </ion-button>
+
           </div>
+
         </div>
+
       </ion-content>
+
     </ng-template>
+
   </ion-modal>
 
 </ion-content>
