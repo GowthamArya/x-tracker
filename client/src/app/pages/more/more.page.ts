@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonModal, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline } from 'ionicons/icons';
+import { walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline, settingsOutline } from 'ionicons/icons';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 import { TransactionsService } from '../../services/transactions.service';
 import { TripsService } from '../../services/trips.service';
@@ -20,7 +20,7 @@ export class MorePage implements OnInit {
   ];
 
   constructor(private readonly auth: AuthService, private readonly router: Router, private readonly alerts: AlertController, private readonly toast: ToastController, private readonly transactions: TransactionsService, private readonly trips: TripsService) {
-    addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline });
+    addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline, settingsOutline });
   }
 
   ngOnInit(): void {

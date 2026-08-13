@@ -14,12 +14,15 @@ import {
   IonButtons,
   IonSearchbar,
   IonModal,
+  IonIcon,
 } from '@ionic/angular/standalone';
 
 import { TransactionsService } from '../../services/transactions.service';
 import { Transaction } from '../../models/transaction.model';
 import { FilterValue } from '../../models/filter.model';
 import { FilterPage } from '../filters/filters.page';
+import { addIcons } from 'ionicons';
+import { addOutline, optionsOutline, checkmarkOutline } from 'ionicons/icons';
 
 type TransactionFilter = 'all' | 'income' | 'expense';
 
@@ -37,6 +40,7 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     IonButtons,
     IonSearchbar,
     IonModal,
+    IonIcon,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -79,7 +83,9 @@ export class TransactionsPage implements OnInit {
   constructor(
     private readonly transactionsService: TransactionsService,
     private readonly router: Router
-  ) {}
+  ) {
+    addIcons({ addOutline, optionsOutline, checkmarkOutline });
+  }
 
   ngOnInit(): void {
     this.loadTransactions();

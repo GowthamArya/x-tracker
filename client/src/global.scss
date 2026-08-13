@@ -46,10 +46,63 @@
 ion-header.navbar-header,
 ion-header.app-header { background: var(--app-header-gradient); }
 ion-header.navbar-header ion-toolbar,
-ion-header.app-header ion-toolbar { --background: transparent; --color: #fff; }
+ion-header.app-header ion-toolbar {
+  --background: transparent;
+  --color: #fff;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --min-height: 56px;
+}
+
+ion-header.navbar-header ion-toolbar ion-buttons,
+ion-header.app-header ion-toolbar ion-buttons {
+  gap: 6px;
+}
+
+ion-header.navbar-header ion-toolbar ion-button,
+ion-header.app-header ion-toolbar ion-button {
+  --color: #fff;
+  --border-color: rgba(255, 255, 255, 0.35);
+}
+
+ion-header.navbar-header ion-toolbar ion-button.header-action,
+ion-header.app-header ion-toolbar ion-button.header-action {
+  --border-radius: 999px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+ion-header.navbar-header ion-toolbar ion-button.header-action ion-icon,
+ion-header.app-header ion-toolbar ion-button.header-action ion-icon {
+  font-size: 1.05rem;
+}
+
+ion-header.navbar-header ion-toolbar ion-button.header-action .button-inner,
+ion-header.app-header ion-toolbar ion-button.header-action .button-inner {
+  gap: 6px;
+}
+
+.header-action-label {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 420px) {
+  .header-action-label {
+    display: none;
+  }
+}
+
 .app-card { background: var(--app-card-bg); border: 1px solid var(--app-card-border); border-radius: var(--app-radius-lg); }
 .gradient-toolbar { --background: var(--app-header-gradient) !important; }
 ion-content, ion-list, ion-card { color: var(--ion-text-color); }
 ion-item ion-icon { color: var(--app-icon-color); }
 body.app-dark ion-item ion-icon { color: var(--app-icon-color); }
 ion-app { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+ion-tab-bar {
+  --background: var(--ion-tab-bar-background, var(--app-card-bg));
+  --border: 1px solid var(--ion-tab-bar-border-color, var(--app-card-border));
+  --color: var(--ion-tab-bar-color, var(--app-muted-color));
+  --color-selected: var(--ion-tab-bar-color-selected, var(--app-primary-color));
+}

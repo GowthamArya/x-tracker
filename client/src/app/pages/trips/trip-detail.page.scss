@@ -20,7 +20,7 @@
     padding: 3px;
 
     ion-segment-button {
-      --color: #c7d2fe;
+      --color: #ffe1e1;
       --color-checked: #ffffff;
       --indicator-color: rgba(255, 255, 255, 0.25);
       font-weight: 600;
@@ -56,7 +56,7 @@
   align-items: center;
   margin-bottom: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  border-left: 6px solid #94a3b8;
+  border-left: 6px solid rgba(var(--app-primary-rgb), 0.75);
 
   &.positive {
     border-left-color: #10b981;
@@ -88,14 +88,14 @@
       justify-content: center;
       font-size: 1.6rem;
       background: rgba(255, 255, 255, 0.1);
-      color: #818cf8;
+      color: #ffd3d3;
     }
 
     .banner-text {
       .banner-label {
         font-size: 0.78rem;
         text-transform: uppercase;
-        color: #94a3b8;
+        color: #e5c7c7;
         font-weight: 600;
         letter-spacing: 0.5px;
       }
@@ -104,7 +104,7 @@
         font-size: 1.25rem;
         font-weight: 700;
         strong {
-          color: #fbbf24;
+          color: #ffd3d3;
         }
       }
     }
@@ -119,7 +119,7 @@
 
 /* Common Section Cards */
 .section-card {
-  background: var(--ion-card-background, #ffffff);
+  background: var(--app-card-bg);
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 20px;
@@ -136,19 +136,19 @@
       margin: 0;
       font-size: 1.15rem;
       font-weight: 700;
-      color: var(--ion-text-color, #0f172a);
+      color: var(--ion-text-color);
     }
     .section-sub {
       margin: 2px 0 0 0;
       font-size: 0.85rem;
-      color: #64748b;
+      color: var(--app-muted-color);
     }
 
     .member-count-tag {
       font-size: 0.78rem;
       font-weight: 600;
-      background: #f1f5f9;
-      color: #475569;
+      background: var(--app-surface-strong);
+      color: var(--app-muted-color);
       padding: 4px 10px;
       border-radius: 12px;
     }
@@ -164,26 +164,26 @@
 .all-settled-box {
   text-align: center;
   padding: 30px 16px;
-  background: #f0fdf4;
+  background: rgba(22, 163, 74, 0.08);
   border-radius: 16px;
-  border: 1px dashed #86efac;
+  border: 1px dashed rgba(22, 163, 74, 0.22);
 
   .settled-icon {
     font-size: 3rem;
-    color: #16a34a;
+    color: #7ee0a8;
     margin-bottom: 8px;
   }
 
   h4 {
     margin: 0 0 4px 0;
     font-weight: 700;
-    color: #15803d;
+    color: #b7f7cf;
   }
 
   p {
     margin: 0;
     font-size: 0.9rem;
-    color: #166534;
+    color: var(--app-muted-color);
   }
 }
 
@@ -204,17 +204,17 @@
 
     &.highlight-user {
       background: #eef2ff;
-      border-color: #c7d2fe;
+      border-color: rgba(var(--app-primary-rgb), 0.3);
     }
 
     .debt-info {
       .debt-names {
         font-size: 0.92rem;
-        color: #334155;
+        color: var(--ion-text-color);
 
         .debtor, .creditor {
           font-weight: 700;
-          color: #0f172a;
+          color: var(--ion-text-color);
 
           &.me {
             color: var(--app-primary-color);
@@ -222,7 +222,7 @@
         }
 
         .owes-text {
-          color: #64748b;
+          color: var(--app-muted-color);
           margin: 0 4px;
         }
       }
@@ -230,7 +230,7 @@
       .debt-amount {
         font-size: 1.15rem;
         font-weight: 800;
-        color: #e11d48;
+        color: var(--app-primary-color);
         margin-top: 4px;
       }
     }
@@ -255,21 +255,21 @@
     text-align: left;
     font-size: 0.78rem;
     text-transform: uppercase;
-    color: #64748b;
+    color: var(--app-muted-color);
     font-weight: 700;
     padding: 10px 12px;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid var(--app-card-border);
   }
 
   td {
     padding: 12px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--app-card-border);
     font-size: 0.92rem;
     vertical-align: middle;
   }
 
   tr.current-user-row {
-    background: #f8fafc;
+    background: rgba(var(--app-primary-rgb), 0.08);
   }
 
   .member-cell {
@@ -319,18 +319,18 @@
     font-size: 0.85rem;
 
     &.positive {
-      background: #dcfce7;
-      color: #15803d;
+    background: rgba(22, 163, 74, 0.14);
+    color: #7ee0a8;
     }
 
     &.negative {
-      background: #ffe4e6;
-      color: #be123c;
+    background: rgba(225, 29, 72, 0.14);
+    color: #fda4af;
     }
 
     &.zero {
-      background: #f1f5f9;
-      color: #64748b;
+    background: var(--app-surface-strong);
+    color: var(--app-muted-color);
     }
   }
 }
@@ -340,7 +340,7 @@
   margin-bottom: 16px;
 
   .custom-search {
-    --background: var(--ion-card-background, #ffffff);
+    --background: var(--app-card-bg);
     --border-radius: 14px;
     --box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     padding: 0;
@@ -348,16 +348,16 @@
 }
 
 .empty-tab-card {
-  background: #ffffff;
+  background: var(--app-card-bg);
   border-radius: 20px;
   padding: 40px 20px;
   text-align: center;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--app-card-border);
 
   .empty-icon {
     width: 64px;
     height: 64px;
-    background: #e0e7ff;
+    background: rgba(var(--app-primary-rgb), 0.14);
     color: var(--app-primary-color);
     border-radius: 50%;
     display: flex;
@@ -368,7 +368,7 @@
   }
 
   h3 { margin: 0 0 6px 0; font-size: 1.2rem; font-weight: 700; }
-  p { margin: 0 auto 16px auto; color: #64748b; max-width: 320px; font-size: 0.9rem; }
+  p { margin: 0 auto 16px auto; color: var(--app-muted-color); max-width: 320px; font-size: 0.9rem; }
 }
 
 .expense-list {
@@ -378,25 +378,25 @@
 }
 
 .expense-card {
-  background: var(--ion-card-background, #ffffff);
+  background: var(--app-card-bg);
   border-radius: 16px;
   padding: 16px;
   display: flex;
   align-items: flex-start;
   gap: 14px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--ion-color-step-150, #f1f5f9);
+  border: 1px solid var(--app-card-border);
 
   &.is-settlement {
-    background: #f0fdf4;
-    border-color: #bbf7d0;
+    background: rgba(22, 163, 74, 0.08);
+    border-color: rgba(22, 163, 74, 0.22);
   }
 
   .exp-icon-wrapper {
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: #e0e7ff;
+    background: rgba(var(--app-primary-rgb), 0.14);
     color: var(--app-primary-color);
     display: flex;
     align-items: center;
@@ -405,8 +405,8 @@
     flex-shrink: 0;
 
     &.settlement {
-      background: #dcfce7;
-      color: #16a34a;
+      background: rgba(22, 163, 74, 0.14);
+      color: #7ee0a8;
     }
   }
 
@@ -423,16 +423,16 @@
         margin: 0;
         font-size: 1rem;
         font-weight: 700;
-        color: var(--ion-text-color, #0f172a);
+        color: var(--ion-text-color);
       }
 
       .exp-amount {
         font-size: 1.1rem;
         font-weight: 800;
-        color: #0f172a;
+        color: var(--ion-text-color);
 
         &.settlement {
-          color: #16a34a;
+          color: #7ee0a8;
         }
       }
     }
@@ -440,13 +440,13 @@
     .exp-sub-row {
       margin-top: 4px;
       font-size: 0.82rem;
-      color: #64748b;
+      color: var(--app-muted-color);
       display: flex;
       align-items: center;
       gap: 6px;
 
       .exp-payer strong {
-        color: #334155;
+        color: var(--ion-text-color);
       }
     }
 
@@ -544,7 +544,7 @@
     .card-label {
       font-size: 0.78rem;
       text-transform: uppercase;
-      color: #c7d2fe;
+      color: #ffe1e1;
       font-weight: 600;
     }
 
@@ -579,7 +579,7 @@
 
       .cat-values {
         strong { font-weight: 700; }
-        .pct { color: #64748b; font-size: 0.8rem; margin-left: 4px; }
+        .pct { color: var(--app-muted-color); font-size: 0.8rem; margin-left: 4px; }
       }
     }
 
@@ -591,7 +591,7 @@
 }
 
 .no-analytics {
-  color: #64748b;
+  color: var(--app-muted-color);
   text-align: center;
   padding: 20px 0;
 }
@@ -609,7 +609,7 @@
 /* Modals */
 .modal-form {
   .modal-sub {
-    color: #64748b;
+    color: var(--app-muted-color);
     font-size: 0.9rem;
     margin-bottom: 20px;
   }
@@ -620,7 +620,7 @@
     .label {
       font-size: 0.85rem;
       font-weight: 700;
-      color: #334155;
+      color: var(--ion-text-color);
       margin-bottom: 6px;
       display: block;
     }

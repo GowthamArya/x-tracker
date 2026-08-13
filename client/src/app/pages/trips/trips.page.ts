@@ -213,10 +213,10 @@ export class TripsPage implements OnInit {
   getAvatarColor(index: number): string {
     const gradients = [
       'linear-gradient(135deg, #9f5b61 0%, #c86b6b 100%)',
-      'linear-gradient(135deg, #a83f49 0%, #e36767 100%)',
-      'linear-gradient(135deg, #c74a4a 0%, #ef8a8a 100%)',
+      'linear-gradient(135deg, #a94a52 0%, #d97b7b 100%)',
       'linear-gradient(135deg, #8f555c 0%, #c86b6b 100%)',
-      'linear-gradient(135deg, #9f5b61 0%, #d18181 100%)'
+      'linear-gradient(135deg, #b25a5f 0%, #e08b8b 100%)',
+      'linear-gradient(135deg, #a65a67 0%, #cf7b7b 100%)'
     ];
     return gradients[index % gradients.length];
   }

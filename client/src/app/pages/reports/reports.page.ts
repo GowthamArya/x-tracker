@@ -9,7 +9,10 @@ import {
   IonButtons,
   IonButton,
   IonModal,
+  IonIcon,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { optionsOutline, checkmarkOutline } from 'ionicons/icons';
 
 import { ReportsService } from '../../services/reports.service';
 import { CategoryReport, ReportSummary } from '../../services/reports.service';
@@ -28,6 +31,7 @@ import { FilterPage } from '../filters/filters.page';
     IonButtons,
     IonButton,
     IonModal,
+    IonIcon,
     DecimalPipe,
     FilterPage,
   ],
@@ -45,7 +49,9 @@ export class ReportsPage {
 
   constructor(
     private readonly reportsService: ReportsService
-  ) {}
+  ) {
+    addIcons({ optionsOutline, checkmarkOutline });
+  }
 
   ionViewWillEnter(): void {
     this.loadReports();
