@@ -138,7 +138,34 @@ jobs:
           echo "=== Deployment structure is valid ==="
 
 
-      # 11. Deploy ASP.NET Core + Angular to MonsterASP
+      # 11. Stop IIS before replacing running .NET assemblies. Without this,
+      # MonsterASP can keep server.dll locked and reject the FTP replacement.
+      - name: Put MonsterASP site into maintenance mode
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          cat > publish/app_offline.htm <<'EOF'
+          <!doctype html>
+          <html lang="en"><head><meta charset="utf-8"><title>Updating X-Tracker</title></head>
+          <body><h1>X-Tracker is updating</h1><p>Please refresh in a moment.</p></body></html>
+          EOF
+
+          FTP_BASE="${FTP_SERVER%/}"
+          if [[ "$FTP_BASE" != *"://"* ]]; then
+            FTP_BASE="ftp://$FTP_BASE"
+          fi
+
+          curl --fail --silent --show-error \
+            --user "$FTP_USERNAME:$FTP_PASSWORD" \
+            --upload-file publish/app_offline.htm \
+            "$FTP_BASE/wwwroot/app_offline.htm"
+
+          # IIS detects app_offline.htm and releases application file handles.
+          sleep 15
+
+      # 12. Deploy ASP.NET Core + Angular to MonsterASP
       - name: Deploy to MonsterASP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
@@ -147,3 +174,21 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /wwwroot/
           local-dir: ./publish/
+
+      # 13. Always bring the site back online. This runs even if deployment fails.
+      - name: Bring MonsterASP site online
+        if: ${{ always() }}
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          FTP_BASE="${FTP_SERVER%/}"
+          if [[ "$FTP_BASE" != *"://"* ]]; then
+            FTP_BASE="ftp://$FTP_BASE"
+          fi
+
+          curl --fail --silent --show-error \
+            --user "$FTP_USERNAME:$FTP_PASSWORD" \
+            -Q "DELE /wwwroot/app_offline.htm" \
+            "$FTP_BASE/"
