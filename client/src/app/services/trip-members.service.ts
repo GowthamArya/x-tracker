@@ -21,5 +21,8 @@ export class TripMembersService {
   addGuestMember(tripId: number, name: string, email?: string) {
     return this.http.post<TripMember>(`${this.apiBase}/trips/${tripId}/members/guest`, { name, email }, { withCredentials: true });
   }
-}
 
+  removeMember(tripId: number, memberId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiBase}/trips/${tripId}/members/${memberId}`, { withCredentials: true });
+  }
+}

@@ -1,5 +1,5 @@
 <ion-header class="ion-no-border navbar-header">
-  <ion-toolbar color="primary">
+  <ion-toolbar class="gradient-toolbar">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/trips"></ion-back-button>
     </ion-buttons>
@@ -38,6 +38,9 @@
           <div class="linked" *ngIf="m.userId">Linked account</div>
           <div class="guest" *ngIf="!m.userId">Virtual / Guest member</div>
         </div>
+        <ion-button *ngIf="canRemove(m)" fill="clear" color="danger" size="small" [attr.aria-label]="'Remove ' + m.name" (click)="confirmRemove(m)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
       </div>
     </div>
 

@@ -142,6 +142,48 @@ public class MembersController : BaseController
             IsOwner = member.IsOwner
         });
     }
+
+    // DELETE: api/trips/{tripId}/members/{memberId}
+    [HttpDelete("{memberId:int}")]
+    public async Task<IActionResult> RemoveMember(int tripId, int memberId)
+    {
+        var currentUserId = CurrentUserId;
+        var requesterIsOwner = await _context.TripMembers.AnyAsync(
+            m => m.TripId == tripId && m.UserId == currentUserId && m.IsOwner);
+
+        if (!requesterIsOwner)
+        {
+            return Forbid();
+        }
+
+        var member = await _context.TripMembers.FirstOrDefaultAsync(
+            m => m.Id == memberId && m.TripId == tripId);
+
+        if (member is null)
+        {
+            return NotFound("Trip member not found.");
+        }
+
+        if (member.IsOwner)
+        {
+            return BadRequest("The trip organizer cannot be removed.");
+        }
+
+        var hasExpenses = await _context.TripExpenses.AnyAsync(
+            e => e.TripId == tripId && e.PaidByTripMemberId == memberId);
+        var hasShares = await _context.TripExpenseParticipants.AnyAsync(
+            p => p.TripMemberId == memberId && p.TripExpense.TripId == tripId);
+
+        if (hasExpenses || hasShares)
+        {
+            return BadRequest("This member is included in trip expenses. Remove or update those expenses before removing the member.");
+        }
+
+        _context.TripMembers.Remove(member);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
 
 public class AddGuestMemberRequest
@@ -149,4 +191,3 @@ public class AddGuestMemberRequest
     public string Name { get; set; } = string.Empty;
     public string? Email { get; set; }
 }
-

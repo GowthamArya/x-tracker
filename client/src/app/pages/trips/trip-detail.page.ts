@@ -67,6 +67,7 @@ import { Trip } from '../../models/trip.model';
 import { TripExpense } from '../../models/trip-expense.model';
 import { TripMember } from '../../models/trip-member.model';
 import { TripMemberBalance, TripDebt } from '../../models/trip-member-balance.model';
+import { AuthService, CurrentUser } from '../../services/auth.service';
 
 export interface CategoryAnalytic {
   name: string;
@@ -117,6 +118,7 @@ export class TripDetailPage implements OnInit {
   selectedCategoryFilter = 'all';
 
   members: TripMember[] = [];
+  currentUser: CurrentUser | null = null;
   balances: TripMemberBalance[] = [];
   debts: TripDebt[] = [];
   myBalance: TripMemberBalance | null = null;
@@ -145,7 +147,8 @@ export class TripDetailPage implements OnInit {
     private readonly invitesService: TripInvitesService,
     private readonly shareService: ShareService,
     private readonly toastCtrl: ToastController,
-    private readonly alertCtrl: AlertController
+    private readonly alertCtrl: AlertController,
+    private readonly authService: AuthService,
   ) {
     addIcons({
       addOutline,
@@ -181,6 +184,7 @@ export class TripDetailPage implements OnInit {
       return;
     }
     this.tripId = id;
+    this.authService.getCurrentUser().subscribe(user => this.currentUser = user);
     this.load();
   }
 
@@ -329,6 +333,57 @@ export class TripDetailPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  canRemoveMember(member: TripMember): boolean {
+    return this.isOrganizer && !member.isOwner;
+  }
+
+  get isOrganizer(): boolean {
+    return this.members.some(member =>
+      member.isOwner && member.userId === Number(this.currentUser?.id)
+    );
+  }
+
+  async confirmRemoveMember(member: TripMember): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      header: 'Remove member?',
+      message: `Remove ${member.name} from this trip? Their related expenses must be updated first.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Remove',
+          role: 'destructive',
+          handler: () => this.removeMember(member),
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  private removeMember(member: TripMember): void {
+    this.membersService.removeMember(this.tripId, member.id).subscribe({
+      next: async () => {
+        this.load();
+        const toast = await this.toastCtrl.create({
+          message: `${member.name} was removed.`,
+          duration: 1800,
+          position: 'bottom',
+        });
+        await toast.present();
+      },
+      error: async error => {
+        const toast = await this.toastCtrl.create({
+          message: typeof error?.error === 'string'
+            ? error.error
+            : 'Unable to remove this member.',
+          duration: 3000,
+          position: 'bottom',
+          color: 'danger',
+        });
+        await toast.present();
+      },
+    });
   }
 
   // Settle Up Modal Flow

@@ -328,6 +328,17 @@
                     <ion-badge color="medium">Guest</ion-badge>
                   }
                 </div>
+                @if (canRemoveMember(m)) {
+                  <ion-button
+                    class="remove-member-button"
+                    fill="clear"
+                    color="danger"
+                    size="small"
+                    [attr.aria-label]="'Remove ' + m.name"
+                    (click)="confirmRemoveMember(m)">
+                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                  </ion-button>
+                }
               </div>
             }
           </div>
