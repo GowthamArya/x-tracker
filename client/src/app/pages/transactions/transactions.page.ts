@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import {
   ActionSheetButton,
@@ -11,10 +12,13 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
+  IonSearchbar,
 } from '@ionic/angular/standalone';
 
 import { TransactionsService } from '../../services/transactions.service';
 import { Transaction } from '../../models/transaction.model';
+import { FilterValue } from '../../models/filter.model';
+import { FilterPage } from '../filters/filters.page';
 
 type TransactionFilter = 'all' | 'income' | 'expense';
 
@@ -30,8 +34,11 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     IonToolbar,
     IonTitle,
     IonButtons,
+    IonSearchbar,
     DecimalPipe,
+    FormsModule,
     RouterLink,
+    FilterPage,
   ],
 })
 export class TransactionsPage implements OnInit {
@@ -44,6 +51,8 @@ export class TransactionsPage implements OnInit {
   totalTransactions = 0;
 
   activeFilter: TransactionFilter = 'all';
+  searchQuery = '';
+  filter: FilterValue | null = null;
 
   actionSheetOpen = false;
   selectedTransaction: Transaction | null = null;
@@ -108,8 +117,10 @@ export class TransactionsPage implements OnInit {
     this.applyFilter();
   }
 
-  private applyFilter(): void {
-    const filtered =
+  onFilterChange(filter: FilterValue): void { this.filter = filter; this.applyFilter(); }
+
+  applyFilter(): void {
+    let filtered =
       this.activeFilter === 'all'
         ? this.transactions
         : this.transactions.filter(
@@ -117,6 +128,16 @@ export class TransactionsPage implements OnInit {
               transaction.type === this.activeFilter
           );
 
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(tx => `${tx.title} ${tx.categoryName} ${tx.accountName}`.toLowerCase().includes(q));
+    }
+    if (this.filter?.dateRange) {
+      const from = new Date(this.filter.dateRange.from).getTime();
+      const to = new Date(this.filter.dateRange.to).getTime();
+      filtered = filtered.filter(tx => { const date = new Date(tx.transactionDate).getTime(); return date >= from && date <= to; });
+    }
+    if (this.filter?.categoryId != null) filtered = filtered.filter(tx => tx.categoryId === this.filter?.categoryId);
     this.filteredTransactions = [...filtered].sort(
       (a, b) =>
         new Date(b.transactionDate).getTime() -

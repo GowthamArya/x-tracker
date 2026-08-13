@@ -257,8 +257,8 @@ export class TripDetailPage implements OnInit {
 
     const categoryTotals: { [key: string]: { name: string; icon: string; amount: number; color: string } } = {
       Food: { name: 'Food & Dining', icon: 'restaurant-outline', amount: 0, color: '#f59e0b' },
-      Transport: { name: 'Transport & Travel', icon: 'car-outline', amount: 0, color: '#3b82f6' },
-      Stay: { name: 'Stay & Hotel', icon: 'bed-outline', amount: 0, color: '#8b5cf6' },
+      Transport: { name: 'Transport & Travel', icon: 'car-outline', amount: 0, color: '#e05454' },
+      Stay: { name: 'Stay & Hotel', icon: 'bed-outline', amount: 0, color: '#b7444d' },
       Entertainment: { name: 'Activities & Events', icon: 'ticket-outline', amount: 0, color: '#ec4899' },
       Shopping: { name: 'Shopping & Gifts', icon: 'bag-handle-outline', amount: 0, color: '#10b981' },
       Other: { name: 'General & Others', icon: 'cart-outline', amount: 0, color: '#64748b' }

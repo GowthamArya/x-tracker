@@ -166,6 +166,14 @@
                 (click)="$event.stopPropagation(); shareTrip(trip)">
                 <ion-icon name="share-outline" slot="icon-only"></ion-icon>
               </ion-button>
+              <ion-button
+                fill="clear"
+                color="danger"
+                size="small"
+                aria-label="Delete trip"
+                (click)="$event.stopPropagation(); deleteTrip(trip)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-button>
             </div>
 
           </div>

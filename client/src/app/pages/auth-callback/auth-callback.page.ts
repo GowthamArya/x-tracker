@@ -33,6 +33,17 @@ export class AuthCallbackPage implements OnInit {
       token
     );
 
+    const returnUrl = localStorage.getItem('xtracker_return_url');
+    localStorage.removeItem('xtracker_return_url');
+    if (returnUrl) {
+      try {
+        const target = new URL(returnUrl, window.location.origin);
+        this.router.navigateByUrl(`${target.pathname}${target.search}${target.hash}`);
+        return;
+      } catch {
+        // Fall back to the dashboard if a stale or malformed return URL is present.
+      }
+    }
     this.router.navigate(['/tabs/dashboard']);
   }
 }

@@ -2,8 +2,8 @@
   margin: 12px 0;
   border-radius: 16px;
   box-shadow: none;
-  border: 1px solid var(--ion-color-light-shade);
-  background: var(--ion-background-color);
+  border: 1px solid var(--app-card-border);
+  background: var(--app-card-bg);
 }
 
 .filter-grid {
@@ -11,7 +11,7 @@
 }
 
 .filter-item {
-  --background: var(--ion-color-light);
+  --background: var(--app-card-bg);
   --border-radius: 12px;
   --padding-start: 12px;
   --inner-padding-end: 10px;
@@ -36,7 +36,7 @@
 }
 
 .date-filter-item {
-  --background: var(--ion-color-light);
+  --background: var(--app-card-bg);
   --border-radius: 12px;
   --padding-start: 12px;
   --inner-padding-end: 12px;

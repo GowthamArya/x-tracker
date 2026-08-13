@@ -31,9 +31,12 @@ export class TripsService {
   getTrip(id: number) {
     return this.http.get<Trip>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }
+
+  deleteTrip(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
+  }
     
   getBalances(tripId: number): Observable<TripBalancesSummary> {
     return this.http.get<TripBalancesSummary>(`${this.apiUrl}/${tripId}/balances`, { withCredentials: true });
   }
 }
-

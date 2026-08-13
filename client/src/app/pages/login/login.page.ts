@@ -39,6 +39,9 @@ export class LoginPage {
   loginWithGoogle(): void {
     const params = new URLSearchParams(window.location.search);
     const returnUrl = params.get('returnUrl');
+    if (returnUrl) {
+      localStorage.setItem('xtracker_return_url', returnUrl);
+    }
     let url = `${environment.apiUrl}/auth/google`;
     if (returnUrl) {
       url += `?returnUrl=${encodeURIComponent(returnUrl)}`;

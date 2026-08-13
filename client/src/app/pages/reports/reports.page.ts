@@ -11,7 +11,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { ReportsService } from '../../services/reports.service';
-import { CategoryReport } from '../../services/reports.service';
+import { CategoryReport, ReportSummary } from '../../services/reports.service';
 import { FilterValue } from '../../models/filter.model';
 import { FilterPage } from '../filters/filters.page';
 
@@ -54,59 +54,15 @@ export class ReportsPage {
   }
 
   private loadReports(): void {
-    this.reportsService
-      .getTotalIncome(this.filter)
-      .subscribe({
-        next: (total) => {
-          this.totalIncome = total;
-        },
-        error: (error) => {
-          console.error('Failed to load total income', error);
-        },
-      });
-
-    this.reportsService
-      .getTotalExpenses(this.filter)
-      .subscribe({
-        next: (total) => {
-          this.totalExpenses = total;
-        },
-        error: (error) => {
-          console.error('Failed to load total expenses', error);
-        },
-      });
-
-    this.reportsService
-      .getBalance(this.filter, this.filter)
-      .subscribe({
-        next: (balance) => {
-          this.balance = balance;
-        },
-        error: (error) => {
-          console.error('Failed to load balance', error);
-        },
-      });
-
-    this.reportsService
-      .getIncomeByCategory(this.filter)
-      .subscribe({
-        next: (reports) => {
-          this.incomeCategoryReports = reports;
-        },
-        error: (error) => {
-          console.error('Failed to load income category reports', error);
-        },
-      });
-
-    this.reportsService
-      .getExpenseByCategory(this.filter)
-      .subscribe({
-        next: (reports) => {
-          this.expenseCategoryReports = reports;
-        },
-        error: (error) => {
-          console.error('Failed to load expense category reports', error);
-        },
-      });
+    this.reportsService.getSummary(this.filter).subscribe({
+      next: (summary: ReportSummary) => {
+        this.totalIncome = summary.totalIncome;
+        this.totalExpenses = summary.totalExpenses;
+        this.balance = summary.balance;
+        this.incomeCategoryReports = summary.incomeCategoryReports;
+        this.expenseCategoryReports = summary.expenseCategoryReports;
+      },
+      error: (error) => console.error('Failed to load report summary', error)
+    });
   }
 }

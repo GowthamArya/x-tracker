@@ -26,6 +26,9 @@ ion-content {
 }
 
 .brand-icon {
+  overflow: hidden;
+
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
   width: 68px;
   height: 68px;
 

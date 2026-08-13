@@ -2,12 +2,24 @@
 // https://ionicframework.com/docs/theming/
 
 :root {
-  --app-header-gradient: linear-gradient(135deg, #6d28d9 0%, #2563eb 100%);
+  --app-header-gradient: linear-gradient(135deg, #b7444d 0%, #e05454 100%);
   --app-card-bg: #ffffff;
   --app-card-border: #e5e7eb;
   --app-radius-lg: 20px;
-  --app-primary-color: #5b21b6;
+  --app-primary-color: #e05454;
   --app-muted-color: #64748b;
+  --app-surface-strong: #f8fafc;
+  --app-input-bg: #f8fafc;
+  --app-input-border: #cbd5e1;
+  --app-heading-color: #0f172a;
+  --app-selection-bg: #fff1f1;
+  --app-selection-text: #a9363f;
+  --ion-color-primary: #e05454;
+  --ion-color-primary-rgb: 224, 84, 84;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #c74a4a;
+  --ion-color-primary-tint: #e36767;
+  --ion-color-secondary: #b7444d;
 }
 
 body.app-dark {
@@ -16,4 +28,13 @@ body.app-dark {
   --app-muted-color: #a8b0c0;
   --ion-background-color: #0f1117;
   --ion-text-color: #f8fafc;
+  --ion-card-background: #171923;
+  --ion-color-light: #242936;
+  --ion-color-light-contrast: #f8fafc;
+  --app-surface-strong: #1d2230;
+  --app-input-bg: #202634;
+  --app-input-border: #3b4558;
+  --app-heading-color: #f8fafc;
+  --app-selection-bg: #3a252a;
+  --app-selection-text: #ffb4b4;
 }

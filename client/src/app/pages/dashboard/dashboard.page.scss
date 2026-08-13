@@ -2,6 +2,8 @@
   padding: 20px 16px 32px;
 }
 
+.app-logo { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; }
+
 .welcome {
   margin-bottom: 20px;
 
@@ -45,14 +47,16 @@
 .summary-card {
   padding: 18px;
   border-radius: 16px;
-  background: #f5f5f5;
+  background: var(--app-card-bg);
+  color: var(--ion-text-color);
+  border: 1px solid var(--app-card-border);
 
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   .label {
-    color: #777;
+    color: var(--app-muted-color);
     font-size: 14px;
   }
 
@@ -91,7 +95,7 @@
   align-items: center;
 
   padding: 16px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--app-card-border);
 }
 
 .transaction-info {
@@ -112,5 +116,3 @@
     color: #16803c;
   }
 }
-
-

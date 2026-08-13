@@ -1,16 +1,16 @@
 .gradient-toolbar {
-  --background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --background: var(--app-header-gradient);
   --color: #ffffff;
 
   .save-top-btn {
     --border-radius: 20px;
     font-weight: 700;
-    --color: #4f46e5;
+    --color: var(--app-primary-color);
   }
 }
 
 .form-content {
-  --background: var(--ion-background-color, #f8fafc);
+  --background: var(--ion-background-color);
 }
 
 .page-container {
@@ -20,11 +20,11 @@
 }
 
 .expense-card-form {
-  background: var(--ion-card-background, #ffffff);
+  background: var(--app-card-bg);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--ion-color-step-150, #f1f5f9);
+  border: 1px solid var(--app-card-border);
 
   .hero-inputs-row {
     display: flex;
@@ -44,7 +44,7 @@
 
     .amount-input {
       font-weight: 800;
-      color: #4f46e5;
+      color: var(--app-primary-color);
     }
   }
 
@@ -66,23 +66,25 @@
     .form-label {
       font-size: 0.85rem;
       font-weight: 700;
-      color: #334155;
+      color: var(--app-heading-color);
       margin-bottom: 6px;
     }
 
     .custom-input, .custom-select {
-      --background: #f8fafc;
+      --background: var(--app-input-bg);
+      --color: var(--ion-text-color);
+      --placeholder-color: var(--app-muted-color);
       --border-radius: 12px;
       --padding-start: 12px;
       --padding-end: 12px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--app-input-border);
       border-radius: 12px;
     }
   }
 
   .form-divider {
     height: 1px;
-    background: #f1f5f9;
+    background: var(--app-card-border);
     margin: 20px 0;
   }
 
@@ -93,17 +95,17 @@
       margin: 0;
       font-size: 1.1rem;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--app-heading-color);
     }
 
     .sub-text {
       margin: 2px 0 12px 0;
       font-size: 0.85rem;
-      color: #64748b;
+      color: var(--app-muted-color);
     }
 
     .split-segment {
-      background: #f1f5f9;
+      background: var(--app-input-bg);
       border-radius: 12px;
       padding: 3px;
 
@@ -134,8 +136,8 @@
       gap: 10px;
 
       .participant-checkbox-card {
-        background: #f8fafc;
-        border: 1px solid #cbd5e1;
+        background: var(--app-input-bg);
+        border: 1px solid var(--app-input-border);
         border-radius: 12px;
         padding: 10px 14px;
         display: flex;
@@ -145,18 +147,18 @@
         transition: all 0.2s;
 
         &.selected {
-          background: #eef2ff;
-          border-color: #6366f1;
+          background: var(--app-selection-bg);
+          border-color: var(--app-primary-color);
 
           .p-name {
             font-weight: 700;
-            color: #4f46e5;
+            color: var(--app-selection-text);
           }
         }
 
         .p-name {
           font-size: 0.9rem;
-          color: #334155;
+          color: var(--ion-text-color);
         }
       }
     }
@@ -173,10 +175,10 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        background: #f8fafc;
+        background: var(--app-input-bg);
         border-radius: 12px;
         padding: 8px 14px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--app-input-border);
 
         .p-member-name {
           flex: 1;
@@ -187,14 +189,14 @@
         .p-input-wrapper {
           display: flex;
           align-items: center;
-          background: #ffffff;
-          border: 1px solid #cbd5e1;
+          background: var(--app-surface-strong);
+          border: 1px solid var(--app-input-border);
           border-radius: 8px;
           padding: 0 8px;
 
           .curr {
             font-weight: 700;
-            color: #64748b;
+            color: var(--app-muted-color);
           }
 
           .custom-share-input {
@@ -208,11 +210,11 @@
     .custom-sum-bar {
       display: flex;
       justify-content: space-between;
-      background: #eef2ff;
+      background: var(--app-selection-bg);
       border-radius: 10px;
       padding: 10px 14px;
       font-size: 0.9rem;
-      color: #312e81;
+      color: var(--app-selection-text);
       font-weight: 600;
     }
   }
@@ -226,7 +228,7 @@
     .save-main-btn {
       --border-radius: 20px;
       font-weight: 700;
-      --background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --background: var(--app-header-gradient);
     }
   }
 }

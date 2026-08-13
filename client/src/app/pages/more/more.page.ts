@@ -2,18 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, ToastController } from '@ionic/angular/standalone';
+import { AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonModal, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline } from 'ionicons/icons';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 import { TransactionsService } from '../../services/transactions.service';
 import { TripsService } from '../../services/trips.service';
 
-@Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink] })
+@Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink, IonModal] })
 export class MorePage implements OnInit {
   user: CurrentUser | null = null;
   darkMode = false;
   currency = '₹';
+  notificationsOpen = false;
+  notifications = [
+    { title: 'Welcome to X-Tracker', message: 'Your spending insights and trip activity will appear here.', read: false }
+  ];
 
   constructor(private readonly auth: AuthService, private readonly router: Router, private readonly alerts: AlertController, private readonly toast: ToastController, private readonly transactions: TransactionsService, private readonly trips: TripsService) {
     addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline });
@@ -24,10 +28,15 @@ export class MorePage implements OnInit {
     this.currency = localStorage.getItem('xtracker-currency') || '₹';
     this.applyTheme();
     this.auth.getCurrentUser().subscribe(user => this.user = user);
+    const saved = localStorage.getItem('xtracker-notifications');
+    if (saved) {
+      try { this.notifications = JSON.parse(saved); } catch { /* reset invalid local data */ }
+    }
   }
 
   toggleTheme(event: CustomEvent): void { this.darkMode = Boolean(event.detail?.checked); localStorage.setItem('xtracker-theme', this.darkMode ? 'dark' : 'light'); this.applyTheme(); }
   setCurrency(event: CustomEvent): void { this.currency = event.detail.value || '₹'; localStorage.setItem('xtracker-currency', this.currency); }
+  openNotifications(): void { this.notificationsOpen = true; this.notifications = this.notifications.map(item => ({ ...item, read: true })); localStorage.setItem('xtracker-notifications', JSON.stringify(this.notifications)); }
 
   async editProfile(): Promise<void> {
     const alert = await this.alerts.create({ header: 'Profile', message: `${this.user?.email || 'Signed-in user'}\nProfile editing is managed by your account provider.`, buttons: ['Close'] });

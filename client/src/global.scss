@@ -48,3 +48,6 @@ ion-header.app-header { background: var(--app-header-gradient); }
 ion-header.navbar-header ion-toolbar,
 ion-header.app-header ion-toolbar { --background: transparent; --color: #fff; }
 .app-card { background: var(--app-card-bg); border: 1px solid var(--app-card-border); border-radius: var(--app-radius-lg); }
+.gradient-toolbar { --background: var(--app-header-gradient) !important; }
+ion-content, ion-list, ion-card { color: var(--ion-text-color); }
+ion-app { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }

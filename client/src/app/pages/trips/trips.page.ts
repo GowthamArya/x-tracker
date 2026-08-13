@@ -17,7 +17,8 @@ import {
   IonChip,
   IonRefresher,
   IonRefresherContent,
-  ToastController
+  ToastController,
+  AlertController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -33,7 +34,8 @@ import {
   swapHorizontalOutline,
   sparklesOutline,
   calendarOutline,
-  receiptOutline
+  receiptOutline,
+  trashOutline
 } from 'ionicons/icons';
 
 import { Trip } from '../../models/trip.model';
@@ -75,7 +77,8 @@ export class TripsPage implements OnInit {
     private readonly tripsService: TripsService,
     private readonly invitesService: TripInvitesService,
     private readonly router: Router,
-    private readonly toastCtrl: ToastController
+    private readonly toastCtrl: ToastController,
+    private readonly alertCtrl: AlertController
   ) {
     addIcons({
       addOutline,
@@ -90,7 +93,8 @@ export class TripsPage implements OnInit {
       swapHorizontalOutline,
       sparklesOutline,
       calendarOutline,
-      receiptOutline
+      receiptOutline,
+      trashOutline
     });
   }
 
@@ -144,6 +148,30 @@ export class TripsPage implements OnInit {
     this.router.navigate(['/tabs/trips', trip.id]);
   }
 
+  async deleteTrip(trip: Trip): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      header: 'Delete trip?',
+      message: `Delete “${trip.name}” and its shared expenses? This cannot be undone.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Delete', role: 'destructive', handler: () => {
+          this.tripsService.deleteTrip(trip.id).subscribe({
+            next: () => {
+              this.trips = this.trips.filter(item => item.id !== trip.id);
+              this.applyFilter();
+              this.calculateStats();
+            },
+            error: async () => {
+              const toast = await this.toastCtrl.create({ message: 'Unable to delete this trip.', duration: 1800, color: 'danger' });
+              await toast.present();
+            }
+          });
+        }}
+      ]
+    });
+    await alert.present();
+  }
+
   async shareTrip(trip: Trip): Promise<void> {
     try {
       this.invitesService.createInvite(trip.id).subscribe({
@@ -182,11 +210,11 @@ export class TripsPage implements OnInit {
 
   getAvatarColor(index: number): string {
     const gradients = [
-      'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-      'linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%)',
-      'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
-      'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-      'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)'
+      'linear-gradient(135deg, #b7444d 0%, #e05454 100%)',
+      'linear-gradient(135deg, #a83f49 0%, #e36767 100%)',
+      'linear-gradient(135deg, #c74a4a 0%, #ef8a8a 100%)',
+      'linear-gradient(135deg, #943a45 0%, #e05454 100%)',
+      'linear-gradient(135deg, #b7444d 0%, #ef8a8a 100%)'
     ];
     return gradients[index % gradients.length];
   }

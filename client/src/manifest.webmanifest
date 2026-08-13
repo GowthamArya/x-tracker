@@ -1,0 +1,15 @@
+{
+  "name": "X-Tracker",
+  "short_name": "X-Tracker",
+  "description": "Track personal spending and split shared trip expenses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#E05454",
+  "icons": [{
+    "src": "assets/xtracker-logo.png",
+    "sizes": "1248x1248",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }]
+}

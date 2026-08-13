@@ -262,7 +262,7 @@ public class TripsController : BaseController
 
         var trip = await _context.Trips
             .AsNoTracking()
-            .Where(t => t.Id == id || t.Members.Any(m => m.UserId == currentUserId))
+            .Where(t => t.Id == id && t.Members.Any(m => m.UserId == currentUserId))
             .Select(t => new TripDto
             {
                 Id = t.Id,
@@ -283,5 +283,38 @@ public class TripsController : BaseController
         }
 
         return Ok(trip);
+    }
+
+    // DELETE: api/Trips/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteTrip(int id)
+    {
+        var trip = await _context.Trips.FirstOrDefaultAsync(t => t.Id == id);
+
+        if (trip is null)
+        {
+            return NotFound();
+        }
+
+        var isOwner = await _context.TripMembers.AnyAsync(m => m.TripId == id && m.UserId == CurrentUserId && m.IsOwner);
+        if (!isOwner)
+        {
+            return Forbid();
+        }
+
+        // Remove dependants explicitly because expense/member relationships intentionally use NoAction.
+        var participants = await _context.TripExpenseParticipants
+            .Where(p => p.TripExpense.TripId == id)
+            .ToListAsync();
+        var expenses = await _context.TripExpenses.Where(e => e.TripId == id).ToListAsync();
+        var invites = await _context.TripInvites.Where(i => i.TripId == id).ToListAsync();
+        var members = await _context.TripMembers.Where(m => m.TripId == id).ToListAsync();
+        _context.TripExpenseParticipants.RemoveRange(participants);
+        _context.TripExpenses.RemoveRange(expenses);
+        _context.TripInvites.RemoveRange(invites);
+        _context.TripMembers.RemoveRange(members);
+        _context.Trips.Remove(trip);
+        await _context.SaveChangesAsync();
+        return NoContent();
     }
 }

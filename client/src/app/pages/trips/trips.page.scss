@@ -1,5 +1,5 @@
 .gradient-toolbar {
-  --background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --background: var(--app-header-gradient);
   --color: #ffffff;
   padding: 4px 8px;
 
@@ -20,7 +20,7 @@
   .create-top-btn {
     --border-radius: 20px;
     font-weight: 600;
-    --color: #4f46e5;
+    --color: var(--app-primary-color);
   }
 }
 
@@ -36,7 +36,7 @@
 
 /* Hero Stats Card */
 .hero-stats-card {
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  background: var(--app-header-gradient);
   color: #ffffff;
   border-radius: 20px;
   padding: 24px;
@@ -144,7 +144,7 @@
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     --border-radius: 16px;
     --placeholder-color: #94a3b8;
-    --icon-color: #6366f1;
+    --icon-color: var(--app-primary-color);
     padding: 0;
   }
 }
@@ -162,7 +162,7 @@
     width: 72px;
     height: 72px;
     background: #e0e7ff;
-    color: #4f46e5;
+    color: var(--app-primary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -326,7 +326,7 @@
         margin-top: 2px;
 
         &.share {
-          color: #4f46e5;
+          color: var(--app-primary-color);
         }
       }
     }
@@ -340,7 +340,7 @@
     .action-link {
       font-size: 0.85rem;
       font-weight: 700;
-      color: #4f46e5;
+      color: var(--app-primary-color);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -365,7 +365,7 @@
   margin-right: 16px;
 
   ion-fab-button {
-    --background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    --background: var(--app-header-gradient);
     --box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
   }
 }

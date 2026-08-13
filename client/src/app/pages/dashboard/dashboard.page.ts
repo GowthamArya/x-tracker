@@ -7,8 +7,7 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
-  IonButton,
-  IonIcon
+  IonButton
 } from '@ionic/angular/standalone';
 
 import {
@@ -30,7 +29,6 @@ import { addIcons } from 'ionicons';
     IonTitle,
     IonToolbar,
     DecimalPipe,
-    IonIcon,
     RouterLink,
     IonButton
   ],
@@ -89,62 +87,15 @@ export class DashboardPage {
     }
   }
   private loadDashboard(): void {
-
-    this.dashboardService
-      .getRecentTransactions()
-      .subscribe({
-        next: (transactions) => {
-          this.transactions = transactions;
-        },
-        error: (error) => {
-          console.error(
-            'Failed to load recent transactions',
-            error
-          );
-        },
-      });
-
-    this.dashboardService
-      .getTotalIncome()
-      .subscribe({
-        next: (total) => {
-          this.totalIncome = total;
-        },
-        error: (error) => {
-          console.error(
-            'Failed to load total income',
-            error
-          );
-        },
-      });
-
-    this.dashboardService
-      .getTotalExpenses()
-      .subscribe({
-        next: (total) => {
-          this.totalExpenses = total;
-        },
-        error: (error) => {
-          console.error(
-            'Failed to load total expenses',
-            error
-          );
-        },
-      });
-
-    this.dashboardService
-      .getBalance()
-      .subscribe({
-        next: (balance) => {
-          this.balance = balance;
-        },
-        error: (error) => {
-          console.error(
-            'Failed to load balance',
-            error
-          );
-        },
-      });
+    this.dashboardService.getSummary().subscribe({
+      next: summary => {
+        this.transactions = summary.recent;
+        this.totalIncome = summary.income;
+        this.totalExpenses = summary.expenses;
+        this.balance = summary.balance;
+      },
+      error: error => console.error('Failed to load dashboard summary', error)
+    });
   }
 
   logout(): void {

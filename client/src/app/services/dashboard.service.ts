@@ -12,6 +12,14 @@ export class DashboardService {
     private readonly transactionsService: TransactionsService
   ) {}
 
+  getSummary(): Observable<{ recent: Transaction[]; income: number; expenses: number; balance: number }> {
+    return this.transactionsService.getTransactions().pipe(map(transactions => {
+      const income = transactions.filter(tx => tx.type === 'income').reduce((sum, tx) => sum + tx.amount, 0);
+      const expenses = transactions.filter(tx => tx.type === 'expense').reduce((sum, tx) => sum + tx.amount, 0);
+      return { recent: transactions.slice(0, 5), income, expenses, balance: income - expenses };
+    }));
+  }
+
   getRecentTransactions(): Observable<Transaction[]> {
     return this.transactionsService
       .getTransactions()

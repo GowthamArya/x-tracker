@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, shareReplay } from 'rxjs';
 
 import { Transaction } from '../models/transaction.model';
 import { FilterValue } from '../models/filter.model';
@@ -11,6 +11,14 @@ export interface CategoryReport {
   percentage: number;
 }
 
+export interface ReportSummary {
+  totalIncome: number;
+  totalExpenses: number;
+  balance: number;
+  incomeCategoryReports: CategoryReport[];
+  expenseCategoryReports: CategoryReport[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,6 +26,19 @@ export class ReportsService {
   constructor(
     private readonly transactionsService: TransactionsService
   ) {}
+
+  getSummary(filter?: FilterValue | null): Observable<ReportSummary> {
+    return this.transactionsService.getTransactions().pipe(
+      map(transactions => {
+        const income = this.applyReportFilter(transactions, filter, 'income');
+        const expenses = this.applyReportFilter(transactions, filter, 'expense');
+        const totalIncome = income.reduce((sum, tx) => sum + tx.amount, 0);
+        const totalExpenses = expenses.reduce((sum, tx) => sum + tx.amount, 0);
+        return { totalIncome, totalExpenses, balance: totalIncome - totalExpenses, incomeCategoryReports: this.buildCategoryReports(income), expenseCategoryReports: this.buildCategoryReports(expenses) };
+      }),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+  }
 
   getTotalIncome(filter?: FilterValue | null): Observable<number> {
     return this.transactionsService

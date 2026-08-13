@@ -14,7 +14,10 @@
 
   </div>
 
-  <div class="filter-bar">
+  <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="applyFilter()" placeholder="Search title, category, or account" class="transaction-search"></ion-searchbar>
+  <app-transaction-filter [showCategory]="true" defaultPreset="thisYear" (filterChange)="onFilterChange($event)"></app-transaction-filter>
+
+  <div class="filter-bar quick-filter-bar">
 
     <ion-button
       class="filter"

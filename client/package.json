@@ -7,6 +7,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:development": "ng build --configuration development",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
