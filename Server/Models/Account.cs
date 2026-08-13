@@ -26,3 +26,9 @@ public class Account
     public virtual ICollection<Transaction> Transactions { get; set; }
         = new List<Transaction>();
 }
+
+public class CreateAccountRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public decimal OpeningBalance { get; set; } = 0;
+}

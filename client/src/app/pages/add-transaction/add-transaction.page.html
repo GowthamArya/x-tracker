@@ -87,13 +87,13 @@
 
     <!-- Category -->
 
-    <div class="form-section category-group">
+    <div class="form-section group">
 
       <ion-label class="field-label">
         Category
       </ion-label>
 
-      <div class="category-row">
+      <div class="row">
         <ion-select
           [(ngModel)]="categoryId"
           interface="popover"
@@ -121,6 +121,7 @@
       <div
         class="new-category"
         *ngIf="showCategoryInput"
+         style="margin-top: 8px; border: 1px dashed #ccc; padding: 16px;"
       >
         <ion-input
           type="text"
@@ -146,24 +147,70 @@
 
     <!-- Account -->
 
-    <div class="form-section">
+    <div class="form-section group">
 
       <ion-label class="field-label">
         Account
       </ion-label>
 
-      <ion-select
-        [(ngModel)]="accountId"
-        interface="popover"
-      >
-        @for (account of accounts; track account.id) {
-          <ion-select-option
-            [value]="account.id"
+      <div class="row">
+
+        <ion-select
+          [(ngModel)]="accountId"
+          interface="popover"
+          placeholder="Select account"
+        >
+          @for (account of accounts; track account.id) {
+            <ion-select-option
+              [value]="account.id"
+            >
+              {{ account.name }}
+            </ion-select-option>
+          }
+        </ion-select>
+
+        <ion-button
+          fill="outline"
+          size="small"
+          (click)="toggleAccountInput()"
+        >
+          + New
+        </ion-button>
+
+      </div>
+
+      @if (showAccountInput) {
+
+        <div class="new-account" style="margin-top: 8px; border: 1px dashed #ccc; padding: 16px;">
+          <ion-label class="field-label">
+            New Account
+          </ion-label>
+          <ion-input
+            type="text"
+            placeholder="Account name"
+            [(ngModel)]="newAccountName"
+          ></ion-input>
+          <ion-label class="field-label">
+            Opening Balance
+          </ion-label>
+          <ion-input
+            type="number"
+            inputmode="decimal"
+            placeholder="Opening balance"
+            [(ngModel)]="newAccountOpeningBalance"
+          ></ion-input>
+
+          <ion-button
+            fill="solid"
+            size="small"
+            (click)="saveNewAccount()"
           >
-            {{ account.name }}
-          </ion-select-option>
-        }
-      </ion-select>
+            Save
+          </ion-button>
+
+        </div>
+
+      }
 
       @if (submitted && !accountId) {
         <p class="error-message">

@@ -51,7 +51,7 @@ public class AccountsController : BaseController
     // POST: api/Accounts
     [HttpPost]
     public async Task<ActionResult<Account>> CreateAccount(
-        Account request)
+        CreateAccountRequest request)
     {
         var account = new Account
         {
@@ -75,7 +75,7 @@ public class AccountsController : BaseController
     [HttpPut("{id:long}")]
     public async Task<ActionResult<Account>> UpdateAccount(
         long id,
-        Account request)
+        CreateAccountRequest request)
     {
         var account = await _context.Accounts
             .FirstOrDefaultAsync(

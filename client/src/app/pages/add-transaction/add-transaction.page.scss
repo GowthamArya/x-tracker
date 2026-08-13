@@ -15,7 +15,6 @@
 
   p {
     margin: 6px 0 0;
-    color: #777;
   }
 }
 
@@ -33,7 +32,6 @@
 ion-input,
 ion-select,
 ion-textarea {
-  --background: #f7f7f7;
   --border-radius: 12px;
   --padding-start: 14px;
   --padding-end: 14px;
@@ -51,4 +49,25 @@ ion-segment {
   margin: 6px 4px 0;
   color: #d32f2f;
   font-size: 13px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row ion-select {
+  flex: 1;
+}
+
+.new {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.new ion-button {
+  align-self: flex-start;
 }

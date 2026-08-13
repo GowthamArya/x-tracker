@@ -87,6 +87,10 @@ export class AddTransactionPage implements OnInit {
   showCategoryInput = false;
   newCategoryName = '';
 
+  showAccountInput = false;
+  newAccountName = '';
+  newAccountOpeningBalance = 0;
+
   constructor(
     private readonly transactionsService: TransactionsService,
     private readonly accountsService: AccountsService,
@@ -163,6 +167,49 @@ export class AddTransactionPage implements OnInit {
         error: (error) => {
           console.error(
             'Failed to load categories',
+            error
+          );
+        },
+      });
+  }
+
+  toggleAccountInput(): void {
+    this.showAccountInput = !this.showAccountInput;
+  }
+
+  saveNewAccount(): void {
+    const name = this.newAccountName.trim();
+
+    if (!name) {
+      return;
+    }
+
+    const account: Account = {
+      id: 0,
+      name,
+      openingBalance: this.newAccountOpeningBalance || 0,
+    };
+
+    this.accountsService
+      .addAccount(account)
+      .subscribe({
+        next: (createdAccount) => {
+          this.accounts = [
+            createdAccount,
+            ...this.accounts,
+          ];
+
+          // Automatically select the newly created account
+          this.accountId = createdAccount.id;
+
+          this.newAccountName = '';
+          this.newAccountOpeningBalance = 0;
+          this.showAccountInput = false;
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to create account',
             error
           );
         },
