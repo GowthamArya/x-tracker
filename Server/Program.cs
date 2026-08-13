@@ -27,11 +27,16 @@ builder.Services
 
         options.Cookie.HttpOnly = true;
 
+        options.Cookie.Path = "/";
+
         options.Cookie.SecurePolicy =
             CookieSecurePolicy.Always;
 
+        // The SPA and API are served from the same HTTPS host. Lax keeps the
+        // session cookie available after the Google top-level redirect while
+        // avoiding Safari's more restrictive third-party-cookie handling.
         options.Cookie.SameSite =
-            SameSiteMode.None;
+            SameSiteMode.Lax;
 
         options.ExpireTimeSpan =
             TimeSpan.FromDays(30);

@@ -78,6 +78,8 @@ Deploy the contents of `client/www` behind HTTPS, with `/api` routed to the ASP.
 
 The first visit downloads the app shell. Later visits can open the interface without a network connection; actions and account data still require the API, and are never stored in the service-worker cache. API routes are excluded from PWA navigation handling, which is required for OAuth sign-in redirects. Deploy every update with the generated `ngsw.json` file so installed apps receive the new version.
 
+Google sign-in requires the public **HTTPS** app URL to be configured in Google Cloud OAuth. The web client and `/api` must use the same host so the secure `XTracker.Auth` session cookie is sent to `/api/auth/me` after Google redirects back.
+
 ## iOS and Android
 
 Capacitor is configured with the app identity `com.xtracker.app`. Native platform folders are generated locally because Xcode and Android Studio add machine-specific files.

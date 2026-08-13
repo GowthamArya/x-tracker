@@ -31,8 +31,16 @@ export class AuthService {
         tap(user => {
           this.currentUser = user;
         }),
-        catchError(() => {
+        catchError(error => {
           this.currentUser = null;
+
+          // Keep authentication failures visible while diagnosing deployed
+          // environments. The route guard still safely returns to login.
+          console.warn('Unable to restore the X-Tracker session.', {
+            status: error?.status,
+            url: error?.url,
+          });
+
           return of(null);
         })
       );
