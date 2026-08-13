@@ -19,6 +19,15 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#b85c5c" />
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('xtracker-theme') === 'dark') {
+          document.documentElement.classList.add('app-dark', 'ion-palette-dark');
+        }
+      } catch (_) { }
+    }());
+  </script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="assets/pwa/apple-touch-icon.png" />
 </head>

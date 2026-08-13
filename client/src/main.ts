@@ -22,6 +22,12 @@ import { AppComponent } from './app/app.component';
 import { apiInterceptor } from './app/interceptors/api-interceptor';
 import { provideServiceWorker } from '@angular/service-worker';
 import { environment } from './environments/environment';
+import { ThemeService } from './app/services/theme.service';
+
+// Apply the saved appearance before Ionic creates its first view. This keeps
+// every route consistent after a mobile refresh, not only the Settings page.
+const themeService = new ThemeService();
+themeService.initialize();
 
 bootstrapApplication(AppComponent, {
   providers: [

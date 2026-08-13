@@ -22,7 +22,7 @@ public class AccountsController : BaseController
     {
         var accounts = await _context.Accounts
             .AsNoTracking()
-            .Where(x => x.UserId == 1 || x.UserId == CurrentUserId)
+            .Where(x => x.UserId == CurrentUserId)
             .OrderBy(x => x.Name)
             .ToListAsync();
 

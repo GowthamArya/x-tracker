@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import {
   ActionSheetButton,
+  AlertController,
   IonActionSheet,
   IonButton,
   IonButtons,
@@ -11,9 +12,13 @@ import {
   IonContent,
   IonHeader,
   IonInput,
+  IonIcon,
   IonTitle,
   IonToolbar,
+  ToastController,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { addOutline, ellipsisHorizontal, walletOutline } from 'ionicons/icons';
 
 import { Account } from '../../models/account.model';
 import { AccountsService } from '../../services/accounts.service';
@@ -30,6 +35,7 @@ import { AccountsService } from '../../services/accounts.service';
     IonContent,
     IonHeader,
     IonInput,
+    IonIcon,
     IonTitle,
     IonToolbar,
     DecimalPipe,
@@ -56,7 +62,7 @@ export class AccountsPage {
     {
       text: 'Delete',
       role: 'destructive',
-      handler: () => this.deleteAccount(),
+      handler: () => this.confirmDeleteAccount(),
     },
     {
       text: 'Cancel',
@@ -65,8 +71,12 @@ export class AccountsPage {
   ];
 
   constructor(
-    private readonly accountsService: AccountsService
-  ) {}
+    private readonly accountsService: AccountsService,
+    private readonly alerts: AlertController,
+    private readonly toasts: ToastController,
+  ) {
+    addIcons({ addOutline, ellipsisHorizontal, walletOutline });
+  }
 
   ionViewWillEnter(): void {
     this.loadAccounts();
@@ -181,12 +191,25 @@ export class AccountsPage {
       });
   }
 
-  deleteAccount(): void {
+  async confirmDeleteAccount(): Promise<void> {
     if (!this.selectedAccount) {
       return;
     }
 
     const account = this.selectedAccount;
+    this.actionSheetOpen = false;
+    const alert = await this.alerts.create({
+      header: 'Delete account?',
+      message: `Delete “${account.name}”? Accounts with transactions must have their transactions moved or deleted first.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Delete', role: 'destructive', handler: () => this.deleteAccount(account) },
+      ],
+    });
+    await alert.present();
+  }
+
+  private deleteAccount(account: Account): void {
 
     this.accountsService
       .deleteAccount(account.id)
@@ -195,7 +218,8 @@ export class AccountsPage {
           this.selectedAccount = null;
           this.actionSheetOpen = false;
 
-          this.loadAccounts();
+          this.accounts = this.accounts.filter(item => item.id !== account.id);
+          this.showToast('Account deleted.');
         },
 
         error: (error) => {
@@ -207,13 +231,21 @@ export class AccountsPage {
           this.selectedAccount = null;
           this.actionSheetOpen = false;
 
-          const message =
-            error?.error ||
-            'Unable to delete account.';
-
-          alert(message);
+          this.showToast(typeof error?.error === 'string'
+            ? error.error
+            : 'Unable to delete this account. Please try again.');
         },
       });
+  }
+
+  private async showToast(message: string): Promise<void> {
+    const toast = await this.toasts.create({
+      message,
+      duration: 2400,
+      position: 'bottom',
+      color: 'dark',
+    });
+    await toast.present();
   }
 
   closeForm(): void {

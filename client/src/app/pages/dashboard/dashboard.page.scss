@@ -1,6 +1,10 @@
 .dashboard { max-width: 1040px; margin: 0 auto; padding: 30px 20px 48px; }
 .dashboard-header .brand-lockup { display: flex; align-items: center; gap: 10px; padding-left: 18px; font-weight: 750; letter-spacing: -0.02em; }
 .app-logo { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; }
+.profile-button { margin: 0; --padding-start: 4px; --padding-end: 4px; }
+.header-avatar { width: 32px; height: 32px; display: grid; place-items: center; overflow: hidden; border: 1px solid rgba(255,255,255,.62); border-radius: 50%; background: rgba(255,255,255,.18); color: #fff; font-size: .78rem; font-weight: 800; }
+.header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.logout-button { margin: 0; --padding-start: 6px; --padding-end: 2px; }
 .eyebrow { color: var(--app-muted-color); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.13em; }
 .welcome { margin-bottom: 24px; }
 .welcome h1 { margin: 8px 0 6px; font-size: clamp(2rem, 5vw, 3.35rem); line-height: 1; letter-spacing: -0.06em; font-weight: 780; }

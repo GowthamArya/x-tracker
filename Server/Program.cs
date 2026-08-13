@@ -32,11 +32,14 @@ builder.Services
         options.Cookie.SecurePolicy =
             CookieSecurePolicy.Always;
 
-        // The SPA and API are served from the same HTTPS host. Lax keeps the
-        // session cookie available after the Google top-level redirect while
-        // avoiding Safari's more restrictive third-party-cookie handling.
+        // Production serves the SPA and API from one HTTPS host, so Lax is
+        // appropriate after Google redirects back. Local development uses an
+        // HTTP client (localhost:8100) and HTTPS API (localhost:7043), which
+        // browsers treat as cross-site; it therefore needs None for /auth/me.
         options.Cookie.SameSite =
-            SameSiteMode.Lax;
+            builder.Environment.IsDevelopment()
+                ? SameSiteMode.None
+                : SameSiteMode.Lax;
 
         options.ExpireTimeSpan =
             TimeSpan.FromDays(30);

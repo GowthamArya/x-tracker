@@ -3,13 +3,13 @@
     <ion-title>
       <div class="header-title">
         <ion-icon name="airplane-outline" class="title-icon"></ion-icon>
-        <span>Trips & Splitwise</span>
+        <span>Trips</span>
       </div>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="solid" color="light" class="create-top-btn" (click)="createTrip()">
+      <ion-button fill="solid" color="light" class="create-top-btn header-action" (click)="createTrip()" aria-label="Create a new trip">
         <ion-icon name="add-outline" slot="start"></ion-icon>
-        New Trip
+        <span class="header-action-label">New trip</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -85,7 +85,7 @@
         } @else {
           <h3>No trips created yet</h3>
           <p>Start your first travel group, invite friends, and split expenses seamlessly!</p>
-          <ion-button fill="solid" color="primary" shape="round" (click)="createTrip()">
+          <ion-button fill="solid" shape="round" (click)="createTrip()">
             <ion-icon name="add-outline" slot="start"></ion-icon>
             Create Your First Trip
           </ion-button>
@@ -185,7 +185,7 @@
 
   <!-- Floating Action Button -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
-    <ion-fab-button color="primary" (click)="createTrip()">
+    <ion-fab-button class="danger" (click)="createTrip()">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -2,6 +2,9 @@
 // https://ionicframework.com/docs/theming/
 
 :root {
+  --ion-background-color: #f7f7f9;
+  --ion-text-color: #172033;
+  --ion-card-background: #ffffff;
   --app-header-gradient: linear-gradient(135deg, #9f5b61 0%, #c86b6b 100%);
   --app-card-bg: #ffffff;
   --app-card-border: #e5e7eb;
@@ -24,6 +27,7 @@
   --ion-color-secondary: #9f5b61;
 }
 
+:root.app-dark,
 body.app-dark {
   --app-card-bg: #171923;
   --app-card-border: #2d3342;
@@ -45,4 +49,9 @@ body.app-dark {
   --ion-tab-bar-border-color: #2d3342;
   --ion-tab-bar-color: #a8b0c0;
   --ion-tab-bar-color-selected: #ffd3d3;
+  --ion-color-primary: #c86b6b;
+  --ion-color-primary-rgb: 200, 107, 107;
+  --ion-color-primary-contrast: #000;
+  --ion-color-primary-shade: #b35f5f;
+  --ion-color-primary-tint: #d18181;
 }

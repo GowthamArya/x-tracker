@@ -11,11 +11,12 @@ import {
   IonButtons
 } from '@ionic/angular/standalone';
 
-import { addOutline, airplaneOutline, arrowUpOutline } from 'ionicons/icons';
+import { addOutline, airplaneOutline, arrowUpOutline, logOutOutline } from 'ionicons/icons';
 
 import { DashboardService } from '../../services/dashboard.service';
 import { AuthService } from '../../services/auth.service';
 import { Transaction } from '../../models/transaction.model';
+import { CurrentUser } from '../../services/auth.service';
 import { addIcons } from 'ionicons';
 
 @Component({
@@ -38,6 +39,7 @@ export class DashboardPage {
   transactions: Transaction[] = [];
 
   isLoggedIn = false;
+  user: CurrentUser | null = null;
 
   totalIncome = 0;
   totalExpenses = 0;
@@ -47,7 +49,7 @@ export class DashboardPage {
     private readonly dashboardService: DashboardService,
     private readonly authService: AuthService
   ) {
-    addIcons({ addOutline, airplaneOutline, arrowUpOutline });
+    addIcons({ addOutline, airplaneOutline, arrowUpOutline, logOutOutline });
     this.setGreeting();
   }
 
@@ -57,9 +59,12 @@ export class DashboardPage {
 
   private checkAuthentication(): void {
 
-    this.authService.isLoggedIn()
+    this.authService.getCurrentUser()
       .subscribe({
-        next: (loggedIn) => {
+        next: (user) => {
+
+          const loggedIn = user !== null;
+          this.user = user;
 
           this.isLoggedIn = loggedIn;
 
@@ -97,15 +102,21 @@ export class DashboardPage {
   }
 
   logout(): void {
-    console.log('Logging out...', window.location.href);
     this.authService.logout().subscribe({
     next: () => {
-        console.log('Logout successful');
         return window.location.href = '/login';
     },
     error: error => {
         console.error('Logout failed', error);
     }
     });
+  }
+
+  get profileAvatar(): string | null {
+    return this.user?.photoUrl?.trim() || null;
+  }
+
+  get profileInitial(): string {
+    return (this.user?.name || this.user?.email || 'X').trim().charAt(0).toUpperCase();
   }
 }
