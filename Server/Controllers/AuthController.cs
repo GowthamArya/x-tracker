@@ -141,7 +141,13 @@ public class AuthController : ControllerBase
         // Create X-Tracker authentication cookie
         await HttpContext.SignInAsync(
             "XTrackerCookie",
-            principal
+            principal,
+            new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
+                AllowRefresh = true
+            }
         );
         string? returnUrl = Request.Query["returnUrl"];
         if (!string.IsNullOrWhiteSpace(returnUrl))
