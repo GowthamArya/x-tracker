@@ -3,13 +3,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TripInvitesService } from '../../services/trip-invites.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonList, IonItem, IonLabel, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonIcon, IonLabel, IonSpinner, IonTitle, IonToolbar, IonList, IonItem } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { airplaneOutline, arrowForwardOutline, peopleOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-join-trip',
   templateUrl: './join-trip.page.html',
   styleUrls: ['./join-trip.page.scss'],
-  imports: [CommonModule, IonContent, IonButton, IonList, IonItem, IonLabel, IonSpinner, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton]
+  imports: [CommonModule, IonContent, IonButton, IonSpinner, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonIcon]
 })
 export class JoinTripPage implements OnInit {
   token = '';
@@ -17,13 +19,16 @@ export class JoinTripPage implements OnInit {
   loading = true;
   error = '';
   isLoggedIn = false;
+  joining = false;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly invites: TripInvitesService,
     private readonly auth: AuthService
-  ) {}
+  ) {
+    addIcons({ airplaneOutline, arrowForwardOutline, peopleOutline, shieldCheckmarkOutline });
+  }
 
   ngOnInit(): void {
     this.token = this.route.snapshot.paramMap.get('token') ?? '';
@@ -56,6 +61,15 @@ export class JoinTripPage implements OnInit {
   }
 
   join(): void {
-    this.invites.joinInvite(this.token).subscribe({ next: () => this.router.navigate([`/tabs/trips/${this.invite.tripId}`]), error: (e) => { console.error(e); this.error = 'Unable to join the trip.'; } });
+    this.joining = true;
+    this.error = '';
+    this.invites.joinInvite(this.token).subscribe({
+      next: () => this.router.navigate([`/tabs/trips/${this.invite.tripId}`]),
+      error: (e) => {
+        console.error(e);
+        this.error = 'Unable to join the trip. Please try again.';
+        this.joining = false;
+      }
+    });
   }
 }

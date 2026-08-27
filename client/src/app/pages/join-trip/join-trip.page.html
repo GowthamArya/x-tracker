@@ -1,24 +1,69 @@
-<ion-header class="app-header"><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/login"></ion-back-button></ion-buttons><ion-title>Join trip</ion-title></ion-toolbar></ion-header>
+<ion-header class="app-header ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Trip invitation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
-  <ion-list>
-    <ion-item *ngIf="loading">
-      <ion-spinner></ion-spinner>
-    </ion-item>
+  <main class="join-page">
+    <div class="join-container">
+      <div class="invite-mark" aria-hidden="true">
+        <ion-icon name="airplane-outline"></ion-icon>
+      </div>
 
-    <ion-item *ngIf="error">
-      <ion-label>{{ error }}</ion-label>
-    </ion-item>
+      <p class="eyebrow">You’re invited</p>
 
-    <ion-item *ngIf="invite && !loading">
-      <ion-label>
-        <h3>Join {{ invite.tripName || 'this trip' }}</h3>
-        <p *ngIf="!isLoggedIn">Sign in to join this trip. After authentication, you’ll return here automatically.</p>
-      </ion-label>
-    </ion-item>
+      <ng-container *ngIf="loading">
+        <section class="invite-card state-card" aria-live="polite">
+          <ion-spinner name="crescent"></ion-spinner>
+          <h1>Checking your invitation</h1>
+          <p>Just a moment while we load the trip details.</p>
+        </section>
+      </ng-container>
 
-    <ion-item *ngIf="invite && !loading">
-      <ion-button *ngIf="!isLoggedIn" (click)="login()">Login to Join</ion-button>
-      <ion-button *ngIf="isLoggedIn" (click)="join()">Join Trip</ion-button>
-    </ion-item>
-  </ion-list>
+      <ng-container *ngIf="!loading && error">
+        <section class="invite-card state-card error-card" role="alert">
+          <div class="state-icon"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
+          <h1>Invitation unavailable</h1>
+          <p>{{ error }}</p>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="invite && !loading">
+        <section class="invite-card">
+          <div class="card-heading">
+            <div class="trip-icon"><ion-icon name="airplane-outline"></ion-icon></div>
+            <div>
+              <p class="card-label">Shared trip</p>
+              <h1>{{ invite.tripName || 'A new adventure' }}</h1>
+            </div>
+          </div>
+
+          <div class="welcome-copy">
+            <p *ngIf="!isLoggedIn">Join your group to keep expenses, balances, and plans together in one place.</p>
+            <p *ngIf="isLoggedIn">You’re all set. Join this trip to start tracking shared expenses with your group.</p>
+          </div>
+
+          <div class="feature-list" aria-label="Trip features">
+            <div><ion-icon name="people-outline"></ion-icon><span>Stay in sync with your group</span></div>
+            <div><ion-icon name="shield-checkmark-outline"></ion-icon><span>Secure, private expense tracking</span></div>
+          </div>
+
+          <ion-button *ngIf="!isLoggedIn" class="join-button" expand="block" shape="round" (click)="login()">
+            Login to join trip <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="isLoggedIn" class="join-button" expand="block" shape="round" [disabled]="joining" (click)="join()">
+            <ion-spinner *ngIf="joining" name="crescent"></ion-spinner>
+            <span *ngIf="!joining">Join trip <ion-icon name="arrow-forward-outline" slot="end"></ion-icon></span>
+            <span *ngIf="joining">Joining trip...</span>
+          </ion-button>
+
+          <p class="secure-note"><ion-icon name="shield-checkmark-outline"></ion-icon> Your invite is private to you and your group.</p>
+        </section>
+      </ng-container>
+    </div>
+  </main>
 </ion-content>

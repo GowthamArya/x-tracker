@@ -52,7 +52,18 @@
               ·
               {{ transaction.accountName }}
             </span>
-
+            @if (transaction.isJointAccount) {
+              <span class="added-by" >
+                <ion-button
+                  fill="outline"
+                  size="small"
+                  shape="round"
+                >
+                  {{ (transaction.addedByName || 'U').charAt(0) | uppercase }}
+                </ion-button>
+                Added by {{ transaction.addedByName || 'another member' }}
+              </span>
+            }
             <small>
               {{ transaction.transactionDate }}
             </small>

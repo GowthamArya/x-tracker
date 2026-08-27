@@ -97,6 +97,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/join-trip/join-trip.page').then(m => m.JoinTripPage)
   },
   {
+    path: 'join/account/:token',
+    loadComponent: () => import('./pages/join-account/join-account.page').then(m => m.JoinAccountPage)
+  },
+  {
     path: 'filters',
     loadComponent: () => import('./pages/filters/filters.page').then( m => m.FilterPage)
   },

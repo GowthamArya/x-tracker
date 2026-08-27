@@ -14,6 +14,8 @@ public class XTrackerDbContext : DbContext
     public DbSet<User> Users => Set<User>();
 
     public DbSet<Account> Accounts => Set<Account>();
+    public DbSet<AccountMember> AccountMembers => Set<AccountMember>();
+    public DbSet<AccountInvite> AccountInvites => Set<AccountInvite>();
 
     public DbSet<Category> Categories => Set<Category>();
 
@@ -34,6 +36,21 @@ public class XTrackerDbContext : DbContext
             .WithMany(u => u.Transactions)
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<AccountMember>()
+            .HasOne(m => m.Account).WithMany(a => a.Members)
+            .HasForeignKey(m => m.AccountId).OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AccountMember>()
+            .HasOne(m => m.User).WithMany(u => u.AccountMemberships)
+            .HasForeignKey(m => m.UserId).OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<AccountMember>()
+            .HasIndex(m => new { m.AccountId, m.UserId }).IsUnique();
+
+        modelBuilder.Entity<AccountInvite>()
+            .HasOne(i => i.Account).WithMany()
+            .HasForeignKey(i => i.AccountId).OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Transaction>()
             .HasOne(t => t.Account)

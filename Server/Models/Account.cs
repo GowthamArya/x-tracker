@@ -13,6 +13,10 @@ public class Account
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
+    [Required]
+    [MaxLength(20)]
+    public string AccountType { get; set; } = "personal";
+
     [Column(TypeName = "decimal(18,2)")]
     public decimal OpeningBalance { get; set; }
 
@@ -25,10 +29,14 @@ public class Account
 
     public virtual ICollection<Transaction> Transactions { get; set; }
         = new List<Transaction>();
+
+    public virtual ICollection<AccountMember> Members { get; set; }
+        = new List<AccountMember>();
 }
 
 public class CreateAccountRequest
 {
     public string Name { get; set; } = string.Empty;
     public decimal OpeningBalance { get; set; } = 0;
+    public string AccountType { get; set; } = "personal";
 }

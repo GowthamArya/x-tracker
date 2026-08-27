@@ -23,4 +23,8 @@ public class TransactionDto
     public string AccountName { get; set; } = string.Empty;
 
     public string CategoryName { get; set; } = string.Empty;
+
+    public string AddedByName { get; set; } = string.Empty;
+
+    public bool IsJointAccount { get; set; }
 }

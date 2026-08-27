@@ -23,7 +23,7 @@ public class TransactionsController : BaseController
     {
         var transactions = await _context.Transactions
             .AsNoTracking()
-            .Where(x => x.UserId == CurrentUserId)
+            .Where(x => x.UserId == CurrentUserId || x.Account.UserId == CurrentUserId || x.Account.Members.Any(m => m.UserId == CurrentUserId))
             .OrderByDescending(x => x.TransactionDate)
             .Select(x => new TransactionDto
             {
@@ -37,7 +37,9 @@ public class TransactionsController : BaseController
                 TransactionDate = x.TransactionDate,
                 Notes = x.Notes,
                 AccountName = x.Account.Name,
-                CategoryName = x.Category.Name
+                CategoryName = x.Category.Name,
+                AddedByName = x.User.Name,
+                IsJointAccount = x.Account.AccountType == "joint"
             })
             .ToListAsync();
 
@@ -50,7 +52,7 @@ public class TransactionsController : BaseController
     {
         var transaction = await _context.Transactions
             .AsNoTracking()
-            .Where(x => x.Id == id && x.UserId == CurrentUserId)
+            .Where(x => x.Id == id && (x.UserId == CurrentUserId || x.Account.UserId == CurrentUserId || x.Account.Members.Any(m => m.UserId == CurrentUserId)))
             .Select(x => new TransactionDto
             {
                 Id = x.Id,
@@ -63,7 +65,9 @@ public class TransactionsController : BaseController
                 TransactionDate = x.TransactionDate,
                 Notes = x.Notes,
                 AccountName = x.Account.Name,
-                CategoryName = x.Category.Name
+                CategoryName = x.Category.Name,
+                AddedByName = x.User.Name,
+                IsJointAccount = x.Account.AccountType == "joint"
             })
             .FirstOrDefaultAsync();
 
@@ -80,6 +84,11 @@ public class TransactionsController : BaseController
     public async Task<ActionResult<TransactionDto>> CreateTransaction(
         TransactionRequestDto request)
     {
+        if (!await CanAccessAccount(request.AccountId))
+        {
+            return Forbid();
+        }
+
         var transaction = new Transaction
         {
             UserId = CurrentUserId,
@@ -112,11 +121,16 @@ public class TransactionsController : BaseController
         TransactionRequestDto request)
     {
         var transaction = await _context.Transactions
-            .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
+            .FirstOrDefaultAsync(x => x.Id == id && (x.UserId == CurrentUserId || x.Account.UserId == CurrentUserId || x.Account.Members.Any(m => m.UserId == CurrentUserId)));
 
         if (transaction is null)
         {
             return NotFound();
+        }
+
+        if (!await CanAccessAccount(request.AccountId))
+        {
+            return Forbid();
         }
         
         transaction.UserId = CurrentUserId;
@@ -141,7 +155,7 @@ public class TransactionsController : BaseController
     public async Task<IActionResult> DeleteTransaction(long id)
     {
         var transaction = await _context.Transactions
-            .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
+            .FirstOrDefaultAsync(x => x.Id == id && (x.UserId == CurrentUserId || x.Account.UserId == CurrentUserId || x.Account.Members.Any(m => m.UserId == CurrentUserId)));
 
         if (transaction is null)
         {
@@ -160,7 +174,7 @@ public class TransactionsController : BaseController
     {
         return await _context.Transactions
             .AsNoTracking()
-            .Where(x => x.Id == id && x.UserId == CurrentUserId)
+            .Where(x => x.Id == id && (x.UserId == CurrentUserId || x.Account.UserId == CurrentUserId || x.Account.Members.Any(m => m.UserId == CurrentUserId)))
             .Select(x => new TransactionDto
             {
                 Id = x.Id,
@@ -173,8 +187,16 @@ public class TransactionsController : BaseController
                 TransactionDate = x.TransactionDate,
                 Notes = x.Notes,
                 AccountName = x.Account.Name,
-                CategoryName = x.Category.Name
+                CategoryName = x.Category.Name,
+                AddedByName = x.User.Name,
+                IsJointAccount = x.Account.AccountType == "joint"
             })
             .FirstOrDefaultAsync();
+    }
+
+    private Task<bool> CanAccessAccount(int accountId)
+    {
+        return _context.Accounts.AnyAsync(a => a.Id == accountId &&
+            (a.UserId == CurrentUserId || a.Members.Any(m => m.UserId == CurrentUserId)));
     }
 }

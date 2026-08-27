@@ -20,4 +20,6 @@ export interface Transaction {
 
   accountName: string;
   categoryName: string;
+  addedByName?: string;
+  isJointAccount?: boolean;
 }

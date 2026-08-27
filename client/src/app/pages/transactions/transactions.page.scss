@@ -58,6 +58,7 @@
 }
 
 .transaction-details {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -75,7 +76,11 @@
     color: var(--app-muted-color);
     font-size: 12px;
   }
+
+  .added-by { display: flex; align-items: center; gap: 5px; color: var(--app-primary-color); font-size: 11px; font-weight: 600; }
 }
+
+.added-avatar { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; color: var(--ion-text-color); background: var(--app-primary-color); font-size: 9px; font-weight: 700; }
 
 .transaction-amount {
   font-weight: 700;

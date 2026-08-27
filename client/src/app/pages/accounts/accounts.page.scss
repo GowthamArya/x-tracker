@@ -25,6 +25,8 @@
   strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1rem; }
   span { color: var(--app-muted-color); font-size: .82rem; }
 }
+.account-right ion-badge { font-size: .64rem; font-weight: 700; text-transform: uppercase; }
+.type-hint { margin: -8px 0 0; color: var(--app-muted-color); font-size: .8rem; line-height: 1.4; }
 
 .account-right { display: flex; align-items: center; gap: 2px; flex: 0 0 auto;
   strong { font-size: 1rem; white-space: nowrap; }

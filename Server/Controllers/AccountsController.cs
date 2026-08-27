@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 using XTracker.Api.Models;
+using XTracker.Api.DTOs;
 
 namespace XTracker.Api.Controllers;
 
@@ -22,9 +23,14 @@ public class AccountsController : BaseController
     {
         var accounts = await _context.Accounts
             .AsNoTracking()
-            .Where(x => x.UserId == CurrentUserId)
+            .Where(x => x.UserId == CurrentUserId || x.Members.Any(m => m.UserId == CurrentUserId))
             .OrderBy(x => x.Name)
-            .ToListAsync();
+            .Select(x => new AccountDto {
+                Id = x.Id, UserId = x.UserId, Name = x.Name, AccountType = x.AccountType,
+                OpeningBalance = x.OpeningBalance, CreatedAt = x.CreatedAt, UpdatedAt = x.UpdatedAt,
+                MemberCount = x.AccountType == "joint" ? x.Members.Count : 1,
+                IsOwner = x.UserId == CurrentUserId
+            }).ToListAsync();
 
         return Ok(accounts);
     }
@@ -37,7 +43,7 @@ public class AccountsController : BaseController
             .AsNoTracking()
             .FirstOrDefaultAsync(
                 x => x.Id == id &&
-                     x.UserId == CurrentUserId
+                     (x.UserId == CurrentUserId || x.Members.Any(m => m.UserId == CurrentUserId))
             );
 
         if (account is null)
@@ -53,16 +59,26 @@ public class AccountsController : BaseController
     public async Task<ActionResult<Account>> CreateAccount(
         CreateAccountRequest request)
     {
+        var accountType = request.AccountType?.ToLowerInvariant() == "joint" ? "joint" : "personal";
         var account = new Account
         {
             UserId = CurrentUserId,
             Name = request.Name.Trim(),
-            OpeningBalance = request.OpeningBalance
+            OpeningBalance = request.OpeningBalance,
+            AccountType = accountType,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         _context.Accounts.Add(account);
 
         await _context.SaveChangesAsync();
+
+        if (accountType == "joint")
+        {
+            _context.AccountMembers.Add(new AccountMember { AccountId = account.Id, UserId = CurrentUserId, IsOwner = true, JoinedAt = DateTime.UtcNow });
+            await _context.SaveChangesAsync();
+        }
 
         return CreatedAtAction(
             nameof(GetAccount),
@@ -80,7 +96,7 @@ public class AccountsController : BaseController
         var account = await _context.Accounts
             .FirstOrDefaultAsync(
                 x => x.Id == id &&
-                     x.UserId == CurrentUserId
+                     (x.UserId == CurrentUserId || x.Members.Any(m => m.UserId == CurrentUserId))
             );
 
         if (account is null)
@@ -90,6 +106,8 @@ public class AccountsController : BaseController
 
         account.Name = request.Name.Trim();
         account.OpeningBalance = request.OpeningBalance;
+        account.UpdatedAt = DateTime.UtcNow;
+        account.AccountType = request.AccountType?.ToLowerInvariant() == "joint" ? "joint" : "personal";
 
         await _context.SaveChangesAsync();
 

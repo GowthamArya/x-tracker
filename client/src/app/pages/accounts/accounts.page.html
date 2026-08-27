@@ -26,10 +26,13 @@
             <div class="account-icon"><ion-icon name="wallet-outline"></ion-icon></div>
             <div class="account-info">
               <strong>{{ account.name }}</strong>
-              <span>Opening balance</span>
+              <span>{{ account.accountType === 'joint' ? 'Shared account' : 'Personal account' }}</span>
             </div>
             <div class="account-right">
               <strong>₹{{ account.openingBalance | number:'1.0-0' }}</strong>
+              <ion-badge [color]="account.accountType === 'joint' ? 'secondary' : 'medium'">
+                {{ account.accountType === 'joint' ? 'Joint' : 'Personal' }}
+              </ion-badge>
               <ion-button fill="clear" size="small" aria-label="Actions for {{ account.name }}" (click)="openAccountActions(account)">
                 <ion-icon name="ellipsis-horizontal" slot="icon-only"></ion-icon>
               </ion-button>
@@ -51,6 +54,13 @@
         <h2>{{ isEditMode ? 'Edit account' : 'New account' }}</h2>
         <ion-input label="Account name" labelPlacement="stacked" placeholder="e.g. Personal savings" [(ngModel)]="accountName"></ion-input>
         <ion-input label="Opening balance" labelPlacement="stacked" type="number" inputmode="decimal" [(ngModel)]="openingBalance"></ion-input>
+        <ion-select label="Account type" labelPlacement="stacked" [(ngModel)]="accountType" interface="popover">
+          <ion-select-option value="personal">Personal · only me</ion-select-option>
+          <ion-select-option value="joint">Joint · shared with others</ion-select-option>
+        </ion-select>
+        @if (accountType === 'joint') {
+          <p class="type-hint">After creating it, you can share an invite link with your partner or family.</p>
+        }
         <div class="form-actions">
           <ion-button fill="outline" (click)="closeForm()">Cancel</ion-button>
           <ion-button (click)="saveAccount()">{{ isEditMode ? 'Save changes' : 'Create account' }}</ion-button>

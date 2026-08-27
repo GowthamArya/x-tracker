@@ -188,6 +188,7 @@ export class AddTransactionPage implements OnInit {
       id: 0,
       name,
       openingBalance: this.newAccountOpeningBalance || 0,
+      accountType: 'personal',
     };
 
     this.accountsService

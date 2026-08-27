@@ -17,6 +17,8 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 
+import { UpperCasePipe } from "@angular/common";
+
 import { TransactionsService } from '../../services/transactions.service';
 import { Transaction } from '../../models/transaction.model';
 import { FilterValue } from '../../models/filter.model';
@@ -45,6 +47,7 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     FormsModule,
     RouterLink,
     FilterPage,
+    UpperCasePipe
   ],
 })
 export class TransactionsPage implements OnInit {
@@ -140,7 +143,7 @@ export class TransactionsPage implements OnInit {
 
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(tx => `${tx.title} ${tx.categoryName} ${tx.accountName}`.toLowerCase().includes(q));
+      filtered = filtered.filter(tx => `${tx.title} ${tx.categoryName} ${tx.accountName} ${tx.addedByName || ''}`.toLowerCase().includes(q));
     }
     if (this.filter?.dateRange) {
       const from = new Date(this.filter.dateRange.from).getTime();

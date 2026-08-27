@@ -39,6 +39,7 @@ export class AccountsService {
       {
         name: account.name,
         openingBalance: account.openingBalance,
+        accountType: account.accountType ?? 'personal',
       }
     );
   }
@@ -51,6 +52,7 @@ export class AccountsService {
       {
         name: account.name,
         openingBalance: account.openingBalance,
+        accountType: account.accountType ?? 'personal',
       }
     );
   }

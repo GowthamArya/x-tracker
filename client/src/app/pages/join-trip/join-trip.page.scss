@@ -1,1 +1,62 @@
-/* Join trip page styles - empty */
+ion-content { --background: var(--ion-background-color); }
+
+.join-page {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px 56px;
+}
+
+.join-container { width: 100%; max-width: 440px; text-align: center; }
+
+.invite-mark {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin: 4px auto 18px;
+  border-radius: 24px;
+  color: #fff;
+  background: var(--app-header-gradient);
+  box-shadow: 0 12px 24px rgba(var(--app-primary-rgb), .24);
+}
+
+.invite-mark ion-icon { font-size: 34px; }
+.eyebrow { margin: 0 0 12px; color: var(--app-primary-color); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+
+.invite-card {
+  padding: 28px;
+  border: 1px solid var(--app-card-border);
+  border-radius: 24px;
+  text-align: left;
+  background: var(--app-card-bg);
+  box-shadow: 0 16px 38px rgba(15, 23, 42, .1);
+}
+
+.card-heading { display: flex; align-items: center; gap: 14px; }
+.trip-icon, .state-icon { width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 16px; color: var(--app-primary-color); background: var(--app-selection-bg); }
+.trip-icon ion-icon, .state-icon ion-icon { font-size: 25px; }
+.card-label { margin: 0 0 3px; color: var(--app-muted-color); font-size: 12px; font-weight: 600; }
+h1 { margin: 0; color: var(--app-heading-color); font-size: 24px; line-height: 1.2; overflow-wrap: anywhere; }
+.welcome-copy { margin: 24px 0 20px; color: var(--app-muted-color); font-size: 15px; line-height: 1.55; }
+.welcome-copy p { margin: 0; }
+
+.feature-list { display: grid; gap: 12px; padding: 16px; border-radius: 16px; background: var(--app-surface-strong); }
+.feature-list div { display: flex; align-items: center; gap: 10px; color: var(--ion-text-color); font-size: 13px; }
+.feature-list ion-icon { color: var(--ion-color-success); font-size: 18px; }
+.join-button { height: 52px; margin: 24px 0 0; font-weight: 700; --box-shadow: none; }
+.join-button ion-icon { font-size: 18px; }
+.join-button ion-spinner { width: 20px; height: 20px; }
+.secure-note { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 18px 0 0; color: var(--app-muted-color); font-size: 11px; text-align: center; }
+.secure-note ion-icon { color: var(--ion-color-success); font-size: 15px; }
+
+.state-card { padding: 36px 28px; text-align: center; }
+.state-card ion-spinner { display: block; width: 30px; height: 30px; margin: 0 auto 20px; color: var(--app-primary-color); }
+.state-card h1 { font-size: 20px; }
+.state-card p { margin: 10px 0 0; color: var(--app-muted-color); font-size: 14px; line-height: 1.5; }
+.error-card .state-icon { margin: 0 auto 18px; color: var(--ion-color-danger); background: color-mix(in srgb, var(--ion-color-danger) 12%, transparent); }
+
+@media (max-width: 380px) {
+  .join-page { padding: 28px 16px 40px; }
+  .invite-card { padding: 24px 20px; }
+}

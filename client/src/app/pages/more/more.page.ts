@@ -56,8 +56,8 @@ export class MorePage implements OnInit {
   exportData(format: 'csv' | 'json'): void {
     forkJoin({ transactions: this.transactions.getTransactions(), trips: this.trips.getTrips() }).subscribe({ next: ({ transactions, trips }) => {
       if (format === 'json') { this.download(JSON.stringify({ exportedAt: new Date().toISOString(), transactions, trips }, null, 2), 'xtracker-export.json', 'application/json'); return; }
-      const rows = transactions.map(tx => [tx.transactionDate, tx.type, tx.title, tx.categoryName, tx.accountName, tx.amount]);
-      const csv = [['Date', 'Type', 'Title', 'Category', 'Account', 'Amount'], ...rows].map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+      const rows = transactions.map(tx => [tx.transactionDate, tx.type, tx.title, tx.categoryName, tx.accountName, tx.amount, tx.isJointAccount ? tx.addedByName : '']);
+      const csv = [['Date', 'Type', 'Title', 'Category', 'Account', 'Amount', 'Added by'], ...rows].map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
       this.download(csv, 'xtracker-transactions.csv', 'text/csv');
     }, error: () => this.showToast('Unable to export data right now.') });
   }
