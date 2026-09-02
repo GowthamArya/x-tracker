@@ -23,6 +23,11 @@
     <ion-item button detail="true" routerLink="/tabs/dashboard"><ion-icon name="shield-checkmark-outline" slot="start"></ion-icon><ion-label><h2>Security</h2><p>Review session and account security</p></ion-label></ion-item>
     <ion-item button detail="false" (click)="deleteAccount()"><ion-icon name="trash-outline" slot="start"></ion-icon><ion-label><h2>Delete my account</h2><p>Permanently remove your data</p></ion-label></ion-item>
   </ion-list>
+  <nav class="legal-links" aria-label="Legal information">
+    <a routerLink="/privacy-policy">Privacy Policy</a>
+    <span aria-hidden="true">·</span>
+    <a routerLink="/terms-of-services">Terms of Service</a>
+  </nav>
   <ion-button expand="block" (click)="logout()"><ion-icon name="log-out-outline" slot="start"></ion-icon>Sign out</ion-button><div class="app-version">X-Tracker · v1.0.0</div>
   <ion-modal [isOpen]="notificationsOpen" (didDismiss)="notificationsOpen = false"><ng-template><ion-header class="app-header"><ion-toolbar><ion-title>Notifications</ion-title><ion-buttons slot="end"><ion-button (click)="notificationsOpen = false">Done</ion-button></ion-buttons></ion-toolbar></ion-header><ion-content><ion-list><ion-item *ngFor="let item of notifications"><ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon><ion-label><h2>{{ item.title }}</h2><p>{{ item.message }}</p></ion-label></ion-item></ion-list><div class="empty-notifications" *ngIf="notifications.length === 0">No new notifications.</div></ion-content></ng-template></ion-modal>
 </div></ion-content>

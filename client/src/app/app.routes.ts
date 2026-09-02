@@ -93,6 +93,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
   },
   {
+    path: 'privacy-policy',
+    loadComponent: () => import('./pages/privacy-policy/privacy-policy.page').then(m => m.PrivacyPolicyPage)
+  },
+  {
+    path: 'terms-of-services',
+    loadComponent: () => import('./pages/terms-of-services/terms-of-services.page').then(m => m.TermsOfServicesPage)
+  },
+  {
     path: 'join/trip/:token',
     loadComponent: () => import('./pages/join-trip/join-trip.page').then(m => m.JoinTripPage)
   },

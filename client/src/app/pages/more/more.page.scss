@@ -120,6 +120,9 @@ ion-label p {
 
   font-size: 11px;
 }
+.legal-links { display: flex; justify-content: center; gap: 8px; margin: 20px 0 8px; color: var(--ion-color-medium); font-size: 12px; }
+.legal-links a { color: var(--app-primary-color); text-decoration: none; }
+.legal-links a:hover { text-decoration: underline; }
 .empty-notifications { padding: 48px 24px; text-align: center; color: var(--app-muted-color); }
 
 @media (min-width: 900px) {

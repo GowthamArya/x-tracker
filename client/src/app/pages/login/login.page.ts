@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonButton, IonContent, IonIcon, IonTabButton, IonLabel, IonText, IonCard, IonCardContent } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 
 import {
@@ -21,7 +22,8 @@ import { environment } from '../../../environments/environment';
     IonIcon,
     IonText,
     IonCard,
-    IonCardContent
+    IonCardContent,
+    RouterLink
 ],
 })
 export class LoginPage {
