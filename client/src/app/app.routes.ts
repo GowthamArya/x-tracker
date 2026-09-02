@@ -112,5 +112,8 @@ export const routes: Routes = [
     path: 'filters',
     loadComponent: () => import('./pages/filters/filters.page').then( m => m.FilterPage)
   },
-
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/public-home/public-home.page').then(m => m.PublicHomePage)
+  }
 ];
