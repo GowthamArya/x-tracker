@@ -9,6 +9,7 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
 import { TransactionsService } from '../../services/transactions.service';
 import { TripsService } from '../../services/trips.service';
 import { ThemeService } from '../../services/theme.service';
+import { GmailConnection, GmailService } from '../../services/gmail.service';
 
 @Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink, IonModal] })
 export class MorePage implements OnInit {
@@ -16,11 +17,13 @@ export class MorePage implements OnInit {
   darkMode = false;
   currency = '₹';
   notificationsOpen = false;
+  gmailConnections: GmailConnection[] = [];
+  syncingGmailId: number | null = null;
   notifications = [
     { title: 'Welcome to X-Tracker', message: 'Your spending insights and trip activity will appear here.', read: false }
   ];
 
-  constructor(private readonly auth: AuthService, private readonly router: Router, private readonly alerts: AlertController, private readonly toast: ToastController, private readonly transactions: TransactionsService, private readonly trips: TripsService, private readonly theme: ThemeService) {
+  constructor(private readonly auth: AuthService, private readonly router: Router, private readonly alerts: AlertController, private readonly toast: ToastController, private readonly transactions: TransactionsService, private readonly trips: TripsService, private readonly theme: ThemeService, private readonly gmail: GmailService) {
     addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline, settingsOutline });
   }
 
@@ -29,11 +32,20 @@ export class MorePage implements OnInit {
     this.currency = localStorage.getItem('xtracker-currency') || '₹';
     this.theme.initialize();
     this.auth.getCurrentUser().subscribe(user => this.user = user);
+    this.loadGmailConnections();
     const saved = localStorage.getItem('xtracker-notifications');
     if (saved) {
       try { this.notifications = JSON.parse(saved); } catch { /* reset invalid local data */ }
     }
   }
+
+  loadGmailConnections(): void { this.gmail.getConnections().subscribe({ next: connections => this.gmailConnections = connections, error: () => this.gmailConnections = [] }); }
+  connectGmail(): void { window.location.assign(this.gmail.connectUrl()); }
+  syncGmail(connection: GmailConnection): void {
+    this.syncingGmailId = connection.id;
+    this.gmail.sync(connection.id).subscribe({ next: result => { this.syncingGmailId = null; this.showToast(result.added ? `${result.added} new email${result.added === 1 ? '' : 's'} ready to review.` : 'No new transaction emails found.'); this.loadGmailConnections(); }, error: error => { this.syncingGmailId = null; this.showToast(error?.error?.message || 'Gmail sync failed.'); this.loadGmailConnections(); } });
+  }
+  disconnectGmail(connection: GmailConnection): void { this.gmail.disconnect(connection.id).subscribe({ next: () => { this.gmailConnections = this.gmailConnections.filter(item => item.id !== connection.id); this.showToast('Gmail disconnected.'); }, error: () => this.showToast('Unable to disconnect Gmail.') }); }
 
   toggleTheme(event: CustomEvent): void { this.darkMode = Boolean(event.detail?.checked); this.theme.setTheme(this.darkMode ? 'dark' : 'light'); }
   setCurrency(event: CustomEvent): void { this.currency = event.detail.value || '₹'; localStorage.setItem('xtracker-currency', this.currency); }
@@ -52,6 +64,8 @@ export class MorePage implements OnInit {
     const source = this.user?.name?.trim() || this.user?.email?.trim() || 'X';
     return source.charAt(0).toUpperCase();
   }
+
+  get hasPendingGmailImports(): boolean { return this.gmailConnections.some(connection => connection.pendingImports > 0); }
 
   exportData(format: 'csv' | 'json'): void {
     forkJoin({ transactions: this.transactions.getTransactions(), trips: this.trips.getTrips() }).subscribe({ next: ({ transactions, trips }) => {

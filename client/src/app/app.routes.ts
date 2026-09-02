@@ -75,6 +75,10 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'gmail-imports',
+        loadComponent: () => import('./pages/gmail-imports/gmail-imports.page').then(m => m.GmailImportsPage)
+      },
+      {
         path: 'add-transaction',
         loadComponent: () =>
           import('./pages/add-transaction/add-transaction.page').then(

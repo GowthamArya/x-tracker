@@ -123,6 +123,20 @@ After changing Angular code, run `npm run cap:sync` before testing in Xcode or A
 4. Verify mobile viewport, dark mode, invite links, and offline-safe loading states.
 5. Build and test both native projects from clean environments before release.
 
+## Gmail transaction imports (test users)
+
+The Gmail importer is intentionally separate from Google sign-in. One x-tracker user can connect multiple Gmail mailboxes; each mailbox is stored as a separate connection. During testing, keep the Google OAuth app in **Testing** status and add each mailbox under **Test users**.
+
+Configure the existing Google OAuth client with the Gmail callback URL. Local development uses:
+
+```text
+https://localhost:7043/api/gmail/callback
+```
+
+The server reads the existing `Authentication:Google:ClientId` and `Authentication:Google:ClientSecret` settings. A production deployment should set `Authentication:Google:GmailCallbackUrl` to its public HTTPS callback URL. Apply the `AddGmailImportSupport` EF migration before using Gmail connections.
+
+The initial version uses **Connect Gmail** and **Sync** from Settings. Messages are deduplicated by Gmail message ID and stored for review before becoming x-tracker transactions.
+
 ## Verification
 
 ```bash

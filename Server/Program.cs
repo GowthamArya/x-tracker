@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+builder.Services.AddDataProtection();
 
 // Authentication
 builder.Services

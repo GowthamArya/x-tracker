@@ -29,6 +29,8 @@ public class XTrackerDbContext : DbContext
     public DbSet<TripExpenseParticipant> TripExpenseParticipants => Set<TripExpenseParticipant>();
 
     public DbSet<TripInvite> TripInvites => Set<TripInvite>();
+    public DbSet<GmailConnection> GmailConnections => Set<GmailConnection>();
+    public DbSet<GmailImportedEmail> GmailImportedEmails => Set<GmailImportedEmail>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Transaction>()
@@ -111,5 +113,19 @@ public class XTrackerDbContext : DbContext
         modelBuilder.Entity<TripExpenseParticipant>()
             .Property(x => x.ShareAmount)
             .HasPrecision(18, 2);
+
+        modelBuilder.Entity<GmailConnection>()
+            .HasOne(x => x.User).WithMany()
+            .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<GmailImportedEmail>()
+            .HasOne(x => x.GmailConnection).WithMany(x => x.ImportedEmails)
+            .HasForeignKey(x => x.GmailConnectionId).OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<GmailImportedEmail>()
+            .HasOne(x => x.User).WithMany()
+            .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<GmailConnection>()
+            .HasIndex(x => new { x.UserId, x.GmailAddress }).IsUnique();
+        modelBuilder.Entity<GmailImportedEmail>()
+            .HasIndex(x => new { x.GmailConnectionId, x.GmailMessageId }).IsUnique();
     }
 }

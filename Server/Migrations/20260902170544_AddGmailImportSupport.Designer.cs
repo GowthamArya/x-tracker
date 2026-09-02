@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XTracker.Api.Data;
 
@@ -11,9 +12,11 @@ using XTracker.Api.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(XTrackerDbContext))]
-    partial class XTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260902170544_AddGmailImportSupport")]
+    partial class AddGmailImportSupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,13 +222,6 @@ namespace server.Migrations
 
                     b.Property<string>("GmailMessageId")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsUpi")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Payee")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
