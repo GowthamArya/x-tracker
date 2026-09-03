@@ -49,6 +49,32 @@
 
     </div>
 
+    <section class="calendar-card" aria-label="Monthly transaction calendar"
+      (touchstart)="onCalendarTouchStart($event)"
+      (touchend)="onCalendarTouchEnd($event)">
+      <div class="calendar-heading">
+        <div class="calendar-title"><span class="calendar-icon"><ion-icon name="calendar-outline"></ion-icon></span><div><h2>{{ monthLabel }}</h2><p>Swipe left or right to change month</p></div></div>
+        <ion-button class="calendar-reset" fill="clear" (click)="resetToCurrentMonth()" aria-label="Show current month"><ion-icon name="refresh-outline" slot="icon-only"></ion-icon></ion-button>
+      </div>
+      <div class="calendar-nav"><ion-button fill="clear" (click)="previousMonth()" aria-label="Previous month"><ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon></ion-button><span>{{ monthLabel }}</span><ion-button fill="clear" (click)="nextMonth()" aria-label="Next month"><ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon></ion-button></div>
+      <div class="weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="calendar-grid">
+        @for (week of calendarWeeks; track $index) {
+          @for (day of week; track day?.date || $index) {
+            @if (day) {
+              <div class="calendar-day" [class.today]="day.isToday" [class.has-data]="day.hasData">
+                <span class="day-number">{{ day.day }}</span>
+                @if (day.income > 0) { <span class="day-income">+₹{{ day.income | number:'1.0-0' }}</span> }
+                @if (day.expense > 0) { <span class="day-expense">−₹{{ day.expense | number:'1.0-0' }}</span> }
+              </div>
+            } @else { <div class="calendar-day empty-day"></div> }
+          }
+        }
+      </div>
+      <div class="calendar-legend"><span><i class="legend-dot income-dot"></i> Income</span><span><i class="legend-dot expense-dot"></i> Expense</span></div>
+      @if (highestDay) { <div class="day-insights"><div><span>Highest activity</span><strong>{{ highestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{ highestDay.total | number:'1.0-0' }}</strong></div><div><span>Lowest activity</span><strong>{{ lowestDay?.day }} {{ monthLabel.split(' ')[0] }} · ₹{{ lowestDay?.total | number:'1.0-0' }}</strong></div></div> }
+    </section>
+
 
     <!-- Income Categories -->
 

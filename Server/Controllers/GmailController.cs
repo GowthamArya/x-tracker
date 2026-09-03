@@ -117,7 +117,12 @@ public class GmailController : BaseController
         var item = await context.GmailImportedEmails.FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId && x.Status == "review");
         if (item == null) return NotFound();
         var account = await context.Accounts.FirstOrDefaultAsync(x => x.Id == request.AccountId && (x.UserId == CurrentUserId || x.Members.Any(m => m.UserId == CurrentUserId)));
-        var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == request.CategoryId && x.UserId == CurrentUserId);
+        // Categories owned by the system user are intentionally available to
+        // everyone, matching CategoriesController and the category dropdown.
+        var category = await context.Categories.FirstOrDefaultAsync(x =>
+            x.Id == request.CategoryId &&
+            (x.UserId == 1 || x.UserId == CurrentUserId) &&
+            x.Type == (item.Type == "income" ? "income" : "expense"));
         if (account == null || category == null || item.Amount == null || item.TransactionDate == null) return BadRequest("Choose a valid account and category, and complete the imported details first.");
         var note = $"Imported from Gmail: {item.Subject}";
         var transaction = new Transaction { UserId = CurrentUserId, AccountId = account.Id, CategoryId = category.Id, Title = item.Title, Amount = item.Amount.Value, Type = item.Type == "income" ? "income" : "expense", TransactionDate = item.TransactionDate.Value, Notes = note[..Math.Min(1000, note.Length)], CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };

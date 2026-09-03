@@ -20,6 +20,51 @@
 }
 .active-period { display: inline-flex; color: var(--app-muted-color); font-size: 0.8rem; margin-bottom: 14px; }
 
+.calendar-card {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--app-card-border);
+  border-radius: 22px;
+  background: var(--app-card-bg);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+  touch-action: pan-y;
+}
+
+.calendar-heading,
+.calendar-title,
+.calendar-nav,
+.calendar-legend,
+.day-insights {
+  display: flex;
+  align-items: center;
+}
+
+.calendar-heading { justify-content: space-between; gap: 8px; }
+.calendar-title { min-width: 0; gap: 10px; }
+.calendar-icon { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 12px; color: var(--app-primary-color); background: var(--app-selection-bg); font-size: 20px; }
+.calendar-title h2 { margin: 0; color: var(--app-heading-color); font-size: 1rem; font-weight: 800; }
+.calendar-title p { margin: 3px 0 0; color: var(--app-muted-color); font-size: 0.7rem; }
+.calendar-reset { --color: var(--app-primary-color); margin: 0; }
+.calendar-nav { justify-content: space-between; margin: 12px 0 8px; color: var(--app-heading-color); font-size: 0.82rem; font-weight: 800; }
+.calendar-nav ion-button { --color: var(--app-primary-color); width: 34px; height: 34px; margin: 0; }
+.weekdays, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.weekdays { margin-bottom: 5px; color: var(--app-muted-color); font-size: 0.62rem; font-weight: 800; text-align: center; text-transform: uppercase; }
+.calendar-day { min-width: 0; min-height: 66px; padding: 5px 3px; border: 1px solid transparent; border-radius: 11px; text-align: center; }
+.calendar-day.today { border-color: var(--app-primary-color); background: var(--app-selection-bg); }
+.day-number { display: block; margin-bottom: 4px; color: var(--app-heading-color); font-size: 0.72rem; font-weight: 800; }
+.day-income, .day-expense { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.57rem; font-weight: 750; line-height: 1.45; }
+.day-income { color: var(--ion-color-success); }
+.day-expense { color: var(--ion-color-danger); }
+.empty-day { min-height: 66px; }
+.calendar-legend { gap: 14px; margin-top: 10px; color: var(--app-muted-color); font-size: 0.68rem; }
+.legend-dot { display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; }
+.income-dot { background: var(--ion-color-success); }
+.expense-dot { background: var(--ion-color-danger); }
+.day-insights { gap: 8px; margin-top: 12px; }
+.day-insights > div { display: flex; flex: 1; flex-direction: column; gap: 3px; padding: 9px 10px; border-radius: 12px; background: var(--app-surface-strong); }
+.day-insights span { color: var(--app-muted-color); font-size: 0.62rem; }
+.day-insights strong { color: var(--app-heading-color); font-size: 0.76rem; }
+
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -139,6 +184,11 @@
   .full-width {
     grid-column: auto;
   }
+
+  .calendar-card { padding: 12px 10px; }
+  .calendar-day { min-height: 60px; padding-inline: 1px; }
+  .empty-day { min-height: 60px; }
+  .day-income, .day-expense { font-size: 0.5rem; }
 }
 
 ion-modal.compact-filters-modal::part(content) {

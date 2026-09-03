@@ -18,6 +18,7 @@ import {
   IonToolbar,
   IonSegment,
   IonSegmentButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 
 import {
@@ -37,6 +38,8 @@ import { AccountsService } from '../../services/accounts.service';
 import { TransactionsService } from '../../services/transactions.service';
 import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 import { Category } from '../../models/category.model';
+import { addIcons } from 'ionicons';
+import { calendarOutline, cashOutline, createOutline, documentTextOutline, pricetagOutline, swapHorizontalOutline, walletOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-add-transaction',
@@ -59,6 +62,7 @@ import { Category } from '../../models/category.model';
     IonToolbar,
     IonSegment,
     IonSegmentButton,
+    IonIcon,
     PageRefresherComponent,
   ],
 })
@@ -99,7 +103,9 @@ export class AddTransactionPage implements OnInit {
     private readonly categoriesService: CategoriesService,
     private readonly router: Router,
     private readonly route: ActivatedRoute
-  ) {}
+  ) {
+    addIcons({ calendarOutline, cashOutline, createOutline, documentTextOutline, pricetagOutline, swapHorizontalOutline, walletOutline });
+  }
 
   ngOnInit(): void {
     this.loadAccounts();
