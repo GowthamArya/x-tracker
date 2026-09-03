@@ -43,10 +43,14 @@
 }
 
 ion-header.navbar-header,
-ion-header.app-header { background: var(--app-header-gradient); }
+ion-header.app-header {
+  --background: var(--app-header-gradient);
+  background: var(--app-header-gradient);
+  color: #fff;
+}
 ion-header.navbar-header ion-toolbar,
 ion-header.app-header ion-toolbar {
-  --background: transparent;
+  --background: var(--app-header-gradient) !important;
   --color: #fff;
   --padding-start: 8px;
   --padding-end: 8px;
@@ -61,8 +65,30 @@ ion-header.app-header ion-toolbar ion-buttons {
 
 ion-header.navbar-header ion-toolbar ion-title,
 ion-header.app-header ion-toolbar ion-title {
+  --color: #fff;
+  color: #fff;
   min-width: 0;
   overflow: hidden;
+  padding-inline: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+ion-header.navbar-header ion-toolbar ion-back-button,
+ion-header.app-header ion-toolbar ion-back-button {
+  --color: #fff;
+  --icon-font-size: 1.35rem;
+  min-width: 42px;
+  margin-inline: -4px 2px;
+}
+
+ion-header.navbar-header ion-toolbar ion-back-button::part(native),
+ion-header.app-header ion-toolbar ion-back-button::part(native) {
+  color: #fff;
 }
 
 ion-header.navbar-header ion-toolbar ion-button,
@@ -95,6 +121,18 @@ ion-header.app-header ion-toolbar ion-button.header-action .button-inner {
 }
 
 @media (max-width: 420px) {
+  ion-header.navbar-header ion-toolbar,
+  ion-header.app-header ion-toolbar {
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+
+  ion-header.navbar-header ion-toolbar ion-title,
+  ion-header.app-header ion-toolbar ion-title {
+    padding-inline: 4px;
+    font-size: 0.98rem;
+  }
+
   .header-action-label {
     display: none;
   }
