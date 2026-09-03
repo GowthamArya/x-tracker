@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, ToastController } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { alertCircleOutline, checkmarkOutline, closeOutline, mailOutline } from 'ionicons/icons';
 import { AccountsService } from '../../services/accounts.service';
@@ -12,7 +12,7 @@ import { Category } from '../../models/category.model';
 import { GmailImport } from '../../models/gmail-import.model';
 import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
-@Component({ selector: 'app-gmail-imports', templateUrl: './gmail-imports.page.html', styleUrls: ['./gmail-imports.page.scss'], imports: [DatePipe, DecimalPipe, FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, PageRefresherComponent] })
+@Component({ selector: 'app-gmail-imports', templateUrl: './gmail-imports.page.html', styleUrls: ['./gmail-imports.page.scss'], imports: [DatePipe, DecimalPipe, FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, PageRefresherComponent] })
 export class GmailImportsPage {
   imports: GmailImport[] = []; accounts: Account[] = []; categories: Category[] = []; loading = true; busyId: number | null = null;
   accountIds: Record<number, number | null> = {}; categoryIds: Record<number, number | null> = {};

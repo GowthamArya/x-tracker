@@ -33,7 +33,6 @@ import { PageRefresherComponent } from '../../components/page-refresher/page-ref
     IonButton,
     IonIcon,
     IonButtons,
-    PageRefresherComponent
   ],
 })
 export class DashboardPage {
