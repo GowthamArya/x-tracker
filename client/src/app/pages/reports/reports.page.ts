@@ -18,6 +18,7 @@ import { ReportsService } from '../../services/reports.service';
 import { CategoryReport, ReportSummary } from '../../services/reports.service';
 import { FilterValue } from '../../models/filter.model';
 import { FilterPage } from '../filters/filters.page';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 @Component({
   selector: 'app-reports',
@@ -34,6 +35,7 @@ import { FilterPage } from '../filters/filters.page';
     IonIcon,
     DecimalPipe,
     FilterPage,
+    PageRefresherComponent,
   ],
 })
 export class ReportsPage {

@@ -25,6 +25,7 @@ import { FilterValue } from '../../models/filter.model';
 import { FilterPage } from '../filters/filters.page';
 import { addIcons } from 'ionicons';
 import { addOutline, optionsOutline, checkmarkOutline } from 'ionicons/icons';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 type TransactionFilter = 'all' | 'income' | 'expense';
 
@@ -47,7 +48,8 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     FormsModule,
     RouterLink,
     FilterPage,
-    UpperCasePipe
+    UpperCasePipe,
+    PageRefresherComponent
   ],
 })
 export class TransactionsPage implements OnInit {

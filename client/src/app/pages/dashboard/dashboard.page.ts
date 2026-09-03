@@ -18,6 +18,7 @@ import { AuthService } from '../../services/auth.service';
 import { Transaction } from '../../models/transaction.model';
 import { CurrentUser } from '../../services/auth.service';
 import { addIcons } from 'ionicons';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,7 +32,8 @@ import { addIcons } from 'ionicons';
     RouterLink,
     IonButton,
     IonIcon,
-    IonButtons
+    IonButtons,
+    PageRefresherComponent
   ],
 })
 export class DashboardPage {

@@ -10,8 +10,9 @@ import { GmailService } from '../../services/gmail.service';
 import { Account } from '../../models/account.model';
 import { Category } from '../../models/category.model';
 import { GmailImport } from '../../models/gmail-import.model';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
-@Component({ selector: 'app-gmail-imports', templateUrl: './gmail-imports.page.html', styleUrls: ['./gmail-imports.page.scss'], imports: [DatePipe, DecimalPipe, FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar] })
+@Component({ selector: 'app-gmail-imports', templateUrl: './gmail-imports.page.html', styleUrls: ['./gmail-imports.page.scss'], imports: [DatePipe, DecimalPipe, FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, PageRefresherComponent] })
 export class GmailImportsPage {
   imports: GmailImport[] = []; accounts: Account[] = []; categories: Category[] = []; loading = true; busyId: number | null = null;
   accountIds: Record<number, number | null> = {}; categoryIds: Record<number, number | null> = {};

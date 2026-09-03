@@ -27,6 +27,7 @@ import { Account } from '../../models/account.model';
 import { AccountsService } from '../../services/accounts.service';
 import { AccountInvitesService } from '../../services/account-invites.service';
 import { ShareService } from '../../services/share.service';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 @Component({
   selector: 'app-accounts',
@@ -48,6 +49,7 @@ import { ShareService } from '../../services/share.service';
     IonBadge,
     DecimalPipe,
     FormsModule,
+    PageRefresherComponent,
   ],
 })
 export class AccountsPage {

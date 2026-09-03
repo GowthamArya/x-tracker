@@ -1,5 +1,5 @@
 <ion-header class="app-header"><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/tabs/dashboard"></ion-back-button></ion-buttons><ion-title>Settings</ion-title></ion-toolbar></ion-header>
-<ion-content [fullscreen]="true"><div class="more-page">
+<ion-content [fullscreen]="true"><app-page-refresher></app-page-refresher><div class="more-page">
   <section class="profile-card app-card" (click)="editProfile()">
     <div class="profile-avatar" [class.has-photo]="profileAvatar">
       @if (profileAvatar) {

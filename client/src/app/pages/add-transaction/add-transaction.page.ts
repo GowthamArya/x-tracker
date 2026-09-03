@@ -35,6 +35,7 @@ import {
 import { AccountsService } from '../../services/accounts.service';
 
 import { TransactionsService } from '../../services/transactions.service';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 import { Category } from '../../models/category.model';
 
 @Component({
@@ -58,6 +59,7 @@ import { Category } from '../../models/category.model';
     IonToolbar,
     IonSegment,
     IonSegmentButton,
+    PageRefresherComponent,
   ],
 })
 export class AddTransactionPage implements OnInit {

@@ -10,8 +10,9 @@ import { TransactionsService } from '../../services/transactions.service';
 import { TripsService } from '../../services/trips.service';
 import { ThemeService } from '../../services/theme.service';
 import { GmailConnection, GmailService } from '../../services/gmail.service';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
-@Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink, IonModal] })
+@Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink, IonModal, PageRefresherComponent] })
 export class MorePage implements OnInit {
   user: CurrentUser | null = null;
   darkMode = false;

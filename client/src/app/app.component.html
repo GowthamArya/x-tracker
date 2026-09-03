@@ -1,3 +1,16 @@
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
+
+  @if (loading$ | async) {
+    <div class="app-loading-indicator" role="status" aria-live="polite">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Loading…</span>
+    </div>
+  }
+
+  <ion-fab class="global-reload" slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button size="small" (click)="reload()" aria-label="Reload current screen">
+      <ion-icon name="refresh-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-app>

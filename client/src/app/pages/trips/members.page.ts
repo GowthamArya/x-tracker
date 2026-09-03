@@ -8,12 +8,13 @@ import { personAddOutline, linkOutline, checkmarkOutline, trashOutline } from 'i
 import { TripMembersService } from '../../services/trip-members.service';
 import { TripMember } from '../../models/trip-member.model';
 import { AuthService, CurrentUser } from '../../services/auth.service';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 @Component({
   selector: 'app-trip-members',
   templateUrl: './members.page.html',
   styleUrls: ['./members.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonBackButton, IonButtons, IonInput, IonButton, IonIcon]
+  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonBackButton, IonButtons, IonInput, IonButton, IonIcon, PageRefresherComponent]
 })
 export class MembersPage implements OnInit {
   tripId = 0;

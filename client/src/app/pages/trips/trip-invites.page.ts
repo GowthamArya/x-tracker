@@ -6,12 +6,13 @@ import { CommonModule } from '@angular/common';
 import { IonBackButton, IonButtons, IonContent, IonButton, IonHeader, IonModal, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular';
 import { ShareService } from '../../services/share.service';
+import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 @Component({
   selector: 'app-trip-invites',
   templateUrl: './trip-invites.page.html',
   styleUrls: ['./trip-invites.page.scss'],
-  imports: [CommonModule, IonContent, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonModal]
+  imports: [CommonModule, IonContent, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonModal, PageRefresherComponent]
 })
 export class TripInvitesPage implements OnInit {
   tripId = 0;
