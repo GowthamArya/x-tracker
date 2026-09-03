@@ -23,6 +23,18 @@ public class AuthController : ControllerBase
     public IActionResult GoogleLogin()
     {
         var returnUrl = Request.Query["returnUrl"].ToString();
+
+        // Do not start another Google OAuth flow when the browser already has
+        // a valid X-Tracker session.
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return Redirect(
+                string.IsNullOrWhiteSpace(returnUrl)
+                    ? "/tabs/dashboard"
+                    : returnUrl
+            );
+        }
+
         var redirectUri = "/api/auth/google-callback";
         if (!string.IsNullOrWhiteSpace(returnUrl))
         {

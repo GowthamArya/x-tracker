@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Models;
 
 namespace XTracker.Api.Data;
 
-public class XTrackerDbContext : DbContext
+public class XTrackerDbContext : DbContext, IDataProtectionKeyContext
 {
     public XTrackerDbContext(
         DbContextOptions<XTrackerDbContext> options)
@@ -31,6 +32,7 @@ public class XTrackerDbContext : DbContext
     public DbSet<TripInvite> TripInvites => Set<TripInvite>();
     public DbSet<GmailConnection> GmailConnections => Set<GmailConnection>();
     public DbSet<GmailImportedEmail> GmailImportedEmails => Set<GmailImportedEmail>();
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Transaction>()

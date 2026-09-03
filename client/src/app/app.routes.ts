@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './layout/tabs/tabs.page';
 import { authGuard } from './guards/auth.guard';
+import { guestGuard } from './guards/guest.guard';
 
 export const routes: Routes = [
   {
@@ -94,6 +95,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [guestGuard],
     loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
   },
   {

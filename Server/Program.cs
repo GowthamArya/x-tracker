@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 
@@ -8,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Controllers
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
-builder.Services.AddDataProtection();
+// Authentication cookies are encrypted with ASP.NET Core Data Protection
+// keys. Store the key ring in SQL so IIS recycles, deployments, and multiple
+// app instances continue to understand existing session cookies.
+builder.Services
+    .AddDataProtection()
+    .SetApplicationName("XTracker")
+    .PersistKeysToDbContext<XTrackerDbContext>();
 
 // Authentication
 builder.Services
