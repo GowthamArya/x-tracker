@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonModal, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline, settingsOutline } from 'ionicons/icons';
@@ -33,18 +33,31 @@ export class MorePage implements OnInit {
     this.currency = localStorage.getItem('xtracker-currency') || '₹';
     this.theme.initialize();
     this.auth.getCurrentUser().subscribe(user => this.user = user);
-    this.loadGmailConnections();
     const saved = localStorage.getItem('xtracker-notifications');
     if (saved) {
       try { this.notifications = JSON.parse(saved); } catch { /* reset invalid local data */ }
     }
   }
 
-  loadGmailConnections(): void { this.gmail.getConnections().subscribe({ next: connections => this.gmailConnections = connections, error: () => this.gmailConnections = [] }); }
+  ionViewWillEnter(): void { this.loadGmailConnections(true); }
+  loadGmailConnections(sync = false): void {
+    this.gmail.getConnections().subscribe({
+      next: connections => {
+        this.gmailConnections = connections;
+        if (sync) this.syncConnections(connections);
+      },
+      error: () => this.gmailConnections = []
+    });
+  }
+  private syncConnections(connections: GmailConnection[]): void {
+    if (!connections.length) return;
+    forkJoin(connections.map(connection => this.gmail.sync(connection.id).pipe(catchError(() => of(null)))))
+      .subscribe(() => this.loadGmailConnections());
+  }
   connectGmail(): void { window.location.assign(this.gmail.connectUrl()); }
   syncGmail(connection: GmailConnection): void {
     this.syncingGmailId = connection.id;
-    this.gmail.sync(connection.id).subscribe({ next: result => { this.syncingGmailId = null; this.showToast(result.added ? `${result.added} new email${result.added === 1 ? '' : 's'} ready to review.` : 'No new transaction emails found.'); this.loadGmailConnections(); }, error: error => { this.syncingGmailId = null; this.showToast(error?.error?.message || 'Gmail sync failed.'); this.loadGmailConnections(); } });
+    this.gmail.sync(connection.id).subscribe({ next: result => { this.syncingGmailId = null; this.showToast(result.autoAdded ? `${result.autoAdded} transaction${result.autoAdded === 1 ? '' : 's'} added${result.pending ? `, ${result.pending} need review` : ''}.` : (result.pending ? `${result.pending} email${result.pending === 1 ? '' : 's'} need review.` : 'No new transaction emails found.')); this.loadGmailConnections(); }, error: error => { this.syncingGmailId = null; this.showToast(error?.error?.message || 'Gmail sync failed.'); this.loadGmailConnections(); } });
   }
   disconnectGmail(connection: GmailConnection): void { this.gmail.disconnect(connection.id).subscribe({ next: () => { this.gmailConnections = this.gmailConnections.filter(item => item.id !== connection.id); this.showToast('Gmail disconnected.'); }, error: () => this.showToast('Unable to disconnect Gmail.') }); }
 

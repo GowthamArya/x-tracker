@@ -49,23 +49,25 @@
 .calendar-nav ion-button { --color: var(--app-primary-color); width: 34px; height: 34px; margin: 0; }
 .weekdays, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .weekdays { margin-bottom: 5px; color: var(--app-muted-color); font-size: 0.62rem; font-weight: 800; text-align: center; text-transform: uppercase; }
-.calendar-day { min-width: 0; min-height: 66px; padding: 5px 3px; border: 1px solid transparent; border-radius: 11px; text-align: center; }
+.calendar-day { min-width: 0; min-height: 58px; padding: 5px 3px; border: 1px solid transparent; border-radius: 11px; text-align: center; }
 .calendar-day.today { border-color: var(--app-primary-color); background: var(--app-selection-bg); }
 .day-number { display: block; margin-bottom: 4px; color: var(--app-heading-color); font-size: 0.72rem; font-weight: 800; }
 .day-income, .day-expense { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.57rem; font-weight: 750; line-height: 1.45; }
 .day-income { color: var(--ion-color-success); }
 .day-expense { color: var(--ion-color-danger); }
-.empty-day { min-height: 66px; }
+.empty-day { min-height: 58px; }
 .calendar-legend { gap: 14px; margin-top: 10px; color: var(--app-muted-color); font-size: 0.68rem; }
 .legend-dot { display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; }
 .income-dot { background: var(--ion-color-success); }
 .expense-dot { background: var(--ion-color-danger); }
-.day-insights { gap: 8px; margin-top: 12px; }
+.day-insights { gap: 8px; min-height: 52px; margin-top: 12px; }
 .day-insights > div { display: flex; flex: 1; flex-direction: column; gap: 3px; padding: 9px 10px; border-radius: 12px; background: var(--app-surface-strong); }
 .day-insights span { color: var(--app-muted-color); font-size: 0.62rem; }
 .day-insights strong { color: var(--app-heading-color); font-size: 0.76rem; }
+.day-insights-empty { justify-content: center; text-align: center; }
 
 .summary-grid {
+  margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
@@ -186,8 +188,8 @@
   }
 
   .calendar-card { padding: 12px 10px; }
-  .calendar-day { min-height: 60px; padding-inline: 1px; }
-  .empty-day { min-height: 60px; }
+  .calendar-day { min-height: 52px; padding-inline: 1px; }
+  .empty-day { min-height: 52px; }
   .day-income, .day-expense { font-size: 0.5rem; }
 }
 

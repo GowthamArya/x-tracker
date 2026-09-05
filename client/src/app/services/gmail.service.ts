@@ -18,7 +18,7 @@ export class GmailService {
   private readonly apiUrl = environment.apiUrl + '/gmail';
   constructor(private readonly http: HttpClient) {}
   getConnections(): Observable<GmailConnection[]> { return this.http.get<GmailConnection[]>(`${this.apiUrl}/connections`); }
-  sync(id: number): Observable<{ added: number; pending: number }> { return this.http.post<{ added: number; pending: number }>(`${this.apiUrl}/connections/${id}/sync`, {}); }
+  sync(id: number): Observable<{ added: number; autoAdded: number; pending: number }> { return this.http.post<{ added: number; autoAdded: number; pending: number }>(`${this.apiUrl}/connections/${id}/sync`, {}); }
   disconnect(id: number): Observable<void> { return this.http.delete<void>(`${this.apiUrl}/connections/${id}`); }
   getImports(): Observable<GmailImport[]> { return this.http.get<GmailImport[]>(`${this.apiUrl}/imports`); }
   confirmImport(id: number, accountId: number, categoryId: number): Observable<{ transactionId: number }> { return this.http.post<{ transactionId: number }>(`${this.apiUrl}/imports/${id}/confirm`, { accountId, categoryId }); }

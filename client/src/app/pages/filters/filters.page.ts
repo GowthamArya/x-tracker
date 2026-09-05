@@ -7,9 +7,8 @@ import { IonItem, IonSelect, IonSelectOption, IonDatetime, IonDatetimeButton, Io
 import { CategoriesService } from '../../services/categories.service';
 import { Category, CategoryType } from '../../models/category.model';
 import { DateFilterPreset, DateRange, FilterValue } from '../../models/filter.model';
-import { TitleCasePipe } from '@angular/common';
 import { addIcons }  from 'ionicons';
-import { calendarOutline, calendarSharp } from 'ionicons/icons';
+import { calendarOutline, calendarSharp, pricetagsOutline, swapVerticalOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-transaction-filter',
   standalone: true,
@@ -26,7 +25,7 @@ import { calendarOutline, calendarSharp } from 'ionicons/icons';
     IonModal,
     IonIcon,
     IonCard,
-    IonCardContent
+    IonCardContent,
 ],
 })
 export class FilterPage implements OnInit {
@@ -52,10 +51,7 @@ export class FilterPage implements OnInit {
   selectedCategoryId: number | null = null;
 
   constructor(private readonly categoriesService: CategoriesService) {
-  addIcons({
-    "calendar-outline": calendarOutline,
-    "calendar-sharp": calendarSharp
-  });
+    addIcons({ calendarOutline, calendarSharp, pricetagsOutline, swapVerticalOutline });
     }
 
   ngOnInit(): void {

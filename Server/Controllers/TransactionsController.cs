@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 using XTracker.Api.DTOs;
 using XTracker.Api.Models;
+using XTracker.Api.Services;
 
 namespace XTracker.Api.Controllers;
 
@@ -11,17 +12,19 @@ namespace XTracker.Api.Controllers;
 public class TransactionsController : BaseController
 {
     private readonly XTrackerDbContext _context;
+    private readonly AppCache _cache;
 
-    public TransactionsController(XTrackerDbContext context)
+    public TransactionsController(XTrackerDbContext context, AppCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     // GET: api/Transactions
     [HttpGet]
     public async Task<ActionResult<List<TransactionDto>>> GetTransactions()
     {
-        var transactions = await _context.Transactions
+        var transactions = await _cache.GetOrCreateAsync(_cache.Key(CurrentUserId, "transactions"), _ => _context.Transactions
             .AsNoTracking()
             .Where(x => x.UserId == CurrentUserId || x.Account.UserId == CurrentUserId || x.Account.Members.Any(m => m.UserId == CurrentUserId))
             .OrderByDescending(x => x.TransactionDate)
@@ -41,7 +44,7 @@ public class TransactionsController : BaseController
                 AddedByName = x.User.Name,
                 IsJointAccount = x.Account.AccountType == "joint"
             })
-            .ToListAsync();
+            .ToListAsync(), TimeSpan.FromSeconds(20));
 
         return Ok(transactions);
     }

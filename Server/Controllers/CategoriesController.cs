@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 using XTracker.Api.DTOs;
 using XTracker.Api.Models;
+using XTracker.Api.Services;
 
 namespace XTracker.Api.Controllers;
 
@@ -11,10 +12,12 @@ namespace XTracker.Api.Controllers;
 public class CategoriesController : BaseController
 {
     private readonly XTrackerDbContext _context;
+    private readonly AppCache _cache;
 
-    public CategoriesController(XTrackerDbContext context)
+    public CategoriesController(XTrackerDbContext context, AppCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     // GET: api/Categories
@@ -35,7 +38,7 @@ public class CategoriesController : BaseController
                 x => x.Type == type);
         }
 
-        var categories = await categoriesQuery
+        var categories = await _cache.GetOrCreateAsync(_cache.Key(CurrentUserId, "categories", type ?? "all"), _ => categoriesQuery
             .OrderBy(x => x.Type)
             .ThenBy(x => x.Name)
             .Select(x => new CategoryDto
@@ -46,7 +49,7 @@ public class CategoriesController : BaseController
                 Type = x.Type,
                 CreatedAt = x.CreatedAt
             })
-            .ToListAsync();
+            .ToListAsync(), TimeSpan.FromMinutes(2));
 
         return Ok(categories);
     }

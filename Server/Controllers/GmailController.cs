@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 using XTracker.Api.Models;
+using XTracker.Api.Services;
 
 namespace XTracker.Api.Controllers;
 
@@ -21,17 +22,24 @@ public class GmailController : BaseController
     private readonly IHttpClientFactory clients;
     private readonly IDataProtector protector;
     private readonly IConfiguration configuration;
+    private readonly AppCache cache;
+    private readonly ILogger<GmailController> logger;
 
-    public GmailController(XTrackerDbContext context, IHttpClientFactory clients, IDataProtectionProvider protection, IConfiguration configuration)
+    public GmailController(XTrackerDbContext context, IHttpClientFactory clients, IDataProtectionProvider protection, IConfiguration configuration, AppCache cache, ILogger<GmailController> logger)
     {
-        this.context = context; this.clients = clients; this.configuration = configuration;
+        this.context = context; this.clients = clients; this.configuration = configuration; this.cache = cache; this.logger = logger;
         protector = protection.CreateProtector("xtracker.gmail.oauth.v1");
     }
 
     [HttpGet("connections")]
-    public async Task<IActionResult> Connections() => Ok(await context.GmailConnections.AsNoTracking()
-        .Where(x => x.UserId == CurrentUserId).Select(x => new { x.Id, x.GmailAddress, x.CreatedAt, x.LastSyncedAt, x.LastError,
-            pendingImports = x.ImportedEmails.Count(i => i.Status == "review") }).ToListAsync());
+    public async Task<IActionResult> Connections()
+    {
+        var result = await cache.GetOrCreateAsync(CacheKey("connections"), _ => context.GmailConnections.AsNoTracking()
+                .Where(x => x.UserId == CurrentUserId)
+                .Select(x => new GmailConnectionDto(x.Id, x.GmailAddress, x.CreatedAt, x.LastSyncedAt, x.LastError, x.ImportedEmails.Count(i => i.Status == "review")))
+            .ToListAsync(), TimeSpan.FromSeconds(30));
+        return Ok(result ?? []);
+    }
 
     [HttpGet("connect")]
     public IActionResult Connect()
@@ -64,6 +72,8 @@ public class GmailController : BaseController
         var connection = await context.GmailConnections.FirstOrDefaultAsync(x => x.UserId == userId && x.GmailAddress == address);
         if (connection == null) { connection = new GmailConnection { UserId = userId, GmailAddress = address, CreatedAt = DateTime.UtcNow }; context.GmailConnections.Add(connection); }
         connection.RefreshTokenEncrypted = protector.Protect(refreshToken); connection.LastError = null; await context.SaveChangesAsync();
+        InvalidateCache();
+        logger.LogInformation("Gmail connection saved for user {UserId}, address {GmailAddress}", userId, address);
         var returnUrl = configuration["DASHBOARD_URL"] ?? "/tabs/more";
         return Redirect(returnUrl);
     }
@@ -73,31 +83,63 @@ public class GmailController : BaseController
     {
         var connection = await context.GmailConnections.FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
         if (connection == null) return NotFound();
+        logger.LogInformation("Gmail sync started for user {UserId}, connection {ConnectionId}", CurrentUserId, id);
         try
         {
             var client = clients.CreateClient();
             var refresh = protector.Unprotect(connection.RefreshTokenEncrypted);
-            var token = await client.PostAsync("https://oauth2.googleapis.com/token", new FormUrlEncodedContent(new Dictionary<string, string> { ["client_id"] = configuration["Authentication:Google:ClientId"] ?? "", ["client_secret"] = configuration["Authentication:Google:ClientSecret"] ?? "", ["refresh_token"] = refresh, ["grant_type"] = "refresh_token" }));
+            var token = await SendWithRetryAsync(() => client.PostAsync("https://oauth2.googleapis.com/token", new FormUrlEncodedContent(new Dictionary<string, string> { ["client_id"] = configuration["Authentication:Google:ClientId"] ?? "", ["client_secret"] = configuration["Authentication:Google:ClientSecret"] ?? "", ["refresh_token"] = refresh, ["grant_type"] = "refresh_token" })), "token exchange");
             if (!token.IsSuccessStatusCode) throw new InvalidOperationException("Gmail authorization expired. Reconnect this account.");
             using var tokenJson = JsonDocument.Parse(await token.Content.ReadAsStringAsync()); client.DefaultRequestHeaders.Authorization = new("Bearer", tokenJson.RootElement.GetProperty("access_token").GetString());
-            var list = await client.GetFromJsonAsync<JsonElement>("https://gmail.googleapis.com/gmail/v1/users/me/messages?q=" + Uri.EscapeDataString("newer_than:90d -loan -loans (receipt OR payment OR transaction OR debit OR credit)") + "&maxResults=50");
-            var added = 0; if (list.TryGetProperty("messages", out var messages)) foreach (var item in messages.EnumerateArray())
+            var list = await GetJsonWithRetryAsync(client, "https://gmail.googleapis.com/gmail/v1/users/me/messages?q=" + Uri.EscapeDataString("newer_than:90d -loan -loans (receipt OR payment OR transaction OR debit OR credit)") + "&maxResults=50", "list messages");
+            var accounts = await context.Accounts
+                .Where(x => x.UserId == CurrentUserId || x.Members.Any(m => m.UserId == CurrentUserId))
+                .ToListAsync();
+            var categories = await context.Categories
+                .Where(x => x.UserId == 1 || x.UserId == CurrentUserId)
+                .ToListAsync();
+            var added = 0; var autoAdded = 0;
+            var autoImported = new List<(GmailImportedEmail Imported, Transaction Transaction)>();
+            if (list.TryGetProperty("messages", out var messages)) foreach (var item in messages.EnumerateArray())
             {
                 var messageId = item.GetProperty("id").GetString()!; if (await context.GmailImportedEmails.AnyAsync(x => x.GmailConnectionId == id && x.GmailMessageId == messageId)) continue;
-                var message = await client.GetFromJsonAsync<JsonElement>($"https://gmail.googleapis.com/gmail/v1/users/me/messages/{messageId}?format=full"); var parsed = Parse(message);
+                var message = await GetJsonWithRetryAsync(client, $"https://gmail.googleapis.com/gmail/v1/users/me/messages/{messageId}?format=full", "read message"); var parsed = Parse(message);
                 if (parsed.amount == null || parsed.exclude) continue;
-                context.GmailImportedEmails.Add(new GmailImportedEmail { GmailConnectionId = id, UserId = CurrentUserId, GmailMessageId = messageId, Sender = parsed.sender, Subject = parsed.subject, Title = parsed.title, Payee = parsed.payee, IsUpi = parsed.isUpi, Amount = parsed.amount, Type = parsed.type, TransactionDate = parsed.date, Preview = parsed.preview, Confidence = parsed.confidence, ReceivedAt = parsed.date ?? DateTime.UtcNow }); added++;
+                var imported = new GmailImportedEmail { GmailConnectionId = id, UserId = CurrentUserId, GmailMessageId = messageId, Sender = parsed.sender, Subject = parsed.subject, Title = parsed.title, Payee = parsed.payee, IsUpi = parsed.isUpi, Amount = parsed.amount, Type = parsed.type, TransactionDate = parsed.date, Preview = parsed.preview, Confidence = parsed.confidence, ReceivedAt = parsed.date ?? DateTime.UtcNow };
+                var category = FindCategory(parsed, categories);
+                var account = accounts.Count == 1 ? accounts[0] : null;
+                if (account != null && category != null && parsed.date.HasValue)
+                {
+                    var notes = $"{parsed.preview}\nImported from Gmail: {parsed.subject}".Trim();
+                    var transaction = new Transaction { UserId = CurrentUserId, AccountId = account.Id, CategoryId = category.Id, Title = parsed.title, Amount = parsed.amount.Value, Type = parsed.type == "income" ? "income" : "expense", TransactionDate = parsed.date.Value, Notes = notes[..Math.Min(1000, notes.Length)], CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+                    context.Transactions.Add(transaction);
+                    imported.Status = "imported";
+                    autoImported.Add((imported, transaction));
+                    autoAdded++;
+                }
+                context.GmailImportedEmails.Add(imported); added++;
             }
-            connection.LastSyncedAt = DateTime.UtcNow; connection.LastError = null; await context.SaveChangesAsync(); return Ok(new { added, pending = await context.GmailImportedEmails.CountAsync(x => x.GmailConnectionId == id && x.Status == "review") });
+            connection.LastSyncedAt = DateTime.UtcNow; connection.LastError = null; await context.SaveChangesAsync();
+            foreach (var item in autoImported) item.Imported.TransactionId = item.Transaction.Id;
+            if (autoImported.Count > 0) await context.SaveChangesAsync();
+            InvalidateCache();
+            logger.LogInformation("Gmail sync completed for user {UserId}, connection {ConnectionId}: {Added} imported, {AutoAdded} auto-created, {Pending} pending review", CurrentUserId, id, added, autoAdded, await context.GmailImportedEmails.CountAsync(x => x.GmailConnectionId == id && x.Status == "review"));
+            return Ok(new { added, autoAdded, pending = await context.GmailImportedEmails.CountAsync(x => x.GmailConnectionId == id && x.Status == "review") });
         }
-        catch (Exception ex) { connection.LastError = ex.Message[..Math.Min(500, ex.Message.Length)]; await context.SaveChangesAsync(); return BadRequest(new { message = connection.LastError }); }
+        catch (Exception ex) { connection.LastError = ex.Message[..Math.Min(500, ex.Message.Length)]; await context.SaveChangesAsync(); InvalidateCache(); logger.LogError(ex, "Gmail sync failed for user {UserId}, connection {ConnectionId}", CurrentUserId, id); return BadRequest(new { message = connection.LastError }); }
     }
 
     [HttpDelete("connections/{id:long}")]
-    public async Task<IActionResult> Disconnect(long id) { var item = await context.GmailConnections.FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId); if (item == null) return NotFound(); context.GmailConnections.Remove(item); await context.SaveChangesAsync(); return NoContent(); }
+    public async Task<IActionResult> Disconnect(long id) { var item = await context.GmailConnections.FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId); if (item == null) return NotFound(); context.GmailConnections.Remove(item); await context.SaveChangesAsync(); InvalidateCache(); logger.LogInformation("Gmail connection {ConnectionId} disconnected for user {UserId}", id, CurrentUserId); return NoContent(); }
 
     [HttpGet("imports")]
     public async Task<IActionResult> Imports()
+    {
+        var cached = await cache.GetOrCreateAsync(CacheKey("imports"), _ => LoadImportsAsync(), TimeSpan.FromSeconds(15));
+        return Ok(cached ?? []);
+    }
+
+    private async Task<List<GmailImportDto>> LoadImportsAsync()
     {
         var imports = await context.GmailImportedEmails.AsNoTracking().Include(x => x.GmailConnection).Where(x => x.UserId == CurrentUserId && x.Status == "review" && x.Amount != null && !x.Subject!.Contains("loan")).OrderByDescending(x => x.ReceivedAt).Take(100).ToListAsync();
         var result = new List<GmailImportDto>();
@@ -108,7 +150,7 @@ public class GmailController : BaseController
                 match = await context.Transactions.AsNoTracking().Include(x => x.Account).FirstOrDefaultAsync(x => x.UserId == CurrentUserId && x.Amount == item.Amount.Value && x.TransactionDate.Date == item.TransactionDate.Value.Date);
             result.Add(new GmailImportDto(item, match));
         }
-        return Ok(result);
+        return result;
     }
 
     [HttpPost("imports/{id:long}/confirm")]
@@ -126,11 +168,38 @@ public class GmailController : BaseController
         if (account == null || category == null || item.Amount == null || item.TransactionDate == null) return BadRequest("Choose a valid account and category, and complete the imported details first.");
         var note = $"Imported from Gmail: {item.Subject}";
         var transaction = new Transaction { UserId = CurrentUserId, AccountId = account.Id, CategoryId = category.Id, Title = item.Title, Amount = item.Amount.Value, Type = item.Type == "income" ? "income" : "expense", TransactionDate = item.TransactionDate.Value, Notes = note[..Math.Min(1000, note.Length)], CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
-        context.Transactions.Add(transaction); await context.SaveChangesAsync(); item.Status = "imported"; item.TransactionId = transaction.Id; await context.SaveChangesAsync(); return Ok(new { transactionId = transaction.Id });
+        context.Transactions.Add(transaction); await context.SaveChangesAsync(); item.Status = "imported"; item.TransactionId = transaction.Id; await context.SaveChangesAsync(); InvalidateCache(); logger.LogInformation("Gmail import {ImportId} confirmed as transaction {TransactionId} for user {UserId}", id, transaction.Id, CurrentUserId); return Ok(new { transactionId = transaction.Id });
     }
 
     [HttpPost("imports/{id:long}/dismiss")]
-    public async Task<IActionResult> DismissImport(long id) { var item = await context.GmailImportedEmails.FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId && x.Status == "review"); if (item == null) return NotFound(); item.Status = "dismissed"; await context.SaveChangesAsync(); return NoContent(); }
+    public async Task<IActionResult> DismissImport(long id) { var item = await context.GmailImportedEmails.FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId && x.Status == "review"); if (item == null) return NotFound(); item.Status = "dismissed"; await context.SaveChangesAsync(); InvalidateCache(); logger.LogInformation("Gmail import {ImportId} dismissed for user {UserId}", id, CurrentUserId); return NoContent(); }
+
+    private string CacheKey(string resource) => cache.Key(CurrentUserId, $"gmail-{resource}");
+    private void InvalidateCache() => cache.InvalidateUser(CurrentUserId);
+
+    private async Task<JsonElement> GetJsonWithRetryAsync(HttpClient client, string url, string operation)
+    {
+        using var response = await SendWithRetryAsync(() => client.GetAsync(url), operation);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<JsonElement>();
+    }
+
+    private async Task<HttpResponseMessage> SendWithRetryAsync(Func<Task<HttpResponseMessage>> request, string operation)
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                var response = await request();
+                if (attempt >= 3 || (!((int)response.StatusCode == 408 || (int)response.StatusCode == 429 || (int)response.StatusCode >= 500))) return response;
+                response.Dispose();
+            }
+            catch (HttpRequestException) when (attempt < 3) { }
+            catch (TaskCanceledException) when (attempt < 3) { }
+            logger.LogWarning("Retrying Gmail {Operation}, attempt {Attempt}", operation, attempt + 1);
+            await Task.Delay(TimeSpan.FromMilliseconds(200 * attempt));
+        }
+    }
 
     private static (string sender, string subject, string title, string? payee, bool isUpi, decimal? amount, string? type, DateTime? date, string preview, decimal confidence, bool exclude) Parse(JsonElement message)
     {
@@ -141,6 +210,16 @@ public class GmailController : BaseController
         DateTime? date = null; if (message.TryGetProperty("internalDate", out var internalDate) && long.TryParse(internalDate.GetString(), out var milliseconds)) date = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds).UtcDateTime;
         var isUpi = Regex.IsMatch(text, @"\bupi\b|vpa|phonepe|google pay|gpay|paytm", RegexOptions.IgnoreCase); var payeeMatch = Regex.Match(text, @"(?:paid|sent|transferred|payment)\s+(?:to|towards)\s+([A-Za-z0-9 .&_-]{2,80})", RegexOptions.IgnoreCase); var payee = payeeMatch.Success ? payeeMatch.Groups[1].Value.Trim(' ', '.', ',', ':', '-') : null;
         var type = Regex.IsMatch(text, "credit|credited|salary|refund", RegexOptions.IgnoreCase) ? "income" : "expense"; var title = isUpi && payee != null ? $"UPI · {payee}" : (subject.Length > 0 ? subject : sender); return (sender, subject, title[..Math.Min(200, title.Length)], payee, isUpi, amount, type, date, preview[..Math.Min(1000, preview.Length)], amount.HasValue ? (isUpi ? .8m : .65m) : .25m, exclude);
+    }
+
+    private static Category? FindCategory((string sender, string subject, string title, string? payee, bool isUpi, decimal? amount, string? type, DateTime? date, string preview, decimal confidence, bool exclude) parsed, List<Category> categories)
+    {
+        var type = parsed.type == "income" ? "income" : "expense";
+        var candidates = categories.Where(category => category.Type == type).ToList();
+        if (candidates.Count == 1) return candidates[0];
+        var text = $"{parsed.subject} {parsed.title} {parsed.payee} {parsed.preview}";
+        var matches = candidates.Where(category => text.Contains(category.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+        return matches.Count == 1 ? matches[0] : null;
     }
 
     private static string ExtractText(JsonElement payload)
@@ -160,6 +239,8 @@ public sealed class ConfirmImportRequest
     public int AccountId { get; set; }
     public int CategoryId { get; set; }
 }
+
+public sealed record GmailConnectionDto(long Id, string GmailAddress, DateTime CreatedAt, DateTime? LastSyncedAt, string? LastError, int PendingImports);
 
 public sealed class GmailImportDto
 {

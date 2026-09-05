@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 using XTracker.Api.DTOs;
 using XTracker.Api.Models;
+using XTracker.Api.Services;
 
 namespace XTracker.Api.Controllers;
 
@@ -11,10 +12,12 @@ namespace XTracker.Api.Controllers;
 public class TripsController : BaseController
 {
     private readonly XTrackerDbContext _context;
+    private readonly AppCache _cache;
 
-    public TripsController(XTrackerDbContext context)
+    public TripsController(XTrackerDbContext context, AppCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     // GET: api/Trips/{id}/balances
@@ -180,15 +183,15 @@ public class TripsController : BaseController
     {
         var currentUserId = CurrentUserId;
 
-        var tripEntities = await _context.Trips
+        var tripEntities = await _cache.GetOrCreateAsync(_cache.Key(currentUserId, "trips"), _ => _context.Trips
             .AsNoTracking()
             .Where(t => t.Members.Any(m => m.UserId == currentUserId))
             .Include(t => t.Members)
             .Include(t => t.Expenses)
                 .ThenInclude(e => e.Participants)
-            .ToListAsync();
+            .ToListAsync(), TimeSpan.FromSeconds(20));
 
-        return Ok(tripEntities.Select(t => ToTripDto(t, currentUserId)).ToList());
+        return Ok((tripEntities ?? []).Select(t => ToTripDto(t, currentUserId)).ToList());
     }
 
     // POST: api/Trips

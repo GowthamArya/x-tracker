@@ -4,12 +4,16 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
+using XTracker.Api;
+using XTracker.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<AppCache>();
 // Authentication cookies are encrypted with ASP.NET Core Data Protection
 // keys. Store the key ring in SQL so IIS recycles, deployments, and multiple
 // app instances continue to understand existing session cookies.
@@ -119,6 +123,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

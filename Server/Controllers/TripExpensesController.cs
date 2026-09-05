@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using XTracker.Api.Data;
 using XTracker.Api.DTOs;
 using XTracker.Api.Models;
+using XTracker.Api.Services;
 
 namespace XTracker.Api.Controllers;
 
@@ -11,10 +12,12 @@ namespace XTracker.Api.Controllers;
 public class ExpensesController : BaseController
 {
     private readonly XTrackerDbContext _context;
+    private readonly AppCache _cache;
 
-    public ExpensesController(XTrackerDbContext context)
+    public ExpensesController(XTrackerDbContext context, AppCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     // GET: api/trips/{tripId}/expenses
@@ -31,7 +34,7 @@ public class ExpensesController : BaseController
             return Forbid();
         }
 
-        var expenses = await _context.TripExpenses
+        var expenses = await _cache.GetOrCreateAsync(_cache.Key(currentUserId, "trip-expenses", tripId.ToString()), _ => _context.TripExpenses
             .AsNoTracking()
             .Where(e => e.TripId == tripId)
             .OrderByDescending(e => e.ExpenseDate)
@@ -57,7 +60,7 @@ public class ExpensesController : BaseController
                     ShareAmount = p.ShareAmount ?? 0m
                 }).ToList()
             })
-            .ToListAsync();
+            .ToListAsync(), TimeSpan.FromSeconds(20));
 
         return Ok(expenses);
     }

@@ -26,7 +26,7 @@
   <ion-list inset="true"><ion-list-header><ion-label>Automatic transaction emails</ion-label></ion-list-header>
     <ion-item *ngFor="let connection of gmailConnections">
       <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
-      <ion-label><h2>{{ connection.gmailAddress }}</h2><p>{{ connection.pendingImports ? connection.pendingImports + ' ready to review' : (connection.lastSyncedAt ? 'Synced recently' : 'Not synced yet') }}</p></ion-label>
+      <ion-label><h2>{{ connection.gmailAddress }}</h2><p>{{ connection.pendingImports ? connection.pendingImports + ' ready to review' : (connection.lastSyncedAt ? 'Synced automatically' : 'Syncing automatically') }}</p></ion-label>
       <ion-button slot="end" fill="clear" [disabled]="syncingGmailId === connection.id" (click)="syncGmail(connection)">{{ syncingGmailId === connection.id ? 'Syncing…' : 'Sync' }}</ion-button>
     </ion-item>
     <ion-item button detail="true" (click)="connectGmail()"><ion-icon name="wallet-outline" slot="start"></ion-icon><ion-label><h2>{{ gmailConnections.length ? 'Add another Gmail' : 'Connect Gmail' }}</h2><p>Read-only access for transaction emails</p></ion-label></ion-item>
