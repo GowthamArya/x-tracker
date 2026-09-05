@@ -1,7 +1,7 @@
-.transactions-page {
+.transaction-page {
   max-width: 980px;
   margin: 0 auto;
-  padding: 20px 16px 32px;
+  padding: 20px 16px 96px;
 }
 
 .filter-bar {
@@ -91,12 +91,6 @@
   }
 }
 
-.transaction-page {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 20px 16px 32px;
-}
-
 ion-modal.compact-filters-modal::part(content) {
   max-width: 860px;
   width: min(860px, calc(100vw - 24px));
@@ -106,7 +100,9 @@ ion-modal.compact-filters-modal::part(content) {
 
 @media (min-width: 900px) {
   .transaction-page {
+    max-width: 720px;
     padding-top: 24px;
+    padding-bottom: 96px;
   }
 
   .transaction-search {
@@ -115,7 +111,5 @@ ion-modal.compact-filters-modal::part(content) {
 
   .list-toolbar,
   .filter-bar,
-  .transaction-list {
-    max-width: 720px;
-  }
+  .transaction-list { width: 100%; }
 }
