@@ -107,6 +107,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/terms-of-services/terms-of-services.page').then(m => m.TermsOfServicesPage)
   },
   {
+    path: 'contact-us',
+    loadComponent: () => import('./pages/contact-us/contact-us.page').then(m => m.ContactUsPage)
+  },
+  {
     path: 'join/trip/:token',
     loadComponent: () => import('./pages/join-trip/join-trip.page').then(m => m.JoinTripPage)
   },
@@ -121,5 +125,9 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('./pages/public-home/public-home.page').then(m => m.PublicHomePage)
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPage)
   }
 ];

@@ -1,5 +1,23 @@
 # X-Tracker
 
+## Server configuration
+
+Secrets are intentionally not stored in the repository. Configure these values through .NET user secrets, environment variables, or the hosting provider before starting the server:
+
+```text
+ConnectionStrings__DefaultConnection=<sql-server-connection-string>
+Jwt__Key=<long-random-signing-key>
+Authentication__Google__ClientId=<google-client-id>
+Authentication__Google__ClientSecret=<google-client-secret>
+```
+
+Apply database migrations before serving the app:
+
+```text
+dotnet ef database update --project Server/server.csproj
+```
+# X-Tracker
+
 X-Tracker is a cross-platform expense app for personal finances and shared trips. The web client is built with Ionic Angular and the API is built with ASP.NET Core and Entity Framework Core.
 
 ## Project layout

@@ -1,0 +1,31 @@
+<ion-header class="app-header"><ion-toolbar><ion-title>Contact Us</ion-title></ion-toolbar></ion-header>
+<ion-content [fullscreen]="true">
+  <main class="contact-page">
+    <a class="back-link" routerLink="/">← Back to x-tracker</a>
+    <p class="eyebrow">SUPPORT</p>
+    <h1>How can we help?</h1>
+    <p class="intro">Send us a message and our support team will get back to you.</p>
+
+    @if (submitted) {
+      <section class="success" role="status">
+        <h2>Message received</h2>
+        <p>Thanks for contacting x-tracker. We will reply to your email address.</p>
+        <ion-button routerLink="/">Return home</ion-button>
+      </section>
+    } @else {
+      <form class="contact-form" (ngSubmit)="submit()">
+        <ion-input label="Name" labelPlacement="stacked" [(ngModel)]="name" name="name" autocomplete="name" required></ion-input>
+        <ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="email" name="email" autocomplete="email" required></ion-input>
+        <ion-input label="Subject" labelPlacement="stacked" [(ngModel)]="subject" name="subject" placeholder="Optional"></ion-input>
+        <ion-textarea label="Message" labelPlacement="stacked" [(ngModel)]="message" name="message" rows="7" maxlength="2000" required></ion-textarea>
+        @if (error) { <p class="error" role="alert">{{ error }}</p> }
+        <ion-button type="submit" expand="block" [disabled]="submitting">{{ submitting ? 'Sending...' : 'Send message' }}</ion-button>
+      </form>
+    }
+
+    <nav class="legal-links" aria-label="Legal information">
+      <a routerLink="/privacy-policy">Privacy Policy</a>
+      <a routerLink="/terms-of-services">Terms of Service</a>
+    </nav>
+  </main>
+</ion-content>

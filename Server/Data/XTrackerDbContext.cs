@@ -32,9 +32,13 @@ public class XTrackerDbContext : DbContext, IDataProtectionKeyContext
     public DbSet<TripInvite> TripInvites => Set<TripInvite>();
     public DbSet<GmailConnection> GmailConnections => Set<GmailConnection>();
     public DbSet<GmailImportedEmail> GmailImportedEmails => Set<GmailImportedEmail>();
+    public DbSet<SupportMessage> SupportMessages => Set<SupportMessage>();
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+            modelBuilder.Entity<SupportMessage>()
+                .HasOne(x => x.User).WithMany()
+                .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<Transaction>()
             .HasOne(t => t.User)
             .WithMany(u => u.Transactions)
@@ -129,5 +133,11 @@ public class XTrackerDbContext : DbContext, IDataProtectionKeyContext
             .HasIndex(x => new { x.UserId, x.GmailAddress }).IsUnique();
         modelBuilder.Entity<GmailImportedEmail>()
             .HasIndex(x => new { x.GmailConnectionId, x.GmailMessageId }).IsUnique();
+        modelBuilder.Entity<GmailImportedEmail>()
+            .Property(x => x.Amount)
+            .HasPrecision(18, 2);
+        modelBuilder.Entity<GmailImportedEmail>()
+            .Property(x => x.Confidence)
+            .HasPrecision(5, 2);
     }
 }

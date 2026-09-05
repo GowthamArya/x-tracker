@@ -1,0 +1,13 @@
+.contact-page { width: min(100%, 640px); margin: 0 auto; padding: 24px 16px 96px; }
+.back-link { color: var(--app-primary-color); text-decoration: none; font-size: .85rem; }
+.eyebrow { margin: 32px 0 8px; color: var(--app-primary-color); font-size: .72rem; font-weight: 800; letter-spacing: .12em; }
+h1 { margin: 0; color: var(--app-heading-color); font-size: clamp(1.8rem, 5vw, 2.4rem); }
+.intro { margin: 8px 0 24px; color: var(--app-muted-color); }
+.contact-form { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--app-card-border); border-radius: 16px; background: var(--app-card-bg); }
+.contact-form ion-input, .contact-form ion-textarea { --background: var(--app-input-bg); --border-color: var(--app-input-border); --border-radius: 12px; border: 1px solid var(--app-input-border); border-radius: 12px; }
+.error { margin: 0; color: var(--ion-color-danger); font-size: .85rem; }
+.success { margin-top: 24px; padding: 24px; border: 1px solid var(--app-card-border); border-radius: 16px; background: var(--app-card-bg); }
+.success h2, .success p { margin-top: 0; }
+.success p { color: var(--app-muted-color); }
+.legal-links { display: flex; gap: 16px; margin-top: 24px; font-size: .8rem; }
+.legal-links a { color: var(--app-primary-color); text-decoration: none; }
