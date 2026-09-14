@@ -7,16 +7,25 @@
 
   <div class="reports-container">
 
-    @if (filter) {
     <div class="active-period">
+      @if (filter) {
+      <span class="active-period-label">Active period:</span>
       @switch (filter.preset) {
-      @case 'thisMonth' {{ 'This month' }}
-      @case 'thisYear' {{ 'This year' }}
-      @default {{ 'Filtered period' }}
-      } · Tap Filter to change</div>
-    } @else {
-    <div class="active-period">No filters applied - Tap Filter</div>
-    }
+        @case ('thisMonth') {
+          This month
+        }
+        @case ('thisYear') {
+          This year
+        }
+        @default {
+          Filtered period
+        }
+      }
+      · Tap Filter to change
+      } @else {
+        No filters applied - Tap Filter
+      }
+    </div>
     <!-- Summary -->
     <div class="summary-grid">
       <div class="summary-card">
@@ -44,7 +53,7 @@
         </strong>
       </div>
     </div>
-    
+
     <section class="calendar-card" aria-label="Monthly transaction calendar" (touchstart)="onCalendarTouchStart($event)"
       (touchend)="onCalendarTouchEnd($event)">
       <div class="calendar-heading">
@@ -81,13 +90,13 @@
             class="legend-dot expense-dot"></i> Expense</span></div>
       <div class="day-insights">
         @if (highestDay && lowestDay) {
-          <div><span>Highest activity</span><strong>{{ highestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{
-              highestDay.total | number:'1.0-0' }}</strong></div>
-          <div><span>Lowest activity</span><strong>{{ lowestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{
-              lowestDay.total | number:'1.0-0' }}</strong></div>
+        <div><span>Highest activity</span><strong>{{ highestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{
+            highestDay.total | number:'1.0-0' }}</strong></div>
+        <div><span>Lowest activity</span><strong>{{ lowestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{
+            lowestDay.total | number:'1.0-0' }}</strong></div>
         } @else {
-          <div class="day-insights-empty"><span>No activity this month</span><strong>Transactions will appear
-              here</strong></div>
+        <div class="day-insights-empty"><span>No activity this month</span><strong>Transactions will appear
+            here</strong></div>
         }
       </div>
     </section>
