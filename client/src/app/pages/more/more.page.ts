@@ -12,6 +12,10 @@ import { ThemeService } from '../../services/theme.service';
 import { GmailConnection, GmailService } from '../../services/gmail.service';
 import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
+
+import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit } from '@angular/core';
+
 @Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink, IonModal, PageRefresherComponent] })
 export class MorePage implements OnInit {
   user: CurrentUser | null = null;
@@ -24,8 +28,30 @@ export class MorePage implements OnInit {
     { title: 'Welcome to X-Tracker', message: 'Your spending insights and trip activity will appear here.', read: false }
   ];
 
-  constructor(private readonly auth: AuthService, private readonly router: Router, private readonly alerts: AlertController, private readonly toast: ToastController, private readonly transactions: TransactionsService, private readonly trips: TripsService, private readonly theme: ThemeService, private readonly gmail: GmailService) {
+  constructor(
+    private readonly auth: AuthService, 
+    private readonly router: Router, 
+    private readonly alerts: AlertController, 
+    private readonly toast: ToastController, 
+    private readonly transactions: TransactionsService, 
+    private readonly trips: TripsService, 
+    private readonly theme: ThemeService, 
+    private readonly gmail: GmailService,
+    private readonly route: ActivatedRoute,) {
     addIcons({ walletOutline, notificationsOutline, colorPaletteOutline, shieldCheckmarkOutline, logOutOutline, personCircleOutline, downloadOutline, cashOutline, chevronForwardOutline, trashOutline, settingsOutline });
+  }
+
+  ngAfterViewInit(): void {
+    this.route.fragment.subscribe(fragment => {
+      if (fragment === 'sync') {
+        setTimeout(() => {
+          document.getElementById('sync')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 300);
+      }
+    });
   }
 
   ngOnInit(): void {

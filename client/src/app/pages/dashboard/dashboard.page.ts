@@ -11,7 +11,7 @@ import {
   IonButtons
 } from '@ionic/angular/standalone';
 
-import { addOutline, airplaneOutline, arrowUpOutline, logOutOutline } from 'ionicons/icons';
+import { addOutline, airplaneOutline, arrowUpOutline, logOutOutline, syncCircleOutline } from 'ionicons/icons';
 
 import { DashboardService } from '../../services/dashboard.service';
 import { AuthService } from '../../services/auth.service';
@@ -50,7 +50,7 @@ export class DashboardPage {
     private readonly dashboardService: DashboardService,
     private readonly authService: AuthService
   ) {
-    addIcons({ addOutline, airplaneOutline, arrowUpOutline, logOutOutline });
+    addIcons({ addOutline, airplaneOutline, arrowUpOutline, logOutOutline, syncCircleOutline });
     this.setGreeting();
   }
 

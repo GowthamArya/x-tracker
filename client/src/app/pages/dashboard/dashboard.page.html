@@ -15,9 +15,22 @@
 
 <ion-content [fullscreen]="true">
   <main class="dashboard">
-    <section class="welcome"><span class="eyebrow">PERSONAL FINANCE</span>
-      <h1>{{ greeting }}<span class="accent-dot">.</span></h1>
-      <p>A clear view of what came in, what went out, and what matters next.</p>
+    <section class="welcome">
+      <div class="welcome-content">
+        <span class="eyebrow">PERSONAL FINANCE</span>
+        <h1>{{ greeting }}<span class="accent-dot">.</span></h1>
+        <p>A clear view of what came in, what went out, and what matters next.</p>
+      </div>
+      <ion-button
+        fill="clear"
+        shape="round"
+        size="small"
+        fragment="sync"
+        routerLink="/tabs/more"
+        aria-label="Open settings">
+        <ion-icon name="sync-circle-outline"></ion-icon>
+         Sync from Email
+      </ion-button>
     </section>
     <section class="balance-card">
       <div class="balance-topline">
