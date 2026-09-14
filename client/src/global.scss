@@ -42,6 +42,7 @@
   --muted: var(--app-muted-color);
 }
 
+
 ion-header.navbar-header,
 ion-header.app-header {
   --background: var(--app-header-gradient);
@@ -58,39 +59,47 @@ ion-header.app-header ion-toolbar {
   --min-height: 56px;
 }
 
+/* Start/end button containers */
 ion-header.navbar-header ion-toolbar ion-buttons,
 ion-header.app-header ion-toolbar ion-buttons {
-  gap: 6px;
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
+  gap: 4px;
 }
 
-ion-header.navbar-header ion-toolbar ion-title,
-ion-header.app-header ion-toolbar ion-title {
-  --color: #fff;
-  color: #fff;
-  min-width: 0;
-  overflow: hidden;
-  padding-inline: 8px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  text-align: left;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
+/* Back button */
 ion-header.navbar-header ion-toolbar ion-back-button,
 ion-header.app-header ion-toolbar ion-back-button {
   --color: #fff;
   --icon-font-size: 1.35rem;
-  min-width: 42px;
-  margin-inline: -4px 2px;
+
+  min-width: 44px;
+  width: 44px;
+  margin: 0;
 }
 
-ion-header.navbar-header ion-toolbar ion-back-button::part(native),
-ion-header.app-header ion-toolbar ion-back-button::part(native) {
+/* Title */
+ion-header.navbar-header ion-toolbar ion-title,
+ion-header.app-header ion-toolbar ion-title {
+  --color: #fff;
+
   color: #fff;
+  min-width: 0;
+  flex: 1;
+  padding-inline: 8px;
+
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+/* Header buttons */
 ion-header.navbar-header ion-toolbar ion-button,
 ion-header.app-header ion-toolbar ion-button {
   --color: #fff;
@@ -111,27 +120,29 @@ ion-header.app-header ion-toolbar ion-button.header-action ion-icon {
   font-size: 1.05rem;
 }
 
-ion-header.navbar-header ion-toolbar ion-button.header-action .button-inner,
-ion-header.app-header ion-toolbar ion-button.header-action .button-inner {
-  gap: 6px;
-}
-
 .header-action-label {
   font-size: 0.9rem;
 }
 
+/* Small phones */
 @media (max-width: 420px) {
-
   ion-header.navbar-header ion-toolbar,
   ion-header.app-header ion-toolbar {
-    --padding-start: 8px;
-    --padding-end: 8px;
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+
+  ion-header.navbar-header ion-toolbar ion-back-button,
+  ion-header.app-header ion-toolbar ion-back-button {
+    min-width: 44px;
+    width: 44px;
+    margin: 0;
   }
 
   ion-header.navbar-header ion-toolbar ion-title,
   ion-header.app-header ion-toolbar ion-title {
-    padding-inline: 4px;
-    font-size: 0.98rem;
+    padding-inline: 8px;
+    font-size: 1rem;
   }
 
   .header-action-label {
