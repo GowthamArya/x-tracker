@@ -1,46 +1,23 @@
 <ion-header class="app-header navbar-header">
   <ion-toolbar>
-
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/tabs/dashboard"
+        text="">
+      </ion-back-button>
+    </ion-buttons>
     <ion-title>
       Transactions
     </ion-title>
 
     <ion-buttons slot="end">
-
-      <ion-button
-        class="header-action"
-        routerLink="/tabs/add-transaction">
-
-        <ion-icon
-          name="add-outline"
-          slot="start">
-        </ion-icon>
-
-        <span class="header-action-label">
-          Add
-        </span>
-
+      <ion-button class="header-action" fill="outline" routerLink="/tabs/add-transaction">
+        <ion-icon name="add-outline" title="Add"></ion-icon>
       </ion-button>
-
-
-      <ion-button
-        class="header-action"
-        fill="outline"
-        (click)="openFilters()">
-
-        <ion-icon
-          name="options-outline"
-          slot="start">
-        </ion-icon>
-
-        <span class="header-action-label">
-          Filter
-        </span>
-
+      <ion-button class="header-action" fill="outline" (click)="openFilters()">
+        <ion-icon name="options-outline" slot="start"></ion-icon> Filter
       </ion-button>
-
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
@@ -273,13 +250,11 @@
 
 
         <ion-content class="ion-padding">
-
           <app-transaction-filter
             [showCategory]="true"
             defaultPreset="thisYear"
             (filterChange)="onFilterChange($event)">
           </app-transaction-filter>
-
         </ion-content>
 
       </ng-template>

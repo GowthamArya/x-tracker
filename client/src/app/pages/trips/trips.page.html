@@ -1,15 +1,19 @@
-<ion-header class="ion-no-border navbar-header">
-  <ion-toolbar color="primary" class="gradient-toolbar">
+<ion-header class="app-header navbar-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/tabs/dashboard"
+        text="">
+      </ion-back-button>
+    </ion-buttons>
     <ion-title>
-      <div class="header-title">
-        <ion-icon name="airplane-outline" class="title-icon"></ion-icon>
-        <span>Trips</span>
-      </div>
+      <ion-icon name="airplane-outline"></ion-icon>
+      Trips
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="solid" color="light" class="create-top-btn header-action" (click)="createTrip()" aria-label="Create a new trip">
+      <ion-button fill="outline" class="header-action" (click)="createTrip()" aria-label="Create a new trip">
         <ion-icon name="add-outline" slot="start"></ion-icon>
-        <span class="header-action-label">New trip</span>
+        New trip
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -182,11 +186,4 @@
     }
 
   </div>
-
-  <!-- Floating Action Button -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
-    <ion-fab-button class="danger" (click)="createTrip()">
-      <ion-icon name="add-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>

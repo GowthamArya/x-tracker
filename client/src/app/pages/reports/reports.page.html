@@ -1,7 +1,17 @@
-<ion-header class="app-header navbar-header"><ion-toolbar><ion-title>Reports</ion-title><ion-buttons
-      slot="end"><ion-button class="header-action" (click)="openFilters()"><ion-icon name="options-outline"
-          slot="start"></ion-icon><span
-          class="header-action-label">Filter</span></ion-button></ion-buttons></ion-toolbar></ion-header>
+<ion-header class="app-header navbar-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/dashboard" text="" ></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reports</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="header-action" (click)="openFilters()">
+        <ion-icon name="options-outline" slot="start"></ion-icon>
+        <span class="header-action-label">Filter</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content [fullscreen]="true">
   <app-page-refresher></app-page-refresher>
 
@@ -11,19 +21,19 @@
       @if (filter) {
       <span class="active-period-label">Active period:</span>
       @switch (filter.preset) {
-        @case ('thisMonth') {
-          This month
-        }
-        @case ('thisYear') {
-          This year
-        }
-        @default {
-          Filtered period
-        }
+      @case ('thisMonth') {
+      This month
+      }
+      @case ('thisYear') {
+      This year
+      }
+      @default {
+      Filtered period
+      }
       }
       · Tap Filter to change
       } @else {
-        No filters applied - Tap Filter
+      No filters applied - Tap Filter
       }
     </div>
     <!-- Summary -->

@@ -165,7 +165,7 @@
 .all-settled-box {
   text-align: center;
   padding: 30px 16px;
-  background: var(--ion-color-success-tint);
+  background: var(--ion-color-success-contrast);
   border-radius: 16px;
   border: 1px dashed var(--ion-color-success);
 
@@ -178,13 +178,13 @@
   h4 {
     margin: 0 0 4px;
     font-weight: 700;
-    color: var(--ion-color-success-shade);
+    color: var(--ion-color-success);
   }
 
   p {
     margin: 0;
     font-size: 0.9rem;
-    color: var(--ion-color-medium);
+    color: var(--ion-color-success);
   }
 }
 
@@ -320,7 +320,7 @@
 
     &.positive {
       background: var(--ion-color-success-tint);
-      color: var(--ion-color-success-shade);
+      color: var(--ion-color-success-contrast);
     }
 
     &.negative {

@@ -107,17 +107,13 @@ ion-header.app-header ion-toolbar ion-button.header-action {
   --border-radius: 999px;
   --padding-start: 10px;
   --padding-end: 10px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 ion-header.navbar-header ion-toolbar ion-button.header-action ion-icon,
 ion-header.app-header ion-toolbar ion-button.header-action ion-icon {
-  font-size: 1.05rem;
-}
-
-.header-action-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 /* Small phones */
@@ -139,10 +135,6 @@ ion-header.app-header ion-toolbar ion-button.header-action ion-icon {
   ion-header.app-header ion-toolbar ion-title {
     padding-inline: 8px;
     font-size: 1rem;
-  }
-
-  .header-action-label {
-    display: none;
   }
 }
 

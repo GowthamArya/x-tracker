@@ -16,7 +16,8 @@ import {
   IonIcon,
   IonSegmentButton,
   IonLabel,
-  IonSegment
+  IonSegment,
+  IonBackButton
 } from '@ionic/angular/standalone';
 
 import type { SegmentCustomEvent } from '@ionic/angular';
@@ -65,7 +66,8 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     RouterLink,
     FilterPage,
     UpperCasePipe,
-    PageRefresherComponent
+    PageRefresherComponent,
+    IonBackButton
   ]
 })
 export class TransactionsPage implements OnInit {

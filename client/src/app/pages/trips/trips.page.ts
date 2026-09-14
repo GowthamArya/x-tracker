@@ -11,14 +11,13 @@ import {
   IonTitle,
   IonToolbar,
   IonSearchbar,
-  IonFab,
-  IonFabButton,
   IonBadge,
   IonChip,
   IonRefresher,
   IonRefresherContent,
   ToastController,
-  AlertController
+  AlertController,
+  IonBackButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -58,12 +57,11 @@ import { ShareService } from '../../services/share.service';
     IonButton,
     IonIcon,
     IonSearchbar,
-    IonFab,
-    IonFabButton,
     IonBadge,
     IonChip,
     IonRefresher,
-    IonRefresherContent
+    IonRefresherContent,
+    IonBackButton
   ]
 })
 export class TripsPage implements OnInit {

@@ -10,6 +10,7 @@ import {
   IonButton,
   IonModal,
   IonIcon,
+  IonBackButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { calendarOutline, checkmarkOutline, chevronBackOutline, chevronForwardOutline, optionsOutline, refreshOutline } from 'ionicons/icons';
@@ -49,6 +50,7 @@ interface CalendarDay {
     DecimalPipe,
     FilterPage,
     PageRefresherComponent,
+    IonBackButton
   ],
 })
 export class ReportsPage {
