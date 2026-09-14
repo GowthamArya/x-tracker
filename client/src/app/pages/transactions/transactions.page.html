@@ -1,115 +1,305 @@
-<ion-header class="app-header navbar-header"><ion-toolbar><ion-title>Transactions</ion-title><ion-buttons
-      slot="end"><ion-button class="header-action" routerLink="/tabs/add-transaction"><ion-icon name="add-outline"
-          slot="start"></ion-icon><span class="header-action-label">Add</span></ion-button><ion-button
-        class="header-action" fill="outline" (click)="openFilters()"><ion-icon name="options-outline"
-          slot="start"></ion-icon><span
-          class="header-action-label">Filter</span></ion-button></ion-buttons></ion-toolbar></ion-header>
+<ion-header class="app-header navbar-header">
+  <ion-toolbar>
+
+    <ion-title>
+      Transactions
+    </ion-title>
+
+    <ion-buttons slot="end">
+
+      <ion-button
+        class="header-action"
+        routerLink="/tabs/add-transaction">
+
+        <ion-icon
+          name="add-outline"
+          slot="start">
+        </ion-icon>
+
+        <span class="header-action-label">
+          Add
+        </span>
+
+      </ion-button>
+
+
+      <ion-button
+        class="header-action"
+        fill="outline"
+        (click)="openFilters()">
+
+        <ion-icon
+          name="options-outline"
+          slot="start">
+        </ion-icon>
+
+        <span class="header-action-label">
+          Filter
+        </span>
+
+      </ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
 <ion-content [fullscreen]="true">
+
   <app-page-refresher></app-page-refresher>
+
+
   <div class="transaction-page">
-    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="applyFilter()" placeholder="Search title, category, or account"
-      class="transaction-search"></ion-searchbar>
-    <div class="list-toolbar"><span class="result-count">{{ filteredTransactions.length }} transactions</span></div>
 
 
-    <ion-segment [scrollable]="true" [value]="activeFilter" (ionChange)="onSegmentChange($event)">
+    <!-- Search -->
+    <ion-searchbar
+      [(ngModel)]="searchQuery"
+      (ionInput)="applyFilter()"
+      placeholder="Search title, category, or account"
+      class="transaction-search">
+    </ion-searchbar>
+
+
+    <!-- Result count -->
+    <div class="list-toolbar">
+
+      <span class="result-count">
+        {{ filteredTransactions.length }} transactions
+      </span>
+
+    </div>
+
+
+    <!-- Transaction type -->
+    <ion-segment
+      [scrollable]="true"
+      [value]="activeFilter"
+      (ionChange)="onSegmentChange($event)">
 
       <ion-segment-button value="all">
-        <ion-label>All</ion-label>
+        <ion-label>
+          All
+        </ion-label>
       </ion-segment-button>
 
       <ion-segment-button value="income">
-        <ion-label>Income</ion-label>
+        <ion-label>
+          Income
+        </ion-label>
       </ion-segment-button>
 
       <ion-segment-button value="expense">
-        <ion-label>Expenses</ion-label>
+        <ion-label>
+          Expenses
+        </ion-label>
       </ion-segment-button>
 
     </ion-segment>
 
+
+    <!-- Transaction list -->
     <div class="transaction-list">
+
       @for (
-      transaction of filteredTransactions;
-      track transaction.id
+        transaction of filteredTransactions;
+        track transaction.id
       ) {
-      <div class="transaction-card">
-        <div class="transaction-left">
-          <div class="transaction-icon">
-            {{ transaction.type === 'income' ? '↑' : '↓' }}
+
+        <div class="transaction-card">
+
+
+          <!-- Left side -->
+          <div class="transaction-left">
+
+            <div class="transaction-icon">
+              {{ transaction.type === 'income' ? '↑' : '↓' }}
+            </div>
+
+
+            <div class="transaction-details">
+
+              <strong>
+                {{ transaction.title }}
+              </strong>
+
+
+              <span>
+                {{ transaction.categoryName }}
+                ·
+                {{ transaction.accountName }}
+              </span>
+
+
+              @if (transaction.isJointAccount) {
+
+                <span class="added-by">
+
+                  <ion-button
+                    fill="outline"
+                    size="small"
+                    shape="round">
+
+                    {{ (transaction.addedByName || 'U').charAt(0) | uppercase }}
+
+                  </ion-button>
+
+                  Added by
+                  {{ transaction.addedByName || 'another member' }}
+
+                </span>
+
+              }
+
+
+              <small>
+                {{ transaction.transactionDate }}
+              </small>
+
+            </div>
+
           </div>
-          <div class="transaction-details">
-            <strong>
-              {{ transaction.title }}
-            </strong>
-            <span>
-              {{ transaction.categoryName }}
-              ·
-              {{ transaction.accountName }}
-            </span>
-            @if (transaction.isJointAccount) {
-            <span class="added-by">
-              <ion-button fill="outline" size="small" shape="round">
-                {{ (transaction.addedByName || 'U').charAt(0) | uppercase }}
+
+
+          <!-- Right side -->
+          <div class="transaction-right">
+
+
+            <!-- Amount -->
+            <div
+              class="transaction-amount"
+              [class.income]="transaction.type === 'income'">
+
+              {{ transaction.type === 'income' ? '+' : '-' }}
+              ₹{{ transaction.amount | number:'1.0-0' }}
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="transaction-actions">
+
+              <ion-button
+                fill="clear"
+                size="small"
+                aria-label="Edit transaction"
+                (click)="editTransaction(transaction)">
+
+                <ion-icon
+                  name="pencil-outline"
+                  slot="icon-only">
+                </ion-icon>
+
               </ion-button>
-              Added by {{ transaction.addedByName || 'another member' }}
-            </span>
-            }
-            <small>
-              {{ transaction.transactionDate }}
-            </small>
-          </div>
-        </div>
-        <div class="transaction-right">
-          <div
-            class="transaction-amount"
-            [class.income]="transaction.type === 'income'">
-            {{ transaction.type === 'income' ? '+' : '-' }}
-            ₹{{ transaction.amount | number:'1.0-0' }}
+
+
+              <ion-button
+                fill="clear"
+                size="small"
+                color="danger"
+                aria-label="Delete transaction"
+                (click)="deleteTransaction(transaction)">
+
+                <ion-icon
+                  name="trash-outline"
+                  slot="icon-only">
+                </ion-icon>
+
+              </ion-button>
+
+            </div>
+
           </div>
 
-          <div class="transaction-actions">
-            <ion-button
-              fill="clear"
-              size="small"
-              aria-label="Edit transaction"
-              (click)="editTransaction(transaction)">
-              <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
-            </ion-button>
-
-            <ion-button
-              fill="clear"
-              size="small"
-              aria-label="Delete transaction"
-              (click)="deleteTransaction(transaction)">
-              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-            </ion-button>
-          </div>
         </div>
-      </div>
+
       }
+
+
+      <!-- Empty state -->
+      @if (filteredTransactions.length === 0) {
+
+        <div class="empty-state">
+          No transactions found.
+        </div>
+
+      }
+
     </div>
 
-    <ion-modal class="compact-filters-modal" [isOpen]="filtersOpen" (didDismiss)="filtersOpen = false"
-      [initialBreakpoint]="0.72" [breakpoints]="[0, 0.72, 0.95]">
+
+    <!-- Filter modal -->
+    <ion-modal
+      class="compact-filters-modal"
+      [isOpen]="filtersOpen"
+      (didDismiss)="filtersOpen = false"
+      [initialBreakpoint]="0.72"
+      [breakpoints]="[0, 0.72, 0.95]">
+
       <ng-template>
+
         <ion-header class="app-header">
+
           <ion-toolbar>
-            <ion-title>Filter transactions</ion-title>
+
+            <ion-title>
+              Filter transactions
+            </ion-title>
+
+
             <ion-buttons slot="end">
-              <ion-button class="header-action" (click)="filtersOpen = false">
-                <ion-icon name="checkmark-outline" slot="start"></ion-icon><span
-                  class="header-action-label">Done</span></ion-button>
+
+              <ion-button
+                class="header-action"
+                (click)="filtersOpen = false">
+
+                <ion-icon
+                  name="checkmark-outline"
+                  slot="start">
+                </ion-icon>
+
+                <span class="header-action-label">
+                  Done
+                </span>
+
+              </ion-button>
+
             </ion-buttons>
+
           </ion-toolbar>
+
         </ion-header>
+
+
         <ion-content class="ion-padding">
-          <app-transaction-filter [showCategory]="true" defaultPreset="thisYear"
+
+          <app-transaction-filter
+            [showCategory]="true"
+            defaultPreset="thisYear"
             (filterChange)="onFilterChange($event)">
           </app-transaction-filter>
+
         </ion-content>
+
       </ng-template>
+
     </ion-modal>
 
   </div>
+
+
+  <!-- Delete confirmation -->
+  <ion-alert
+    [isOpen]="deleteAlertOpen"
+    header="Delete transaction?"
+    [message]="
+      'Are you sure you want to delete ' +
+      (transactionToDelete?.title || 'this') +
+      ' transaction ?'
+    "
+    [buttons]="deleteAlertButtons"
+    (didDismiss)="onDeleteAlertDismiss()">
+  </ion-alert>
+
 </ion-content>
