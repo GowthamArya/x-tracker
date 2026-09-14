@@ -36,7 +36,9 @@ bootstrapApplication(AppComponent, {
       useClass: IonicRouteStrategy,
     },
 
-    provideIonicAngular(),
+    provideIonicAngular({
+      backButtonText: ''
+    }),
 
     provideRouter(
       routes,

@@ -37,9 +37,9 @@
 
 /* App theme variables used by components for consistent light/dark styling */
 :root {
-	--card-bg: var(--app-card-bg);
-	--card-border: var(--app-card-border);
-	--muted: var(--app-muted-color);
+  --card-bg: var(--app-card-bg);
+  --card-border: var(--app-card-border);
+  --muted: var(--app-muted-color);
 }
 
 ion-header.navbar-header,
@@ -48,6 +48,7 @@ ion-header.app-header {
   background: var(--app-header-gradient);
   color: #fff;
 }
+
 ion-header.navbar-header ion-toolbar,
 ion-header.app-header ion-toolbar {
   --background: var(--app-header-gradient) !important;
@@ -121,6 +122,7 @@ ion-header.app-header ion-toolbar ion-button.header-action .button-inner {
 }
 
 @media (max-width: 420px) {
+
   ion-header.navbar-header ion-toolbar,
   ion-header.app-header ion-toolbar {
     --padding-start: 4px;
@@ -138,16 +140,59 @@ ion-header.app-header ion-toolbar ion-button.header-action .button-inner {
   }
 }
 
-.app-card { background: var(--app-card-bg); border: 1px solid var(--app-card-border); border-radius: var(--app-radius-lg); }
-.gradient-toolbar { --background: var(--app-header-gradient) !important; }
-html, body, ion-app { background: var(--ion-background-color); color: var(--ion-text-color); }
-ion-content { --background: var(--ion-background-color); }
-ion-list, ion-card { --background: var(--app-card-bg); color: var(--ion-text-color); }
-ion-item { --background: var(--app-card-bg); --color: var(--ion-text-color); --border-color: var(--app-card-border); }
-ion-input, ion-select, ion-searchbar { --background: var(--app-input-bg); --color: var(--ion-text-color); --border-color: var(--app-input-border); }
-ion-item ion-icon { color: var(--app-icon-color); }
-body.app-dark ion-item ion-icon { color: var(--app-icon-color); }
-ion-app { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+.app-card {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-card-border);
+  border-radius: var(--app-radius-lg);
+}
+
+.gradient-toolbar {
+  --background: var(--app-header-gradient) !important;
+}
+
+html,
+body,
+ion-app {
+  background: var(--ion-background-color);
+  color: var(--ion-text-color);
+}
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+ion-list,
+ion-card {
+  --background: var(--app-card-bg);
+  color: var(--ion-text-color);
+}
+
+ion-item {
+  --background: var(--app-card-bg);
+  --color: var(--ion-text-color);
+  --border-color: var(--app-card-border);
+}
+
+ion-input,
+ion-select,
+ion-searchbar {
+  --background: var(--app-input-bg);
+  --color: var(--ion-text-color);
+  --border-color: var(--app-input-border);
+}
+
+ion-item ion-icon {
+  color: var(--app-icon-color);
+}
+
+body.app-dark ion-item ion-icon {
+  color: var(--app-icon-color);
+}
+
+ion-app {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
 .app-loading-indicator {
   position: fixed;
