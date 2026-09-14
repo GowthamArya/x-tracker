@@ -97,6 +97,13 @@ ion-modal.compact-filters-modal::part(content) {
   margin: auto;
   border-radius: 24px 24px 0 0;
 }
+.transaction-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  min-width: 0;
+}
 
 @media (min-width: 900px) {
   .transaction-page {
@@ -112,4 +119,18 @@ ion-modal.compact-filters-modal::part(content) {
   .list-toolbar,
   .filter-bar,
   .transaction-list { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .transaction-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    ion-button {
+      height: 30px;
+      --padding-start: 7px;
+      --padding-end: 7px;
+      font-size: 0.74rem;
+    }
+  }
 }

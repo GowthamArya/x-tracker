@@ -2,10 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import {
+  addOutline,
+  optionsOutline,
+  checkmarkOutline,
+  pencilOutline,
+  trashOutline
+} from 'ionicons/icons';
 
 import {
-  ActionSheetButton,
-  IonActionSheet,
   IonButton,
   IonContent,
   IonHeader,
@@ -15,6 +20,9 @@ import {
   IonSearchbar,
   IonModal,
   IonIcon,
+  IonSegmentButton,
+  IonLabel,
+  IonSegment
 } from '@ionic/angular/standalone';
 
 import { UpperCasePipe } from "@angular/common";
@@ -24,17 +32,16 @@ import { Transaction } from '../../models/transaction.model';
 import { FilterValue } from '../../models/filter.model';
 import { FilterPage } from '../filters/filters.page';
 import { addIcons } from 'ionicons';
-import { addOutline, optionsOutline, checkmarkOutline } from 'ionicons/icons';
 import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 
 type TransactionFilter = 'all' | 'income' | 'expense';
+import type { SegmentCustomEvent } from '@ionic/angular';
 
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.page.html',
   styleUrls: ['./transactions.page.scss'],
   imports: [
-    IonActionSheet,
     IonButton,
     IonContent,
     IonHeader,
@@ -44,6 +51,9 @@ type TransactionFilter = 'all' | 'income' | 'expense';
     IonSearchbar,
     IonModal,
     IonIcon,
+    IonSegment,
+    IonSegmentButton,
+    IonLabel,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -66,30 +76,11 @@ export class TransactionsPage implements OnInit {
   filter: FilterValue | null = null;
   filtersOpen = false;
 
-  actionSheetOpen = false;
-  selectedTransaction: Transaction | null = null;
-
-  actionSheetButtons: ActionSheetButton[] = [
-    {
-      text: 'Edit',
-      handler: () => this.editTransaction(),
-    },
-    {
-      text: 'Delete',
-      role: 'destructive',
-      handler: () => this.deleteTransaction(),
-    },
-    {
-      text: 'Cancel',
-      role: 'cancel',
-    },
-  ];
-
   constructor(
     private readonly transactionsService: TransactionsService,
     private readonly router: Router
   ) {
-    addIcons({ addOutline, optionsOutline, checkmarkOutline });
+    addIcons({ addOutline, optionsOutline, checkmarkOutline, pencilOutline, trashOutline});
   }
 
   ngOnInit(): void {
@@ -125,10 +116,17 @@ export class TransactionsPage implements OnInit {
       });
   }
 
-  setFilter(filter: TransactionFilter): void {
-    this.activeFilter = filter;
+  onSegmentChange(event: SegmentCustomEvent): void {
+    const value = event.detail.value;
 
-    this.applyFilter();
+    if (
+      value === 'all' ||
+      value === 'income' ||
+      value === 'expense'
+    ) {
+      this.activeFilter = value;
+      this.applyFilter();
+    }
   }
 
   onFilterChange(filter: FilterValue): void { this.filter = filter; this.applyFilter(); }
@@ -160,57 +158,26 @@ export class TransactionsPage implements OnInit {
     );
   }
 
-  openTransactionActions(
-    transaction: Transaction
-  ): void {
-    this.selectedTransaction = transaction;
-
-    this.actionSheetOpen = true;
-  }
-
-  editTransaction(): void {
-    if (!this.selectedTransaction) {
-      return;
-    }
-
-    const id = this.selectedTransaction.id;
-
-    this.actionSheetOpen = false;
-    this.selectedTransaction = null;
-
+  editTransaction(transaction: Transaction): void {
     this.router.navigate(
       ['/tabs/add-transaction'],
       {
         queryParams: {
-          edit: id,
+          edit: transaction.id,
         },
       }
     );
   }
 
-  deleteTransaction(): void {
-    if (!this.selectedTransaction) {
-      return;
-    }
-
-    const transactionId =
-      this.selectedTransaction.id;
-
+  deleteTransaction(transaction: Transaction): void {
     this.transactionsService
-      .deleteTransaction(transactionId)
+      .deleteTransaction(transaction.id)
       .subscribe({
         next: () => {
-          this.selectedTransaction = null;
-          this.actionSheetOpen = false;
-
           this.loadTransactions();
         },
-
         error: (error) => {
-          console.error(
-            'Failed to delete transaction',
-            error
-          );
+          console.error('Failed to delete transaction', error);
         },
       });
   }
