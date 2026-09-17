@@ -6,8 +6,8 @@ import { guestGuard } from './guards/guest.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'tabs/dashboard',
-    pathMatch: 'full',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./pages/public-home/public-home.page').then(m => m.PublicHomePage)
   },
   {
     path: 'tabs',
@@ -97,6 +97,11 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
+  },
+  {
+    path: 'dashboard',
+    redirectTo: 'tabs/dashboard',
+    pathMatch: 'full',
   },
   {
     path: 'privacy-policy',

@@ -1,38 +1,33 @@
-<ion-content>
+<ion-header class="app-header home-header">
+  <ion-toolbar>
+    <div class="brand-lockup"><img class="app-logo" src="assets/xtracker-logo.png" alt="X-Tracker logo"><span>X-Tracker</span></div>
+    <ion-buttons slot="end"><ion-button fill="clear" routerLink="/login">Log in</ion-button></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
   <main class="home-page">
     <section class="hero" aria-labelledby="home-title">
-      <div class="brand-mark" aria-hidden="true"><ion-icon name="wallet-outline"></ion-icon></div>
-      <p class="eyebrow">Personal finance, made clear</p>
-      <h1 id="home-title">Track your money with confidence.</h1>
-      <p class="hero-copy">x-tracker helps you organize transactions, accounts, trips, and shared expenses in one private place.</p>
-      <div class="hero-actions">
-        <ion-button routerLink="/login" shape="round">Get started <ion-icon name="arrow-forward-outline" slot="end"></ion-icon></ion-button>
-        <a routerLink="/privacy-policy">Read our Privacy Policy</a>
+      <p class="eyebrow">Personal finance and shared trips</p>
+      <h1 id="home-title">Know where your money goes, together.</h1>
+      <p class="hero-copy">X-Tracker brings everyday spending, shared accounts, and trip expenses into one clear view—so balances are easier to understand and manage.</p>
+      <div class="hero-actions"><ion-button routerLink="/login">Get started <ion-icon name="arrow-forward-outline" slot="end"></ion-icon></ion-button><a routerLink="/login">Log in to your account</a></div>
+    </section>
+    <section class="feature-section" aria-labelledby="features-title">
+      <div class="section-intro"><p class="eyebrow">Built for the day-to-day</p><h2 id="features-title">The details that make a balance useful.</h2></div>
+      <div class="feature-grid" aria-label="What X-Tracker does">
+        <article class="feature-card"><ion-icon name="wallet-outline"></ion-icon><h3>Track every transaction</h3><p>Keep income and expenses organized by account and category, with recent activity ready when you need it.</p></article>
+        <article class="feature-card"><ion-icon name="checkmark-circle-outline"></ion-icon><h3>Share trips and expenses</h3><p>Create trips, invite the people involved, and keep shared spending and member balances in one place.</p></article>
+        <article class="feature-card"><ion-icon name="shield-checkmark-outline"></ion-icon><h3>See the bigger picture</h3><p>Use your balance, transaction history, and reports to understand what came in, what went out, and what is shared.</p></article>
       </div>
     </section>
-
-    <section class="feature-grid" aria-label="What x-tracker does">
-      <article class="feature-card">
-        <ion-icon name="wallet-outline"></ion-icon>
-        <h2>Organize transactions</h2>
-        <p>Keep income and expenses categorized, searchable, and easy to understand.</p>
-      </article>
-      <article class="feature-card">
-        <ion-icon name="checkmark-circle-outline"></ion-icon>
-        <h2>Plan shared spending</h2>
-        <p>Manage accounts, trips, and shared expenses with the people you trust.</p>
-      </article>
-      <article class="feature-card">
-        <ion-icon name="shield-checkmark-outline"></ion-icon>
-        <h2>Connect Gmail optionally</h2>
-        <p>When enabled and approved by you, x-tracker can identify transaction emails using read-only Gmail access.</p>
-      </article>
+    <section class="how-it-works" aria-labelledby="how-it-works-title">
+      <div class="section-intro"><p class="eyebrow">Simple by design</p><h2 id="how-it-works-title">Start with a clear view.</h2></div>
+      <ol>
+        <li><span>01</span><div><strong>Sign in securely</strong><p>Use your Google account to access your private X-Tracker workspace.</p></div></li>
+        <li><span>02</span><div><strong>Add your activity</strong><p>Record transactions, organize accounts, and create a trip when spending is shared.</p></div></li>
+        <li><span>03</span><div><strong>Review your balances</strong><p>See your day-to-day position and keep shared expenses understandable for everyone involved.</p></div></li>
+      </ol>
     </section>
-
-    <footer class="home-footer">
-      <span>© 2026 x-tracker</span>
-      <a routerLink="/privacy-policy">Privacy Policy</a>
-      <a routerLink="/terms-of-services">Terms of Service</a>
-    </footer>
+    <footer class="home-footer"><span>© 2026 X-Tracker</span><a routerLink="/login">Log in</a><a routerLink="/privacy-policy">Privacy Policy</a><a routerLink="/terms-of-services">Terms of Service</a></footer>
   </main>
 </ion-content>

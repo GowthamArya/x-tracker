@@ -47,6 +47,14 @@ https://localhost:7043/api
 
 Production uses `/api` from `client/src/environments/environment.prod.ts`. Deploy the client behind the same host or configure a reverse proxy to forward `/api` to ASP.NET.
 
+## Public home, routing, and SEO
+
+- `/` is the public X-Tracker home page. `/login` remains available only to signed-out visitors.
+- The application area is under `/tabs` (including `/tabs/dashboard`) and is protected by the Angular authentication guard. `/dashboard` redirects to the protected dashboard route.
+- Unknown client routes render the X-Tracker 404 page. IIS rewrites only requests that are not real files, while ASP.NET Core serves static files before its SPA fallback.
+- The public-home metadata, canonical URL, Open Graph/Twitter metadata, and JSON-LD use `https://x-tracker.runasp.net/`.
+- `client/src/robots.txt` and `client/src/sitemap.xml` are copied to the web root by the Angular build. The sitemap intentionally contains only the public home page.
+
 ## Run locally
 
 Start the API in one terminal:
