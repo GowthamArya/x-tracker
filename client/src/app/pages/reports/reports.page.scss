@@ -1,197 +1,230 @@
 .reports-container {
-  padding: 20px 16px 40px;
-  max-width: 980px;
-  margin: 0 auto;
+    max-width: 980px;
+    margin: auto;
+    padding: 20px 16px 44px
 }
 
-.page-heading {
-  margin-bottom: 12px;
-
-  h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-  }
-
-  p {
-    margin: 6px 0 0;
+.active-period,
+.muted,
+.legend {
     color: var(--app-muted-color);
-  }
+    font-size: .8rem
 }
-.active-period { display: inline-flex; color: var(--app-muted-color); font-size: 0.8rem; margin-bottom: 14px; }
 
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px
+}
+
+.summary-grid>div,
+.card,
 .calendar-card {
-  margin-top: 18px;
-  padding: 16px;
-  border: 1px solid var(--app-card-border);
-  border-radius: 22px;
-  background: var(--app-card-bg);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
-  touch-action: pan-y;
+    padding: 16px;
+    border: 1px solid var(--app-card-border);
+    border-radius: 18px;
+    background: var(--app-card-bg)
+}
+
+.summary-grid span {
+    display: block;
+    color: var(--app-muted-color);
+    font-size: .72rem
+}
+
+.summary-grid strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 1.1rem
+}
+
+.income {
+    color: var(--ion-color-success)
+}
+
+.expense {
+    color: var(--ion-color-danger)
+}
+
+.card,
+.calendar-card {
+    margin-top: 20px
+}
+
+.card h2,
+.calendar-heading h2 {
+    margin: 0 0 16px;
+    color: var(--app-heading-color);
+    font-size: 1.15rem
 }
 
 .calendar-heading,
-.calendar-title,
-.calendar-nav,
-.calendar-legend,
-.day-insights {
-  display: flex;
-  align-items: center;
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between
 }
 
-.calendar-heading { justify-content: space-between; gap: 8px; }
-.calendar-title { min-width: 0; gap: 10px; }
-.calendar-icon { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 12px; color: var(--app-primary-color); background: var(--app-selection-bg); font-size: 20px; }
-.calendar-title h2 { margin: 0; color: var(--app-heading-color); font-size: 1rem; font-weight: 800; }
-.calendar-title p { margin: 3px 0 0; color: var(--app-muted-color); font-size: 0.7rem; }
-.calendar-reset { --color: var(--app-primary-color); margin: 0; }
-.calendar-nav { justify-content: space-between; margin: 12px 0 8px; color: var(--app-heading-color); font-size: 0.82rem; font-weight: 800; }
-.calendar-nav ion-button { --color: var(--app-primary-color); width: 34px; height: 34px; margin: 0; }
-.weekdays, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-.weekdays { margin-bottom: 5px; color: var(--app-muted-color); font-size: 0.62rem; font-weight: 800; text-align: center; text-transform: uppercase; }
-.calendar-day { min-width: 0; min-height: 58px; padding: 5px 3px; border: 1px solid transparent; border-radius: 11px; text-align: center; }
-.calendar-day.today { border-color: var(--app-primary-color); background: var(--app-selection-bg); }
-.day-number { display: block; margin-bottom: 4px; color: var(--app-heading-color); font-size: 0.72rem; font-weight: 800; }
-.day-income, .day-expense { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.57rem; font-weight: 750; line-height: 1.45; }
-.day-income { color: var(--ion-color-success); }
-.day-expense { color: var(--ion-color-danger); }
-.empty-day { min-height: 58px; }
-.calendar-legend { gap: 14px; margin-top: 10px; color: var(--app-muted-color); font-size: 0.68rem; }
-.legend-dot { display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; }
-.income-dot { background: var(--ion-color-success); }
-.expense-dot { background: var(--ion-color-danger); }
-.day-insights { gap: 8px; min-height: 52px; margin-top: 12px; }
-.day-insights > div { display: flex; flex: 1; flex-direction: column; gap: 3px; padding: 9px 10px; border-radius: 12px; background: var(--app-surface-strong); }
-.day-insights span { color: var(--app-muted-color); font-size: 0.62rem; }
-.day-insights strong { color: var(--app-heading-color); font-size: 0.76rem; }
-.day-insights-empty { justify-content: center; text-align: center; }
-
-.summary-grid {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+.calendar-heading h2 {
+    margin: 0
 }
 
-.summary-card {
-  padding: 14px;
-  border: 1px solid var(--app-card-border);
-  border-radius: 16px;
-  background: var(--app-card-bg);
-  color: var(--ion-text-color);
+.weekdays,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr)
+}
 
+.weekdays {
+    margin: 8px 0;
+    color: var(--app-muted-color);
+    font-size: .62rem;
+    text-align: center
+}
+
+.calendar-day {
+    min-height: 54px;
+    padding: 3px;
+    border: 0;
+    background: transparent;
+    color: var(--ion-text-color);
+    font: inherit
+}
+
+.calendar-day.today {
+    outline: 1px solid var(--app-primary-color);
+    border-radius: 10px
+}
+
+.calendar-day.has-data {
+    background: var(--app-surface-strong);
+    border-radius: 10px
+}
+
+.calendar-day b,
+.calendar-day small {
+    display: block;
+    font-size: .65rem
+}
+
+.details {
+    margin-top: 14px;
+    border-top: 1px solid var(--app-card-border);
+    padding-top: 12px
+}
+
+.details h3 {
+    margin: 0 0 8px;
+    font-size: .9rem
+}
+
+.details div,
+.category>div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: .85rem
+}
+
+.category i {
+    display: block;
+    height: 7px;
+    background: var(--app-surface-strong);
+    border-radius: 9px
+}
+
+.category b {
+    display: block;
+    height: 100%;
+    background: var(--app-primary-color);
+    border-radius: inherit
+}
+
+.state {
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--app-muted-color)
+}
+
+.state.error {
+    color: var(--ion-color-danger)
+}
+
+@media(max-width:700px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .summary-grid>div:last-child {
+        grid-column: span 2
+    }
+}
+
+.spending-card {
+  .section-heading {
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+    }
+
+    p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.spending-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-
-  .label {
-    color: var(--ion-color-medium);
-    font-size: 13px;
-  }
-
-  strong {
-    font-size: 19px;
-  }
-
-  .income {
-    color: var(--ion-color-success);
-  }
-
-  .expense {
-    color: var(--ion-color-danger);
-  }
+  gap: 18px;
 }
 
-.full-width {
-  grid-column: 1 / -1;
-}
-
-.section {
-  margin-top: 24px;
-}
-
-.section-header {
-  margin-bottom: 12px;
-
-  h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  p {
-    margin: 5px 0 0;
-    color: var(--ion-color-medium);
-    font-size: 13px;
-  }
-}
-
-.category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.category-item {
+.spending-row {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
 
-.category-header {
+.spending-row-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 
   strong {
     font-size: 15px;
+    white-space: nowrap;
   }
+}
+
+.spending-period {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ion-text-color);
+}
+
+.spending-bar {
+  width: 100%;
+  height: 9px;
+  background: var(--ion-color-light);
+  border-radius: 999px;
+  overflow: hidden;
 
   span {
-    font-weight: 600;
+    display: block;
+    height: 100%;
+    min-width: 2px;
+    border-radius: inherit;
+    background: var(--ion-color-primary);
+    transition: width 300ms ease;
   }
 }
 
-.progress-track {
-  width: 100%;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--ion-color-step-200);
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  border-radius: inherit;
-  background: var(--ion-color-primary);
-  transition: width 0.3s ease;
-}
-
-.category-item small {
+.spending-row small {
+  font-size: 11px;
   color: var(--ion-color-medium);
-  font-size: 12px;
-}
-
-.empty-state {
-  padding: 30px 0;
-  text-align: center;
-  color: var(--ion-color-medium);
-}
-
-@media (max-width: 480px) {
-  .full-width {
-    grid-column: auto;
-  }
-
-  .calendar-card { padding: 12px 10px; }
-  .calendar-day { min-height: 52px; padding-inline: 1px; }
-  .empty-day { min-height: 52px; }
-  .day-income, .day-expense { font-size: 0.5rem; }
-}
-
-ion-modal.compact-filters-modal::part(content) {
-  max-width: 860px;
-  width: min(860px, calc(100vw - 24px));
-  margin: auto;
-  border-radius: 24px 24px 0 0;
 }

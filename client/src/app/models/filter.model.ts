@@ -1,4 +1,4 @@
-export type DateFilterPreset = 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
+export type DateFilterPreset = 'thisWeek' | 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
 
 export interface DateRange {
   from: string;

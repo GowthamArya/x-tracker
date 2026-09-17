@@ -1,215 +1,100 @@
-<ion-header class="app-header navbar-header">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/dashboard" text="" ></ion-back-button>
-    </ion-buttons>
-    <ion-title>Reports</ion-title>
-    <ion-buttons slot="end">
-      <ion-button class="header-action" (click)="openFilters()">
-        <ion-icon name="options-outline" slot="start"></ion-icon>
-        <span class="header-action-label">Filter</span>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content [fullscreen]="true">
-  <app-page-refresher></app-page-refresher>
+<ion-header class="app-header navbar-header"><ion-toolbar><ion-buttons slot="start"><ion-back-button
+                defaultHref="/tabs/dashboard"
+                text=""></ion-back-button></ion-buttons><ion-title>Reports</ion-title><ion-buttons
+            slot="end"><ion-button class="header-action" (click)="openFilters()"><ion-icon name="options-outline"
+                    slot="start"></ion-icon>Filter</ion-button></ion-buttons></ion-toolbar></ion-header>
+<ion-content [fullscreen]="true"><app-page-refresher></app-page-refresher>
+    <main class="reports-container">
+        @if (loading) { <div class="state">Loading your report…</div> } @else if (error) { <div class="state error">{{
+            error }}</div> } @else if (summary) {
+        <p class="active-period">{{ summary.from }} to {{ summary.to }} · Tap Filter to change</p>
+        <section class="summary-grid">
+            <div><span>Total spent</span><strong class="expense">₹{{summary.totalExpenses|number:'1.0-0'}}</strong>
+            </div>
+            <div><span>Total income</span><strong class="income">₹{{summary.totalIncome|number:'1.0-0'}}</strong></div>
+            <div><span>Net balance</span><strong>₹{{summary.balance|number:'1.0-0'}}</strong></div>
+            <div><span>Expenses</span><strong>{{summary.expenseCount}}</strong></div>
+            <div><span>Average spend</span><strong>₹{{summary.averageExpense|number:'1.0-0'}}</strong></div>
+        </section>
+        <section class="card spending-card">
+            <div class="section-heading">
+                <div>
+                    <h2>{{ trendTitle }}</h2>
+                    <p>{{ trendDescription }}</p>
+                </div>
+            </div>
 
-  <div class="reports-container">
+            @if (trend.length) {
+            <div class="spending-list">
+                @for (item of trend; track item.date) {
+                <div class="spending-row">
+                    <div class="spending-row-header">
+                        <span class="spending-period">
+                            {{ formatTrendDate(item.date) }}
+                        </span>
 
-    <div class="active-period">
-      @if (filter) {
-      <span class="active-period-label">Active period:</span>
-      @switch (filter.preset) {
-      @case ('thisMonth') {
-      This month
-      }
-      @case ('thisYear') {
-      This year
-      }
-      @default {
-      Filtered period
-      }
-      }
-      · Tap Filter to change
-      } @else {
-      No filters applied - Tap Filter
-      }
-    </div>
-    <!-- Summary -->
-    <div class="summary-grid">
-      <div class="summary-card">
-        <span class="label">
-          Income
-        </span>
-        <strong class="income">
-          ₹{{ totalIncome | number:'1.0-0' }}
-        </strong>
-      </div>
-      <div class="summary-card">
-        <span class="label">
-          Expenses
-        </span>
-        <strong class="expense">
-          ₹{{ totalExpenses | number:'1.0-0' }}
-        </strong>
-      </div>
-      <div class="summary-card">
-        <span class="label">
-          Balance
-        </span>
-        <strong>
-          ₹{{ balance | number:'1.0-0' }}
-        </strong>
-      </div>
-    </div>
+                        <strong>
+                            {{ formatAmount(item.expenses) }}
+                        </strong>
+                    </div>
 
-    <section class="calendar-card" aria-label="Monthly transaction calendar" (touchstart)="onCalendarTouchStart($event)"
-      (touchend)="onCalendarTouchEnd($event)">
-      <div class="calendar-heading">
-        <div class="calendar-title"><span class="calendar-icon"><ion-icon name="calendar-outline"></ion-icon></span>
-          <div>
-            <h2>{{ monthLabel }}</h2>
-            <p>Swipe left or right to change month</p>
-          </div>
-        </div>
-        <ion-button class="calendar-reset" fill="clear" (click)="resetToCurrentMonth()"
-          aria-label="Show current month"><ion-icon name="refresh-outline" slot="icon-only"></ion-icon></ion-button>
-      </div>
-      <div class="calendar-nav"><ion-button fill="clear" (click)="previousMonth()" aria-label="Previous month"><ion-icon
-            name="chevron-back-outline" slot="icon-only"></ion-icon></ion-button><span>{{ monthLabel
-          }}</span><ion-button fill="clear" (click)="nextMonth()" aria-label="Next month"><ion-icon
-            name="chevron-forward-outline" slot="icon-only"></ion-icon></ion-button></div>
-      <div class="weekdays">
-        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-      </div>
-      <div class="calendar-grid">
-        @for (week of calendarWeeks; track $index) {
-        @for (day of week; track day?.date || $index) {
-        @if (day) {
-        <div class="calendar-day" [class.today]="day.isToday" [class.has-data]="day.hasData">
-          <span class="day-number">{{ day.day }}</span>
-          @if (day.income > 0) { <span class="day-income">+₹{{ day.income | number:'1.0-0' }}</span> }
-          @if (day.expense > 0) { <span class="day-expense">−₹{{ day.expense | number:'1.0-0' }}</span> }
-        </div>
-        } @else { <div class="calendar-day empty-day"></div> }
-        }
-        }
-      </div>
-      <div class="calendar-legend"><span><i class="legend-dot income-dot"></i> Income</span><span><i
-            class="legend-dot expense-dot"></i> Expense</span></div>
-      <div class="day-insights">
-        @if (highestDay && lowestDay) {
-        <div><span>Highest activity</span><strong>{{ highestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{
-            highestDay.total | number:'1.0-0' }}</strong></div>
-        <div><span>Lowest activity</span><strong>{{ lowestDay.day }} {{ monthLabel.split(' ')[0] }} · ₹{{
-            lowestDay.total | number:'1.0-0' }}</strong></div>
-        } @else {
-        <div class="day-insights-empty"><span>No activity this month</span><strong>Transactions will appear
-            here</strong></div>
-        }
-      </div>
-    </section>
+                    <div class="spending-bar">
+                        <span [style.width.%]="(item.expenses / maxTrend) * 100">
+                        </span>
+                    </div>
 
-
-    <!-- Income Categories -->
-
-    <div class="section">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Income by Category</h2>
-          <p>Where your income is coming from.</p>
-        </div>
-
-      </div>
-
-      <div class="category-list">
-
-        @if (incomeCategoryReports.length === 0) {
-        <div class="empty-state">
-          No income data yet.
-        </div>
-        }
-
-        @for (
-        report of incomeCategoryReports;
-        track report.category
-        ) {
-        <div class="category-item">
-          <div class="category-header">
-            <strong>
-              {{ report.category }}
-            </strong>
-            <span>
-              ₹{{ report.amount | number:'1.0-0' }}
-            </span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-bar" [style.width.%]="report.percentage"></div>
-          </div>
-          <small>
-            {{ report.percentage | number:'1.0-0' }}%
-          </small>
-        </div>
-        }
-      </div>
-    </div>
-
-    <!-- Expense Categories -->
-
-    <div class="section">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Expenses by Category</h2>
-          <p>Where your money is going.</p>
-        </div>
-
-      </div>
-
-      <div class="category-list">
-
-        @if (expenseCategoryReports.length === 0) {
-        <div class="empty-state">
-          No expenses yet.
-        </div>
-        }
-
-        @for (
-        report of expenseCategoryReports;
-        track report.category
-        ) {
-        <div class="category-item">
-          <div class="category-header">
-            <strong>
-              {{ report.category }}
-            </strong>
-            <span>
-              ₹{{ report.amount | number:'1.0-0' }}
-            </span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-bar" [style.width.%]="report.percentage"></div>
-          </div>
-          <small>
-            {{ report.percentage | number:'1.0-0' }}%
-          </small>
-        </div>
-        }
-      </div>
-    </div>
-
-  </div>
-
-  <ion-modal class="compact-filters-modal" [isOpen]="filtersOpen" (didDismiss)="filtersOpen = false"
-    [initialBreakpoint]="0.72" [breakpoints]="[0, 0.72, 0.95]"><ng-template><ion-header
-        class="app-header"><ion-toolbar><ion-title>Filter reports</ion-title><ion-buttons slot="end"><ion-button
-              class="header-action" (click)="filtersOpen = false"><ion-icon name="checkmark-outline"
-                slot="start"></ion-icon><span
-                class="header-action-label">Done</span></ion-button></ion-buttons></ion-toolbar></ion-header><ion-content
-        class="ion-padding"><app-transaction-filter [showCategory]="true"
-          (filterChange)="onFilterChange($event)"></app-transaction-filter></ion-content></ng-template></ion-modal>
+                    @if (item.transactionCount) {
+                    <small>
+                        {{ item.transactionCount }}
+                        {{ item.transactionCount === 1 ? 'transaction' : 'transactions' }}
+                    </small>
+                    }
+                </div>
+                }
+            </div>
+            } @else {
+            <p class="muted">No spending in this period.</p>
+            }
+        </section>
+        <section class="calendar-card">
+            <div class="calendar-heading">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <h3>{{monthLabel}}</h3>
+                <ion-button fill="outline" shape="round" (click)="resetToCurrentMonth()">
+                    <ion-icon name="refresh-outline"></ion-icon>
+                </ion-button>
+            </div>
+            <div class="calendar-nav"><ion-button fill="clear" (click)="previousMonth()"><ion-icon
+                        name="chevron-back-outline"></ion-icon></ion-button><span>Daily activity</span><ion-button
+                    fill="clear" (click)="nextMonth()"><ion-icon name="chevron-forward-outline"></ion-icon></ion-button>
+            </div>
+            <div class="weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="calendar-grid">
+                @for(week of calendarWeeks;track $index){@for(day of week;track
+                day?.date||$index){@if(day){<button class="calendar-day" [class.today]="day.isToday"
+                    [class.has-data]="day.hasData" (click)="selectDay(day)"><b>{{day.day}}</b>@if(day.expense){<small
+                        class="expense">−₹{{day.expense|number:'1.0-0'}}</small>}@if(day.income){<small
+                        class="income">+₹{{day.income|number:'1.0-0'}}</small>}</button>}@else{<span></span>}}}</div>
+            <p class="legend">Red: spending · Green: income</p>@if(selectedDate){<div class="details">
+                <h3>{{selectedDate}}</h3>@for(tx of selectedTransactions;track tx.id){<div><span>{{tx.title}} ·
+                        {{tx.category}}</span><strong
+                        [class.expense]="tx.type==='expense'">{{tx.type==='expense'?'−':'+'}}₹{{tx.amount|number:'1.0-0'}}</strong>
+                </div>}@empty{<p class="muted">No transactions on this date.</p>}
+            </div>}
+        </section>
+        <section class="card">
+            <h2>Spending by category</h2>@if(categories.length){@for(c of categories;track c.category){<div
+                class="category">
+                <div><strong>{{c.category}}</strong><span>₹{{c.amount|number:'1.0-0'}} · {{c.percentage}}%</span></div>
+                <i><b [style.width.%]="c.percentage"></b></i>
+            </div>}}@else{<p class="muted">No expense categories for this period.</p>}
+        </section>
+        } @else { <div class="state">Choose a date range to view reports.</div> }
+    </main><ion-modal [isOpen]="filtersOpen" (didDismiss)="filtersOpen=false"><ng-template><ion-header
+                class="app-header"><ion-toolbar><ion-title>Filter reports</ion-title><ion-buttons slot="end"><ion-button
+                            (click)="filtersOpen=false">Done</ion-button></ion-buttons></ion-toolbar></ion-header><ion-content
+                class="ion-padding"><app-transaction-filter [showCategory]="true"
+                    (filterChange)="onFilterChange($event)"></app-transaction-filter></ion-content></ng-template></ion-modal>
 </ion-content>
