@@ -14,12 +14,61 @@
       </section>
     } @else {
       <form class="contact-form" (ngSubmit)="submit()">
-        <ion-input label="Name" labelPlacement="stacked" [(ngModel)]="name" name="name" autocomplete="name" required></ion-input>
-        <ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="email" name="email" autocomplete="email" required></ion-input>
-        <ion-input label="Subject" labelPlacement="stacked" [(ngModel)]="subject" name="subject" placeholder="Optional"></ion-input>
-        <ion-textarea label="Message" labelPlacement="stacked" [(ngModel)]="message" name="message" rows="7" maxlength="2000" required></ion-textarea>
-        @if (error) { <p class="error" role="alert">{{ error }}</p> }
-        <ion-button type="submit" expand="block" [disabled]="submitting">{{ submitting ? 'Sending...' : 'Send message' }}</ion-button>
+        <div class="form-fields">
+
+          <ion-input
+            label="Name"
+            labelPlacement="floating"
+            fill="outline"
+            [(ngModel)]="name"
+            name="name"
+            autocomplete="name"
+            required>
+          </ion-input>
+
+          <ion-input
+            label="Email"
+            labelPlacement="floating"
+            type="email"
+            fill="outline"
+            [(ngModel)]="email"
+            name="email"
+            autocomplete="email"
+            required>
+          </ion-input>
+
+          <ion-input
+            label="Subject"
+            labelPlacement="floating"
+            fill="outline"
+            [(ngModel)]="subject"
+            name="subject">
+          </ion-input>
+
+          <ion-textarea
+            label="Message"
+            labelPlacement="floating"
+            fill="outline"
+            [(ngModel)]="message"
+            name="message"
+            rows="7"
+            maxlength="2000"
+            required>
+          </ion-textarea>
+
+        </div>
+
+        @if (error) {
+          <p class="error" role="alert">{{ error }}</p>
+        }
+
+        <ion-button
+          type="submit"
+          expand="block"
+          class="submit-button"
+          [disabled]="submitting">
+          {{ submitting ? 'Sending...' : 'Send message' }}
+        </ion-button>
       </form>
     }
 

@@ -8,7 +8,7 @@ import { FilterValue } from '../../models/filter.model';
 import { FilterPage } from '../filters/filters.page';
 import { PageRefresherComponent } from '../../components/page-refresher/page-refresher.component';
 interface CalendarDay { date: string; day: number; income: number; expense: number; isToday: boolean; hasData: boolean; }
-@Component({ selector: 'app-reports', templateUrl: './reports.page.html', styleUrls: ['./reports.page.scss'], imports: [IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonModal, IonIcon, DecimalPipe, SlicePipe, FilterPage, PageRefresherComponent, IonBackButton] })
+@Component({ selector: 'app-reports', templateUrl: './reports.page.html', styleUrls: ['./reports.page.scss'], imports: [IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonModal, IonIcon, DecimalPipe, FilterPage, PageRefresherComponent, IonBackButton] })
 export class ReportsPage {
   filter: FilterValue | null = null; summary: ReportSummary | null = null; loading = false; error = ''; filtersOpen = false; displayedMonth = new Date(); calendarWeeks: Array<Array<CalendarDay | null>> = []; selectedDate = ''; selectedTransactions: ReportTransaction[] = [];
   constructor(private readonly reports: ReportsService) {

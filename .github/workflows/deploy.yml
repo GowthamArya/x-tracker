@@ -1,5 +1,7 @@
 name: Deploy XTracker to MonsterASP
 
+run-name: Deploy XTracker - ${{ github.event.head_commit.message }} by ${{ github.actor }}
+
 on:
   push:
     branches:

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonInput, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonHeader, IonInput, IonTextarea, IonTitle, IonToolbar, IonList, IonItem } from '@ionic/angular/standalone';
 import { environment } from '../../../environments/environment';
 
 @Component({

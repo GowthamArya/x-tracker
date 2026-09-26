@@ -77,11 +77,14 @@
                     [class.has-data]="day.hasData" (click)="selectDay(day)"><b>{{day.day}}</b>@if(day.expense){<small
                         class="expense">−₹{{day.expense|number:'1.0-0'}}</small>}@if(day.income){<small
                         class="income">+₹{{day.income|number:'1.0-0'}}</small>}</button>}@else{<span></span>}}}</div>
-            <p class="legend">Red: spending · Green: income</p>@if(selectedDate){<div class="details">
-                <h3>{{selectedDate}}</h3>@for(tx of selectedTransactions;track tx.id){<div><span>{{tx.title}} ·
+                        @if(selectedDate){
+                            <div class="details">
+                                <h3>{{selectedDate}}</h3>
+                                @for(tx of selectedTransactions;track tx.id){<div><span>{{tx.title}} ·
                         {{tx.category}}</span><strong
                         [class.expense]="tx.type==='expense'">{{tx.type==='expense'?'−':'+'}}₹{{tx.amount|number:'1.0-0'}}</strong>
-                </div>}@empty{<p class="muted">No transactions on this date.</p>}
+                            </div>}
+                            @empty{<p class="muted">No transactions on this date.</p>}
             </div>}
         </section>
         <section class="card">

@@ -14,7 +14,6 @@ import { PageRefresherComponent } from '../../components/page-refresher/page-ref
 
 
 import { ActivatedRoute } from '@angular/router';
-import { AfterViewInit } from '@angular/core';
 
 @Component({ selector: 'app-more', templateUrl: './more.page.html', styleUrls: ['./more.page.scss'], standalone: true, imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonToggle, IonSelect, IonSelectOption, IonButton, RouterLink, IonModal, PageRefresherComponent] })
 export class MorePage implements OnInit {
