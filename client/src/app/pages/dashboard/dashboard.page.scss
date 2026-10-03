@@ -5,12 +5,20 @@
 }
 
 .dashboard-header .brand-lockup {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     padding-left: 18px;
+    color: whitesmoke;
     font-weight: 750;
     letter-spacing: -0.02em;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.dashboard-header .brand-lockup:hover,
+.dashboard-header .brand-lockup:focus-visible {
+    text-decoration: none;
 }
 
 .app-logo {

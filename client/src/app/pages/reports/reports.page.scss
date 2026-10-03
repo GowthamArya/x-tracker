@@ -62,7 +62,14 @@
 .calendar-nav {
     display: flex;
     align-items: center;
-    justify-content: space-between
+    justify-content: space-between;
+}
+
+.calendar-nav {
+    margin-bottom: 18px;
+    color: var(--app-muted-color);
+    font-size: .8rem;
+    background: var(--app-surface-strong);
 }
 
 .calendar-heading h2 {

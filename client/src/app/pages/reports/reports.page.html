@@ -64,9 +64,14 @@
                     <ion-icon name="refresh-outline"></ion-icon>
                 </ion-button>
             </div>
-            <div class="calendar-nav"><ion-button fill="clear" (click)="previousMonth()"><ion-icon
-                        name="chevron-back-outline"></ion-icon></ion-button><span>Daily activity</span><ion-button
-                    fill="clear" (click)="nextMonth()"><ion-icon name="chevron-forward-outline"></ion-icon></ion-button>
+            <div class="calendar-nav">
+                <ion-button fill="clear" (click)="previousMonth()">
+                    <ion-icon name="chevron-back-outline"></ion-icon>
+                </ion-button>
+                <span>Daily activity</span>
+                <ion-button fill="clear" (click)="nextMonth()">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </ion-button>
             </div>
             <div class="weekdays">
                 <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>

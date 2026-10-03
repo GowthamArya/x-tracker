@@ -64,7 +64,7 @@ export class MorePage implements OnInit {
     }
   }
 
-  ionViewWillEnter(): void { this.loadGmailConnections(true); }
+  //ionViewWillEnter(): void { this.loadGmailConnections(true); }
   loadGmailConnections(sync = false): void {
     this.gmail.getConnections().subscribe({
       next: connections => {

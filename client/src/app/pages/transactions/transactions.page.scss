@@ -11,7 +11,7 @@
   overflow-x: auto;
 }
 
-.transaction-search { --background: var(--app-card-bg); --border-radius: 14px; --box-shadow: none; padding: 0; margin: 12px 0; }
+.transaction-search { --background: var(--app-card-bg); --border-radius: 8px; --box-shadow: none; padding: 0; margin: 12px 0; }
 .quick-filter-bar { padding: 4px; background: var(--app-card-bg); border: 1px solid var(--app-card-border); border-radius: 14px; }
 .list-toolbar { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 0; }
 .result-count { color: var(--app-muted-color); font-size: 0.82rem; }
@@ -111,11 +111,6 @@ ion-modal.compact-filters-modal::part(content) {
     padding-top: 24px;
     padding-bottom: 96px;
   }
-
-  .transaction-search {
-    max-width: 640px;
-  }
-
   .list-toolbar,
   .filter-bar,
   .transaction-list { width: 100%; }
